@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+body {
+  background: #ffffff;
+  color: #0a0a0a;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system,
+    Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+}
+
+/* Custom font classes */
+.font-caveat {
+  font-family: var(--font-caveat), cursive;
+}
+
+.font-outfit {
+  font-family: var(--font-outfit), sans-serif;
+}
+
+/* Font Usage Guidelines */
+/* 
+  Use .font-caveat for:
+  - Main headings (h1, h2)
+  - Brand names
+  - Hero titles
+  - Section headers
+  - Call-to-action text
+  - Decorative elements
+  
+  Use .font-outfit for:
+  - Body text (p tags)
+  - Navigation links
+  - Button text
+  - Form inputs
+  - Product descriptions
+  - Footer text
+  - All other readable content
+*/
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-caveat), cursive;
+}
