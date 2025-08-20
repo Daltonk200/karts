@@ -27,6 +27,9 @@ export default function Navbar() {
     return pathname.startsWith(path);
   };
 
+  // Check if we're on the homepage
+  const isHomePage = pathname === "/";
+
   // Scroll detection for navbar transparency
   useEffect(() => {
     const handleScroll = () => {
@@ -37,6 +40,23 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Body scroll lock when mobile menu is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add("menu-open");
+      // Also set overflow directly for immediate effect
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.classList.remove("menu-open");
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.classList.remove("menu-open");
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   // Search functionality
   useEffect(() => {
@@ -87,8 +107,8 @@ export default function Navbar() {
   return (
     <header
       className={`sticky top-0 z-[999] transition-all duration-300 -mt-1 ${
-        isScrolled
-          ? "bg-white/95 backdrop-blur-md border-b border-rose-200 shadow-sm"
+        isScrolled || !isHomePage
+          ? "bg-white/95 border-b border-rose-200 shadow-sm"
           : "bg-transparent border-b border-transparent"
       }`}
     >
@@ -122,8 +142,8 @@ export default function Navbar() {
             href="/cosmetics?category=skincare"
             className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
               isActive("/cosmetics") && pathname.includes("skincare")
-                ? "bg--100 text-rose-700"
-                : isScrolled
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
                 ? "text-zinc-700 hover:text-rose-600 "
                 : "text-white hover:text-rose-600 "
             }`}
@@ -141,8 +161,8 @@ export default function Navbar() {
             href="/cosmetics?category=makeup"
             className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
               isActive("/cosmetics") && pathname.includes("makeup")
-                ? "bg-rose-100 text-rose-700"
-                : isScrolled
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
                 ? "text-zinc-700 hover:text-rose-600 "
                 : "text-white hover:text-rose-600 "
             }`}
@@ -160,8 +180,8 @@ export default function Navbar() {
             href="/cosmetics?category=fragrance"
             className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
               isActive("/cosmetics") && pathname.includes("fragrance")
-                ? "bg-rose-100 text-rose-700"
-                : isScrolled
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
                 ? "text-zinc-700 hover:text-rose-600 "
                 : "text-white hover:text-rose-600 "
             }`}
@@ -179,8 +199,8 @@ export default function Navbar() {
             href="/cosmetics"
             className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
               isActive("/cosmetics") && !pathname.includes("category")
-                ? "bg-rose-100 text-rose-700"
-                : isScrolled
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
                 ? "text-zinc-700 hover:text-rose-600 "
                 : "text-white hover:text-rose-600 "
             }`}
@@ -208,7 +228,7 @@ export default function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchOpen(true)}
                 className={`w-64 px-4 py-2.5 pr-10 text-sm rounded-[5px] focus:outline-none focus:ring-2 focus:ring-rose-100 transition-all duration-200 ${
-                  isScrolled
+                  isScrolled || !isHomePage
                     ? "bg-zinc-50 border border-zinc-200 focus:border-rose-300 focus:bg-white"
                     : "bg-white/20 border border-white/30 text-white placeholder-white/70 focus:border-white/50 focus:bg-white/30"
                 }`}
@@ -217,7 +237,7 @@ export default function Navbar() {
                 {isSearching ? (
                   <div
                     className={`w-4 h-4 border-2 rounded-full animate-spin ${
-                      isScrolled
+                      isScrolled || !isHomePage
                         ? "border-rose-200 border-t-rose-500"
                         : "border-white/50 border-t-white"
                     }`}
@@ -225,7 +245,9 @@ export default function Navbar() {
                 ) : (
                   <svg
                     className={`w-4 h-4 ${
-                      isScrolled ? "text-zinc-400" : "text-white/70"
+                      isScrolled || !isHomePage
+                        ? "text-zinc-400"
+                        : "text-white/70"
                     }`}
                     fill="none"
                     stroke="currentColor"
@@ -312,14 +334,14 @@ export default function Navbar() {
           <Link
             href="/cart"
             className={`relative flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${
-              isScrolled
+              isScrolled || !isHomePage
                 ? "bg-zinc-50 border border-zinc-200  hover:border-rose-200"
                 : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
             }`}
           >
             <svg
               className={`w-5 h-5 transition-colors duration-200 ${
-                isScrolled
+                isScrolled || !isHomePage
                   ? "text-zinc-600 group-hover:text-rose-600"
                   : "text-white/80 group-hover:text-white"
               }`}
@@ -345,7 +367,7 @@ export default function Navbar() {
           <Link
             href="/wishlist"
             className={`relative flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${
-              isScrolled
+              isScrolled || !isHomePage
                 ? "bg-zinc-50 border border-zinc-200  hover:border-rose-200"
                 : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
             }`}
@@ -353,10 +375,10 @@ export default function Navbar() {
             <svg
               className={`w-5 h-5 transition-colors duration-200 ${
                 wishlistItems.length > 0
-                  ? isScrolled
+                  ? isScrolled || !isHomePage
                     ? "text-rose-600"
                     : "text-white"
-                  : isScrolled
+                  : isScrolled || !isHomePage
                   ? "text-zinc-600 group-hover:text-rose-600"
                   : "text-white/80 group-hover:text-white"
               }`}
@@ -382,7 +404,7 @@ export default function Navbar() {
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={`lg:hidden flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] ${
-              isScrolled
+              isScrolled || !isHomePage
                 ? "bg-zinc-50 border border-zinc-200  hover:border-rose-200"
                 : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
             }`}
@@ -391,17 +413,17 @@ export default function Navbar() {
             <div className="flex flex-col space-y-1">
               <span
                 className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isScrolled ? "bg-zinc-600" : "bg-white/80"
+                  isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
                 } ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}
               ></span>
               <span
                 className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isScrolled ? "bg-zinc-600" : "bg-white/80"
+                  isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
                 } ${isOpen ? "opacity-0" : ""}`}
               ></span>
               <span
                 className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isScrolled ? "bg-zinc-600" : "bg-white/80"
+                  isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
                 } ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
               ></span>
             </div>
@@ -409,13 +431,40 @@ export default function Navbar() {
         </div>
       </Container>
 
-      {/* Mobile Navigation */}
+      {/* Mobile Navigation - Slide from right */}
       <div
-        className={`lg:hidden border-t border-rose-100 transition-all duration-500 ease-in-out ${
-          isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+        className={`lg:hidden mobile-menu-container w-80 bg-white border-l border-rose-200 shadow-2xl transform transition-all duration-300 ease-in-out mobile-menu-full-height z-[9999] ${
+          isOpen
+            ? "translate-x-0 opacity-100 visible"
+            : "translate-x-full opacity-0 invisible pointer-events-none"
         }`}
       >
-        <Container className="py-6">
+        <div className="p-6 h-full overflow-y-auto overscroll-contain">
+          {/* Mobile Menu Header */}
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-bold text-zinc-900 font-caveat">
+              Menu
+            </h2>
+            <button
+              onClick={() => setIsOpen(false)}
+              className="p-2 text-zinc-400 hover:text-zinc-600 transition-colors duration-200"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+
           {/* Mobile Search */}
           <div className="mb-6">
             <div className="relative">
@@ -449,14 +498,14 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Navigation Links */}
-          <nav className="space-y-2">
+          <nav className="space-y-3">
             <Link
               href="/cosmetics?category=skincare"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-[5px] font-medium transition-all duration-200 ${
+              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${
                 isActive("/cosmetics") && pathname.includes("skincare")
-                  ? "bg-rose-100 text-rose-700"
-                  : "text-zinc-700 hover:text-rose-600 "
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
               Skincare
@@ -464,10 +513,10 @@ export default function Navbar() {
             <Link
               href="/cosmetics?category=makeup"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-[5px] font-medium transition-all duration-200 ${
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
                 isActive("/cosmetics") && pathname.includes("makeup")
-                  ? "bg-rose-100 text-rose-700"
-                  : "text-zinc-700 hover:text-rose-600 "
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
               Makeup
@@ -475,10 +524,10 @@ export default function Navbar() {
             <Link
               href="/cosmetics?category=fragrance"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-[5px] font-medium transition-all duration-200 ${
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
                 isActive("/cosmetics") && pathname.includes("fragrance")
-                  ? "bg-rose-100 text-rose-700"
-                  : "text-zinc-700 hover:text-rose-600 "
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
               Fragrance
@@ -486,10 +535,10 @@ export default function Navbar() {
             <Link
               href="/cosmetics"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-[5px] font-medium transition-all duration-200 ${
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
                 isActive("/cosmetics") && !pathname.includes("category")
-                  ? "bg-rose-100 text-rose-700"
-                  : "text-zinc-700 hover:text-rose-600 "
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
               All Products
@@ -497,10 +546,10 @@ export default function Navbar() {
             <Link
               href="/about"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-[5px] font-medium transition-all duration-200 ${
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
                 isActive("/about")
-                  ? "bg-rose-100 text-rose-700"
-                  : "text-zinc-700 hover:text-rose-600 "
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
               About
@@ -508,16 +557,16 @@ export default function Navbar() {
             <Link
               href="/contact"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 rounded-[5px] font-medium transition-all duration-200 ${
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
                 isActive("/contact")
-                  ? "bg-rose-100 text-rose-700"
-                  : "text-zinc-700 hover:text-rose-600 "
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
               Contact
             </Link>
           </nav>
-        </Container>
+        </div>
       </div>
 
       {/* Click outside to close search */}
@@ -525,6 +574,14 @@ export default function Navbar() {
         <div
           className="fixed inset-0 z-40"
           onClick={() => setIsSearchOpen(false)}
+        />
+      )}
+
+      {/* Mobile menu backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 mobile-menu-backdrop lg:hidden"
+          onClick={() => setIsOpen(false)}
         />
       )}
     </header>

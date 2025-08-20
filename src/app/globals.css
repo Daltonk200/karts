@@ -157,3 +157,246 @@ html {
 .product-grid::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(135deg, #e11d48, #be123c);
 }
+
+/* Cart Page Animations */
+@keyframes cart-item-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cart-item-exit {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes save-for-later {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes shipping-badge-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-cart-item-enter {
+  animation: cart-item-enter 0.3s ease-out;
+}
+
+.animate-cart-item-exit {
+  animation: cart-item-exit 0.3s ease-in;
+}
+
+.animate-save-for-later {
+  animation: save-for-later 0.6s ease-in-out;
+}
+
+.animate-shipping-badge {
+  animation: shipping-badge-pulse 2s ease-in-out infinite;
+}
+
+/* Enhanced hover effects for cart items */
+.cart-item-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cart-item-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Quantity control animations */
+.quantity-control {
+  transition: all 0.2s ease-in-out;
+}
+
+.quantity-control:hover {
+  transform: scale(1.05);
+}
+
+.quantity-control:active {
+  transform: scale(0.95);
+}
+
+/* Save for later button animations */
+.save-later-btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.save-later-btn:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+/* Order summary animations */
+.order-summary {
+  transition: all 0.3s ease-in-out;
+}
+
+.order-summary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Trust badge animations */
+.trust-badge {
+  transition: all 0.3s ease-in-out;
+}
+
+.trust-badge:hover {
+  transform: translateY(-2px);
+  color: #e11d48;
+}
+
+.trust-badge:hover svg {
+  transform: scale(1.1);
+}
+
+.trust-badge svg {
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Mobile menu scroll lock */
+body.menu-open {
+  overflow: hidden !important;
+}
+
+/* Mobile menu positioning and height fixes */
+@media (max-width: 1023px) {
+  body.menu-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+  }
+
+  /* Ensure mobile menu takes full viewport height */
+  .mobile-menu-full-height {
+    height: 100vh !important;
+    height: 100dvh !important; /* Dynamic viewport height for mobile */
+  }
+}
+
+/* Prevent mobile menu from causing layout shifts */
+.mobile-menu-hidden {
+  transform: translateX(100%) !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Mobile menu positioning - now handled by Tailwind classes */
+
+/* Ensure mobile menu is above all content */
+.mobile-menu-backdrop {
+  z-index: 9998;
+  height: 100vh;
+  height: 100dvh;
+}
+
+/* Mobile menu z-index and positioning */
+.mobile-menu-container {
+  z-index: 9999 !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+}
+
+/* Ensure mobile menu is always above navbar */
+@media (max-width: 1023px) {
+  .mobile-menu-container {
+    z-index: 99999 !important;
+  }
+
+  /* Prevent backdrop blur conflicts */
+  header {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Additional mobile menu fixes */
+@media (max-width: 1023px) {
+  body.menu-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+  }
+}
+
+/* Carousel scrollbar hiding */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Safari and Chrome */
+}
+
+/* Enhanced carousel experience */
+.carousel-container {
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+}
+
+.carousel-item {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Mobile carousel touch improvements */
+@media (max-width: 1023px) {
+  .carousel-container {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x proximity;
+  }
+}
+
+/* Mobile carousel item improvements */
+@media (max-width: 1023px) {
+  .carousel-item {
+    min-width: 12rem; /* 192px */
+    max-width: 12rem;
+  }
+
+  .carousel-item:first-child {
+    margin-left: 0;
+  }
+
+  .carousel-item:last-child {
+    margin-right: 1rem;
+  }
+}
+
+/* Carousel scroll indicator active state */
+.carousel-indicator-active {
+  background-color: #e11d48;
+  transform: scale(1.2);
+}

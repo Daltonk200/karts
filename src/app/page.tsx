@@ -61,10 +61,12 @@ export default function Home() {
     },
     {
       name: "Hair Care",
-      description: "Luxury perfumes and fragrances for men and women",
+      description:
+        "Nourishing shampoos, conditioners, oils, and treatments for healthy, beautiful hair",
       image:
         "https://img.freepik.com/closeup-three-women39s-faces-with-long-wavy-hair_1353244-12770.jpg",
     },
+
   ];
 
   // Mock featured products data
@@ -384,11 +386,11 @@ export default function Home() {
               ))}
             </div>
           ) : featuredProducts.length > 0 ? (
-            <div className="flex overflow-x-scroll grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-1 md:gap-2">
+            <div className="flex overflow-x-scroll snap-x snap-proximity grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-1 md:gap-2 scrollbar-hide">
               {featuredProducts.map((product) => (
                 <div
                   key={product._id}
-                  className="bg-white border min-w-[230px]  md:min-w-[300px] border-zinc-200 hover:border-rose-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-sm transform hover:-translate-y-1 group"
+                  className="bg-white snap-start border min-w-[230px]  md:min-w-[300px] border-zinc-200 hover:border-rose-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-sm transform hover:-translate-y-1 group"
                 >
                   <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px]">
                     <Image
@@ -844,9 +846,9 @@ export default function Home() {
 
       {/* Wide Promotional Banner */}
       <section className="py-1">
-        <div className="relative overflow-hidden shadow-2xl group max-w-none">
+        <div className="relative overflow-hidden group max-w-none">
           {/* Background Image */}
-          <div className="aspect-[2/1] sm:aspect-[4/1] md:aspect-[4/1] lg:aspect-[4/1] bg-zinc-100 relative">
+          <div className="aspect-[1.4] sm:aspect-[4/1] md:aspect-[4/1] lg:aspect-[4/1] bg-zinc-100 relative">
             <Image
               src="https://img.freepik.com/variety-different-cosmetics-display_1161356-153701.jpg?W=2000"
               alt="Special Beauty Offers"
@@ -860,7 +862,7 @@ export default function Home() {
             {/* Content */}
             <div className="absolute inset-0 flex items-center">
               <div className="px-4 sm:px-6 md:px-8 lg:px-16 xl:px-20 text-white w-full">
-                <div className="max-w-2xl">
+                <div className="max-w-[1500px] mx-auto">
                   {/* Badge with Timer */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-3">
                     <div className="inline-block bg-rose-500 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium w-fit font-outfit">
