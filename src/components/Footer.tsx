@@ -14,22 +14,28 @@ export default function Footer() {
               <div className="flex items-center mb-4">
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center">
-                    <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H5V21H19V9Z"/>
+                    <svg
+                      className="w-7 h-7 text-white"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H5V21H19V9Z" />
                     </svg>
                   </div>
                   <div>
                     <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
                       GlowBeauty
                     </h1>
-                    <p className="text-xs text-rose-500 font-medium">Premium Cosmetics</p>
+                    <p className="text-xs text-rose-500 font-medium">
+                      Premium Cosmetics
+                    </p>
                   </div>
                 </div>
               </div>
               <p className="text-zinc-600 leading-relaxed max-w-md">
                 Since 2008, we've been curating the finest collection of luxury
-                cosmetics and beauty products. Our passion for quality and beauty
-                drives everything we do.
+                cosmetics and beauty products. Our passion for quality and
+                beauty drives everything we do.
               </p>
             </div>
 
@@ -49,7 +55,7 @@ export default function Footer() {
                     d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                contact@guitarstringsco.com
+                contact@glowbeauty.com
               </div>
             </div>
           </div>
@@ -62,10 +68,10 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/guitars"
+                  href="/cosmetics"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Shop Guitars
+                  Shop Cosmetics
                 </Link>
               </li>
               <li>
@@ -86,10 +92,10 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/custom-guitar"
+                  href="/consultation"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Custom Guitar
+                  Beauty Consultation
                 </Link>
               </li>
             </ul>
@@ -119,18 +125,18 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/warranty"
+                  href="/skincare-guide"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Warranty Information
+                  Skincare Guide
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/repairs"
+                  href="/beauty-tips"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Guitar Repairs
+                  Beauty Tips
                 </Link>
               </li>
               <li>
@@ -154,8 +160,25 @@ export default function Footer() {
                 Follow Us
               </h4>
               <div className="flex space-x-4">
+                {/* Instagram */}
                 <Link
-                  href="https://www.tiktok.com/@guitarandstrings?_t=ZM-8ynLK6PrDk5&_r=1"
+                  href="https://www.instagram.com/glowbeauty"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-zinc-300 hover:bg-zinc-50 transition-colors duration-200"
+                >
+                  <svg
+                    className="w-5 h-5 text-zinc-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                </Link>
+
+                {/* TikTok */}
+                <Link
+                  href="https://www.tiktok.com/@glowbeauty"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-10 h-10 border border-zinc-300 hover:bg-zinc-50 transition-colors duration-200"
@@ -166,6 +189,22 @@ export default function Footer() {
                     viewBox="0 0 24 24"
                   >
                     <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
+                  </svg>
+                </Link>
+
+                {/* YouTube */}
+                <Link
+                  href="https://www.youtube.com/@glowbeauty"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-10 h-10 border border-zinc-300 hover:bg-zinc-50 transition-colors duration-200"
+                >
+                  <svg
+                    className="w-5 h-5 text-zinc-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
                   </svg>
                 </Link>
               </div>
@@ -182,7 +221,7 @@ export default function Footer() {
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-2 border border-zinc-300 text-sm focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all duration-200"
                 />
-                <button className="px-6 py-2 bg-zinc-900 text-white text-sm font-medium uppercase tracking-wide hover:bg-zinc-800 transition-colors duration-200 border border-zinc-900">
+                <button className="px-6 py-2 bg-rose-600 text-white text-sm font-medium uppercase tracking-wide hover:bg-rose-800 transition-colors duration-200 border border-rose-600 cursor-pointer">
                   Subscribe
                 </button>
               </div>
@@ -194,8 +233,8 @@ export default function Footer() {
         <div className="border-t border-zinc-200 pt-8 mt-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-zinc-600">
             <div>
-              © {new Date().getFullYear()} Guitar & Strings Co. All rights
-              reserved.
+              © {new Date().getFullYear()} GlowBeauty - Premium Cosmetics. All
+              rights reserved.
             </div>
             <div className="flex flex-wrap gap-6">
               <Link

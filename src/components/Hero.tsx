@@ -87,7 +87,7 @@ export default function Hero() {
                 className="group relative rounded-sm inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-medium tracking-wide uppercase overflow-hidden transition-all duration-300 hover:border-rose-200"
               >
                 <span className="relative z-10 transition-colors duration-300 group-hover:text-rose-600">
-                  Our Story
+                  Book Now
                 </span>
                 <div className="absolute inset-0 bg-white transform -translate-x-full transition-transform duration-300 ease-out group-hover:translate-x-0"></div>
               </Link>

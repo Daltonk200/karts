@@ -16,8 +16,7 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
 
   return (
     <>
-      {!isDashboardPage && <Navbar />}
-      <main>{children}</main>
+      {!isDashboardPage && <Navbar />} <main>{children}</main>
       {!isDashboardPage && <Footer />}
     </>
   );

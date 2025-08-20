@@ -198,8 +198,8 @@ export default function Navbar() {
 
         {/* Right side - Search, Cart, Wishlist and Mobile menu */}
         <div className="flex items-center space-x-3">
-          {/* Enhanced Search */}
-          <div className="relative">
+          {/* Enhanced Search - Hidden on Mobile */}
+          <div className="relative hidden lg:block">
             <div className="relative">
               <input
                 type="text"

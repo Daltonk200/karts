@@ -1,46 +1,43 @@
 import { create } from "zustand";
 
-export interface Guitar {
-  id: number| string;
+export interface CosmeticProduct {
+  id: string;
   name: string;
   price: number;
-  originalPrice: number;
   image: string;
   category: string;
   brand: string;
-  condition: string;
-  rating: number;
-  reviews: number;
+  skinType: string;
+  size: string;
   isFeatured: boolean;
-  isOnSale: boolean;
 }
 
 interface WishlistStore {
-  items: Guitar[];
-  addToWishlist: (guitar: Guitar) => void;
-  removeFromWishlist: (guitarId: string) => void;
-  isInWishlist: (guitarId: string) => boolean;
+  items: CosmeticProduct[];
+  addToWishlist: (product: CosmeticProduct) => void;
+  removeFromWishlist: (productId: string) => void;
+  isInWishlist: (productId: string) => boolean;
   clearWishlist: () => void;
 }
 
 export const useWishlistStore = create<WishlistStore>((set, get) => ({
   items: [],
 
-  addToWishlist: (guitar: Guitar) => {
+  addToWishlist: (product: CosmeticProduct) => {
     const { items } = get();
-    if (!items.find((item) => item.id === guitar.id)) {
-      set({ items: [...items, guitar] });
+    if (!items.find((item) => item.id === product.id)) {
+      set({ items: [...items, product] });
     }
   },
 
-  removeFromWishlist: (guitarId: string) => {
+  removeFromWishlist: (productId: string) => {
     const { items } = get();
-    set({ items: items.filter((item) => item.id !== guitarId) });
+    set({ items: items.filter((item) => item.id !== productId) });
   },
 
-  isInWishlist: (guitarId: string) => {
+  isInWishlist: (productId: string) => {
     const { items } = get();
-    return items.some((item) => item.id === guitarId);
+    return items.some((item) => item.id === productId);
   },
 
   clearWishlist: () => {

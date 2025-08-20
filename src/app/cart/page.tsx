@@ -55,7 +55,7 @@ export default function CartPage() {
         <section className="relative bg-zinc-50 border-b border-zinc-200 overflow-hidden">
           <div className="absolute inset-0">
             <Image
-              src="https://images.pexels.com/photos/236910/pexels-photo-236910.jpeg"
+              src="https://img.freepik.com/online-shopping-minimalistic-concept-small-cart-with-cosmetic-bottles-essential-oil-serum_1048944-9581452.jpg?W=2000"
               alt="Shopping Cart"
               fill
               className="object-cover opacity-20"
