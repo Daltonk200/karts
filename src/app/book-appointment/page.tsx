@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
+import { ChevronDownIcon } from "lucide-react";
 import {
   AiOutlineCalendar,
   AiOutlineClockCircle,
@@ -12,6 +13,23 @@ import {
   AiOutlineMail,
   AiOutlineMessage,
 } from "react-icons/ai";
+import { services, getServiceTitleById } from "@/data/services";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 export default function BookAppointmentPage() {
   const searchParams = useSearchParams();
@@ -25,6 +43,8 @@ export default function BookAppointmentPage() {
     service: "",
     message: "",
   });
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   // Get service from URL parameter and set it in form
   useEffect(() => {
@@ -87,13 +107,14 @@ export default function BookAppointmentPage() {
       service: "",
       message: "",
     });
+    setSelectedDate(undefined);
   };
 
   const isFormValid =
     formData.name &&
     formData.email &&
     formData.phone &&
-    formData.date &&
+    selectedDate &&
     formData.time &&
     formData.service;
 
@@ -140,6 +161,18 @@ export default function BookAppointmentPage() {
                 help you discover your perfect beauty routine.
               </p>
             </div>
+
+            {/* Selected Service Display */}
+            {formData.service && (
+              <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-lg">
+                <h3 className="text-sm font-medium text-rose-800 mb-2 font-outfit">
+                  Selected Service:
+                </h3>
+                <p className="text-rose-700 font-outfit">
+                  {getServiceTitleById(formData.service)}
+                </p>
+              </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Personal Information */}
@@ -193,59 +226,93 @@ export default function BookAppointmentPage() {
                 />
               </div>
 
-              {/* Service Description */}
+              {/* Service Selection */}
               <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-2 font-outfit">
+                <Label className="block text-sm font-medium text-zinc-700 mb-2 font-outfit">
                   What service do you need?
-                </label>
-                <input
-                  type="text"
-                  name="service"
+                </Label>
+                <Select
                   value={formData.service}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
-                  placeholder="e.g., Skincare consultation, Makeup lesson, Product recommendations..."
-                  required
-                />
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, service: value })
+                  }
+                >
+                  <SelectTrigger className="w-full !py-6 font-outfit">
+                    <SelectValue placeholder="Select a service" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {services.map((service) => (
+                      <SelectItem key={service.id} value={service.id}>
+                        {service.title} - {service.price}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Date and Time */}
               <div className="grid md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-2 font-outfit">
+                  <Label className="block text-sm font-medium text-zinc-700 mb-2 font-outfit">
                     <AiOutlineCalendar className="inline w-4 h-4 mr-2" />
                     Preferred Date
-                  </label>
-                  <input
-                    type="date"
-                    name="date"
-                    value={formData.date}
-                    onChange={handleInputChange}
-                    min={new Date().toISOString().split("T")[0]}
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
-                    required
-                  />
+                  </Label>
+                  <Popover
+                    open={datePickerOpen}
+                    onOpenChange={setDatePickerOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-between font-normal font-outfit h-12 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200"
+                      >
+                        {selectedDate
+                          ? selectedDate.toLocaleDateString()
+                          : "Select date"}
+                        <ChevronDownIcon className="h-4 w-4 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={selectedDate}
+                        onSelect={(date) => {
+                          setSelectedDate(date);
+                          setFormData({
+                            ...formData,
+                            date: date ? date.toISOString().split("T")[0] : "",
+                          });
+                          setDatePickerOpen(false);
+                        }}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-zinc-700 mb-2 font-outfit">
+                  <Label className="block text-sm font-medium text-zinc-700 mb-2 font-outfit">
                     <AiOutlineClockCircle className="inline w-4 h-4 mr-2" />
                     Preferred Time
-                  </label>
-                  <select
-                    name="time"
+                  </Label>
+                  <Select
                     value={formData.time}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
-                    required
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, time: value })
+                    }
                   >
-                    <option value="">Select time</option>
-                    {timeSlots.map((time) => (
-                      <option key={time} value={time}>
-                        {time}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-full !py-6 font-outfit">
+                      <SelectValue placeholder="Select time" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {timeSlots.map((time) => (
+                        <SelectItem key={time} value={time}>
+                          {time}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 

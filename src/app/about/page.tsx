@@ -10,7 +10,7 @@ export default function AboutPage() {
       <section className="relative py-24 bg-zinc-900 overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1200&h=600&fit=crop"
+            src="https://img.freepik.com/set-decorative-cosmetics-pink-background_93675-100352.jpg?W=2000"
             alt="About Beauty & Glow"
             fill
             className="object-cover opacity-20"
@@ -65,46 +65,12 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-[4/3] bg-zinc-100 border border-zinc-200 rounded-2xl overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&h=400&fit=crop"
+                  src="https://img.freepik.com/free-photo/flat-lay-skincare-products-with-copy-space_23-2148317636.jpg?t=st=1755770033~exp=1755773633~hmac=299dbf22ca1740cad6bf4545280d9ffc6fc42dacab926d886482fd0f0e34683c&w=2000"
                   alt="Beauty & Glow salon interior"
                   fill
                   className="object-cover"
                 />
               </div>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Statistics */}
-      <section className="py-16 bg-gradient-to-r from-rose-600 to-pink-600">
-        <Container>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                12+
-              </div>
-              <div className="text-rose-100 font-outfit">
-                Years of Experience
-              </div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                5000+
-              </div>
-              <div className="text-rose-100 font-outfit">Happy Clients</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                50+
-              </div>
-              <div className="text-rose-100 font-outfit">Beauty Products</div>
-            </div>
-            <div>
-              <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                24/7
-              </div>
-              <div className="text-rose-100 font-outfit">Expert Support</div>
             </div>
           </div>
         </Container>

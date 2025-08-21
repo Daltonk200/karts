@@ -5,6 +5,22 @@ import Container from "@/components/Container";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  AiOutlineMail,
+  AiOutlinePhone,
+  AiOutlineClockCircle,
+  AiOutlineEnvironment,
+  AiOutlineInstagram,
+  AiOutlineFacebook,
+  AiOutlineTwitter,
+} from "react-icons/ai";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -66,251 +82,313 @@ export default function ContactPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       {/* Hero Section */}
-      <section className="relative py-24 bg-zinc-900 overflow-hidden">
-        <div className="absolute inset-0">
+      <section className="relative bg-black border-b border-zinc-200 overflow-hidden">
+        <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&h=600&fit=crop"
-            alt="Contact us"
+            src="https://img.freepik.com/stylish-flat-lay-composition-lipstick-smartphone-marble-surface_955834-51848.jpg?W=2000"
+            alt="Contact GlowBeauty"
             fill
-            className="object-cover opacity-20"
+            className="object-cover opacity-60"
+            priority
           />
+          <div className="absolute inset-0 bg-zinc-900/40"></div>
         </div>
-        <Container className="relative z-10">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
+
+        <Container className="py-16 md:py-20 lg:py-24 relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <h1 className="font-caveat text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-6">
               Get in Touch
             </h1>
-            <p className="text-lg text-zinc-200 max-w-2xl mx-auto">
-              Have questions about our guitars? Want to schedule a visit? We'd
-              love to hear from you.
+            <p className="text-lg md:text-xl text-zinc-200 leading-relaxed font-outfit mb-8 max-w-3xl mx-auto">
+              Have questions about our beauty products or services? Want to
+              schedule a consultation? We'd love to hear from you and help you
+              discover your perfect beauty routine.
             </p>
           </div>
         </Container>
       </section>
 
       {/* Contact Information */}
-      <section className="py-16">
+      <section className="py-16 md:py-20">
         <Container>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div className="grid grid-cols-1 !h-fit lg:grid-cols-2 gap-8">
             {/* Contact Form */}
-            <div>
-              <h2 className="text-2xl font-bold text-zinc-900 mb-6">
-                Send us a Message
-              </h2>
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-zinc-700 mb-2"
-                    >
-                      Full Name *
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-zinc-300 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors"
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-zinc-700 mb-2"
-                    >
-                      Email Address *
-                    </label>
-                    <input
-                      type="email"
-                      id="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-zinc-300 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label
-                      htmlFor="phone"
-                      className="block text-sm font-medium text-zinc-700 mb-2"
-                    >
-                      Phone Number
-                    </label>
-                    <input
-                      type="tel"
-                      id="phone"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className="w-full px-4 py-3 border border-zinc-300 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors"
-                      placeholder="(555) 123-4567"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="subject"
-                      className="block text-sm font-medium text-zinc-700 mb-2"
-                    >
-                      Subject *
-                    </label>
-                    <select
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 border border-zinc-300 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors"
-                    >
-                      <option value="">Select a subject</option>
-                      <option value="general">General Inquiry</option>
-                      <option value="purchase">Purchase Question</option>
-                      <option value="service">Service & Repair</option>
-                      <option value="appointment">Schedule Appointment</option>
-                      <option value="feedback">Feedback</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="block text-sm font-medium text-zinc-700 mb-2"
-                  >
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    required
-                    rows={6}
-                    className="w-full px-4 py-3 border border-zinc-300 focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-colors resize-none"
-                    placeholder="Tell us how we can help you..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full px-8 py-4 bg-zinc-900 text-white font-medium hover:bg-zinc-800 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
+            <div className="bg-white   rounded-xl shadow-sm p-6 border border-zinc-200 flex flex-col h-fit">
+              <div className="flex-1">
+               <div>
+                  <h2 className="text-3xl font-caveat font-bold text-zinc-900 mb-6">
+                    Send us a Message
+                  </h2>
+                  <p className="text-zinc-600 font-outfit mb-6">
+                    We're here to help you with all your beauty needs. Send us a
+                    message and we'll get back to you within 24 hours.
+                  </p>
+  
+               </div>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-zinc-700 mb-1.5 font-outfit"
                       >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Sending...
-                    </>
-                  ) : (
-                    "Send Message"
-                  )}
-                </button>
-              </form>
+                        Full Name *
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                        placeholder="Your full name"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-zinc-700 mb-1.5 font-outfit"
+                      >
+                        Email Address *
+                      </label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                        placeholder="your.email@example.com"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                      <label
+                        htmlFor="phone"
+                        className="block text-sm font-medium text-zinc-700 mb-1.5 font-outfit"
+                      >
+                        Phone Number
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                        placeholder="+237 XXX XXX XXX"
+                      />
+                    </div>
+                    <div>
+                      <label
+                        htmlFor="subject"
+                        className="block text-sm font-medium text-zinc-700 mb-1.5 font-outfit"
+                      >
+                        Subject *
+                      </label>
+                      <Select
+                        value={formData.subject}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, subject: value })
+                        }
+                      >
+                        <SelectTrigger className="w-full !py-6 font-outfit">
+                          <SelectValue placeholder="Select a subject" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="general">
+                            General Inquiry
+                          </SelectItem>
+                          <SelectItem value="product">
+                            Product Information
+                          </SelectItem>
+                          <SelectItem value="service">
+                            Beauty Services
+                          </SelectItem>
+                          <SelectItem value="appointment">
+                            Schedule Consultation
+                          </SelectItem>
+                          <SelectItem value="order">Order Status</SelectItem>
+                          <SelectItem value="feedback">Feedback</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label
+                      htmlFor="message"
+                      className="block text-sm font-medium text-zinc-700 mb-1.5 font-outfit"
+                    >
+                      Message *
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      required
+                      rows={4}
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit resize-none"
+                      placeholder="Tell us about your beauty concerns, product questions, or how we can help you..."
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full py-4 px-6 rounded-[8px] font-semibold font-outfit text-lg transition-all duration-300 transform hover:scale-[1.02] ${
+                      !isSubmitting
+                        ? "bg-gradient-to-r from-rose-600 to-pink-600 text-white hover:from-rose-700 hover:to-pink-700 shadow-lg hover:shadow-xl"
+                        : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center justify-center">
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-3"></div>
+                        Sending Message...
+                      </div>
+                    ) : (
+                      "Send Message"
+                    )}
+                  </button>
+                </form>
+              </div>
             </div>
 
             {/* Contact Information */}
-            <div>
-              <h2 className="text-2xl font-bold text-zinc-900 mb-6">
-                Contact Information
-              </h2>
-              <div className="space-y-8">
-                {/* Email */}
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-                      Email Us
-                    </h3>
-                    <p className="text-zinc-600">
-                      <Link
-                        href="mailto:contact@guitarstringsco.com"
-                        className="hover:text-zinc-900 transition-colors"
-                      >
-                        contact@guitarstringsco.com
-                      </Link>
-                    </p>
-                    <p className="text-sm text-zinc-500 mt-1">
-                      We typically respond within 24 hours
-                    </p>
-                  </div>
-                </div>
-
-                {/* Social Media */}
-                <div className="flex items-start space-x-4">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-zinc-900 flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-zinc-900 mb-2">
-                      Follow Us
-                    </h3>
-                    <div className="flex space-x-4">
-                      <Link
-                        href="https://www.tiktok.com/@guitarandstrings?_t=ZM-8ynLK6PrDk5&_r=1"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-zinc-600 hover:text-zinc-900 transition-colors flex items-center gap-2"
-                      >
-                        <svg
-                          className="w-5 h-5"
-                          fill="currentColor"
-                          viewBox="0 0 24 24"
+            <div className="space-y-6">
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-zinc-200">
+                <h2 className="text-3xl font-caveat font-bold text-zinc-900 mb-6">
+                  Contact Information
+                </h2>
+                <div className="space-y-6">
+                  {/* Email */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
+                      <AiOutlineMail className="w-6 h-6 text-rose-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
+                        Email Us
+                      </h3>
+                      <p className="text-zinc-600 font-outfit">
+                        <Link
+                          href="mailto:contact@glowbeauty.com"
+                          className="hover:text-rose-600 transition-colors"
                         >
-                          <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z" />
-                        </svg>
-                        TikTok
-                      </Link>
+                          contact@glowbeauty.com
+                        </Link>
+                      </p>
+                      <p className="text-sm text-zinc-500 mt-1 font-outfit">
+                        We typically respond within 24 hours
+                      </p>
                     </div>
                   </div>
+
+                  {/* Phone */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
+                      <AiOutlinePhone className="w-6 h-6 text-rose-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
+                        Call Us
+                      </h3>
+                      <p className="text-zinc-600 font-outfit">
+                        <Link
+                          href="tel:+237XXXXXXXXX"
+                          className="hover:text-rose-600 transition-colors"
+                        >
+                          +237 XXX XXX XXX
+                        </Link>
+                      </p>
+                      <p className="text-sm text-zinc-500 mt-1 font-outfit">
+                        Available during business hours
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Hours */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
+                      <AiOutlineClockCircle className="w-6 h-6 text-rose-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
+                        Business Hours
+                      </h3>
+                      <p className="text-zinc-600 font-outfit">
+                        Monday - Saturday: 9:00 AM - 6:00 PM
+                      </p>
+                      <p className="text-sm text-zinc-500 mt-1 font-outfit">
+                        Sunday: Closed
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-start space-x-4">
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
+                      <AiOutlineEnvironment className="w-6 h-6 text-rose-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
+                        Visit Us
+                      </h3>
+                      <p className="text-zinc-600 font-outfit">
+                        123 Beauty Street
+                        <br />
+                        Douala, Cameroon
+                      </p>
+                      <p className="text-sm text-zinc-500 mt-1 font-outfit">
+                        Free parking available
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Social Media */}
+              <div className="bg-white rounded-xl shadow-sm p-6 border border-zinc-200">
+                <h3 className="text-2xl font-caveat font-bold text-zinc-900 mb-4">
+                  Follow Us
+                </h3>
+                <p className="text-zinc-600 font-outfit mb-4">
+                  Stay updated with our latest beauty tips, product launches,
+                  and special offers.
+                </p>
+                <div className="flex space-x-3">
+                  <Link
+                    href="https://instagram.com/glowbeauty"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-rose-600 hover:border-rose-200 transition-all duration-200"
+                  >
+                    <AiOutlineInstagram className="w-5 h-5" />
+                  </Link>
+                  <Link
+                    href="https://facebook.com/glowbeauty"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-rose-600 hover:border-rose-200 transition-all duration-200"
+                  >
+                    <AiOutlineFacebook className="w-5 h-5" />
+                  </Link>
+                  <Link
+                    href="https://twitter.com/glowbeauty"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-rose-600 hover:border-rose-200 transition-all duration-200"
+                  >
+                    <AiOutlineTwitter className="w-5 h-5" />
+                  </Link>
                 </div>
               </div>
             </div>
@@ -318,7 +396,34 @@ export default function ContactPage() {
         </Container>
       </section>
 
-      {/* Map Section */}
-    </>
+      {/* CTA Section */}
+      <div className="bg-gradient-to-r from-rose-600 to-pink-600 py-16 md:py-20">
+        <Container>
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl text-white font-bold mb-4 md:mb-6 font-caveat">
+              Ready to Transform Your Beauty?
+            </h2>
+            <p className="text-lg md:text-xl mb-8 md:mb-10 text-white opacity-90 font-outfit">
+              Book a consultation with our beauty experts and discover your
+              perfect beauty routine.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                href="/book-appointment"
+                className="bg-white text-rose-600 font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+              >
+                Book Consultation
+              </Link>
+              <Link
+                href="/services"
+                className="border-2 border-white text-white font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-white hover:text-rose-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+              >
+                View Services
+              </Link>
+            </div>
+          </div>
+        </Container>
+      </div>
+    </div>
   );
 }
