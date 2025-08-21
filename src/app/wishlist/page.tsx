@@ -5,15 +5,12 @@ import { useCartStore } from "@/store/cartStore";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import {
-  AiOutlineHeart,
-  AiOutlineShoppingCart,
-  AiOutlineEye,
-} from "react-icons/ai";
+import ProductCard from "@/components/cosmetics/ProductCard";
+import { Product } from "@/data/mockProducts";
 
 export default function WishlistPage() {
   const { items: wishlistItems, removeFromWishlist } = useWishlistStore();
-  const { addToCart } = useCartStore();
+  const { addToCart, removeFromCart, isInCart } = useCartStore();
 
   const totalValue = wishlistItems.reduce(
     (sum, product) => sum + product.price,
@@ -25,10 +22,22 @@ export default function WishlistPage() {
     toast.success(`${productName} removed from wishlist`);
   };
 
-  const handleAddToCart = (product: any) => {
-    addToCart(product);
-    toast.success(`${product.name} added to cart`);
-  };
+  // Convert wishlist items to Product format for ProductCard component
+  const convertToProductFormat = (wishlistItem: any): Product => ({
+    _id: wishlistItem.id,
+    name: wishlistItem.name,
+    price: wishlistItem.price,
+    image: wishlistItem.image,
+    category: wishlistItem.category,
+    brand: wishlistItem.brand,
+    skinType: wishlistItem.skinType,
+    isFeatured: wishlistItem.isFeatured || false,
+    stock: 1, // Default stock for wishlist items
+    sku: wishlistItem.size || "",
+    description: `Beautiful ${wishlistItem.category.toLowerCase()} product from ${
+      wishlistItem.brand
+    }`,
+  });
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
@@ -86,101 +95,46 @@ export default function WishlistPage() {
               </div>
             </div>
 
-            {/* Products Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
-              {wishlistItems.map((product) => (
-                <div
-                  key={product.id}
-                  className="bg-white rounded-[3px]  border border-rose-100 hover:shadow-sm transition-all duration-300 transform hover:-translate-y-2 group animate-wishlist-pop"
-                >
-                  {/* Image Container */}
-                  <div className="aspect-[4/3] bg-gradient-to-br from-rose-50 to-pink-50 relative overflow-hidden rounded-t-[3px]">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-110 transition-transform duration-500"
-                    />
+            {/* Products Grid - Using the same ProductCard component */}
+            <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 sm:gap-3">
+              {wishlistItems.map((wishlistItem) => {
+                const product = convertToProductFormat(wishlistItem);
+                return (
+                  <div key={product._id} className="relative group">
+                    <ProductCard product={product} viewMode="grid" />
 
-                    {/* Badges */}
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      {product.isOnSale && (
-                        <span className="px-3 py-1 bg-red-500 text-white text-xs font-semibold rounded-full shadow-lg">
-                          SALE
-                        </span>
-                      )}
-                      {product.isFeatured && (
-                        <span className="px-3 py-1 bg-rose-600 text-white text-xs font-semibold rounded-full shadow-lg">
-                          FEATURED
-                        </span>
-                      )}
-                      <span className="px-3 py-1 bg-white/90 backdrop-blur-sm text-zinc-700 text-xs font-semibold rounded-full shadow-lg">
-                        {product.category}
-                      </span>
-                    </div>
-
-                    {/* Remove Button */}
+                    {/* Custom Remove from Wishlist Button - Overlay on the card */}
                     <button
                       onClick={() =>
-                        handleRemoveFromWishlist(
-                          product.id.toString(),
-                          product.name
-                        )
+                        handleRemoveFromWishlist(product._id, product.name)
                       }
-                      className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-sm border border-rose-200 hover:bg-red-50 hover:border-red-300 transition-all duration-300 flex items-center justify-center rounded-full shadow-lg group/btn"
+                      className="absolute top-2 left-2 z-10 bg-red-500 hover:bg-red-600 text-white p-2 rounded-full shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100"
+                      title="Remove from Wishlist"
                     >
-                      <AiOutlineHeart className="w-5 h-5 text-rose-600 group-hover/btn:text-red-600 transition-colors duration-300" />
+                      <svg
+                        className="w-4 h-4"
+                        fill="currentColor"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M6 18L18 6M6 6l12 12"
+                        />
+                      </svg>
                     </button>
                   </div>
-
-                  {/* Content */}
-                  <div className="p-6">
-                    <div className="text-sm text-rose-500 uppercase tracking-wide mb-2 font-outfit font-semibold">
-                      {product.brand} • {product.category}
-                    </div>
-                    <h3 className="text-lg font-caveat font-bold text-zinc-900 mb-3 line-clamp-2">
-                      {product.name}
-                    </h3>
-
-                    {/* Price */}
-                    <div className="flex items-center gap-3 mb-6">
-                      <span className="text-2xl font-caveat font-bold text-rose-600">
-                        XAF {product.price.toLocaleString()}
-                      </span>
-                      {product.isOnSale && (
-                        <span className="text-sm text-zinc-500 line-through font-outfit">
-                          XAF {product.originalPrice?.toLocaleString()}
-                        </span>
-                      )}
-                    </div>
-
-                    {/* Action Buttons */}
-                    <div className="space-y-3">
-                      <button
-                        onClick={() => handleAddToCart(product)}
-                        className="w-full py-3 px-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                      >
-                        <AiOutlineShoppingCart className="w-5 h-5" />
-                        Add to Cart
-                      </button>
-                      <Link
-                        href={`/products/${product.id}`}
-                        className="block w-full py-3 px-4 border-2 border-rose-200 text-rose-600 font-semibold font-outfit rounded-[8px] hover:bg-rose-50 hover:border-rose-300 transition-all duration-300 flex items-center justify-center gap-2"
-                      >
-                        <AiOutlineEye className="w-5 h-5" />
-                        View Details
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {/* Actions */}
             <div className="mt-16 flex flex-col sm:flex-row gap-6 justify-center">
               <Link
                 href="/cosmetics"
-                className="px-8 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg text-center"
+                className="px-8 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg text-center"
               >
                 Continue Shopping
               </Link>
@@ -201,7 +155,7 @@ export default function WishlistPage() {
             </p>
             <Link
               href="/cosmetics"
-              className="inline-block px-10 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+              className="inline-block px-10 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
             >
               Browse Products
             </Link>

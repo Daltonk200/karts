@@ -139,78 +139,89 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-1">
           <Link
-            href="/cosmetics?category=skincare"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/cosmetics") && pathname.includes("skincare")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
-          >
-            Skincare
-            <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/cosmetics") && pathname.includes("skincare")
-                  ? "w-full"
-                  : "w-0 group-hover:w-full"
-              }`}
-            ></span>
-          </Link>
-          <Link
-            href="/cosmetics?category=makeup"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/cosmetics") && pathname.includes("makeup")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
-          >
-            Makeup
-            <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/cosmetics") && pathname.includes("makeup")
-                  ? "w-full"
-                  : "w-0 group-hover:w-full"
-              }`}
-            ></span>
-          </Link>
-          <Link
-            href="/cosmetics?category=fragrance"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/cosmetics") && pathname.includes("fragrance")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
-          >
-            Fragrance
-            <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/cosmetics") && pathname.includes("fragrance")
-                  ? "w-full"
-                  : "w-0 group-hover:w-full"
-              }`}
-            ></span>
-          </Link>
-          <Link
             href="/cosmetics"
             className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/cosmetics") && !pathname.includes("category")
+              isActive("/cosmetics")
                 ? " text-rose-700"
                 : isScrolled || !isHomePage
                 ? "text-zinc-700 hover:text-rose-600 "
                 : "text-white hover:text-rose-600 "
             }`}
           >
-            All Products
+            Our Shop
             <span
               className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/cosmetics") && !pathname.includes("category")
+                isActive("/cosmetics") ? "w-full" : "w-0 group-hover:w-full"
+              }`}
+            ></span>
+          </Link>
+          <Link
+            href="/services"
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
+              isActive("/services")
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-rose-600 "
+                : "text-white hover:text-rose-600 "
+            }`}
+          >
+            Services
+            <span
+              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
+                isActive("/services") ? "w-full" : "w-0 group-hover:w-full"
+              }`}
+            ></span>
+          </Link>
+          <Link
+            href="/book-appointment"
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
+              isActive("/book-appointment")
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-rose-600 "
+                : "text-white hover:text-rose-600 "
+            }`}
+          >
+            Booking
+            <span
+              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
+                isActive("/book-appointment")
                   ? "w-full"
                   : "w-0 group-hover:w-full"
+              }`}
+            ></span>
+          </Link>
+          <Link
+            href="/contact"
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
+              isActive("/contact")
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-rose-600 "
+                : "text-white hover:text-rose-600 "
+            }`}
+          >
+            Contact
+            <span
+              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
+                isActive("/contact") ? "w-full" : "w-0 group-hover:w-full"
+              }`}
+            ></span>
+          </Link>
+          <Link
+            href="/about"
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
+              isActive("/about")
+                ? " text-rose-700"
+                : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-rose-600 "
+                : "text-white hover:text-rose-600 "
+            }`}
+          >
+            About
+            <span
+              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
+                isActive("/about") ? "w-full" : "w-0 group-hover:w-full"
               }`}
             ></span>
           </Link>
@@ -377,7 +388,7 @@ export default function Navbar() {
                 wishlistItems.length > 0
                   ? isScrolled || !isHomePage
                     ? "text-rose-600"
-                    : "text-white"
+                    : "text-rose-600"
                   : isScrolled || !isHomePage
                   ? "text-zinc-600 group-hover:text-rose-600"
                   : "text-white/80 group-hover:text-white"
@@ -500,59 +511,37 @@ export default function Navbar() {
           {/* Mobile Navigation Links */}
           <nav className="space-y-3">
             <Link
-              href="/cosmetics?category=skincare"
-              onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${
-                isActive("/cosmetics") && pathname.includes("skincare")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
-            >
-              Skincare
-            </Link>
-            <Link
-              href="/cosmetics?category=makeup"
-              onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/cosmetics") && pathname.includes("makeup")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
-            >
-              Makeup
-            </Link>
-            <Link
-              href="/cosmetics?category=fragrance"
-              onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/cosmetics") && pathname.includes("fragrance")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
-            >
-              Fragrance
-            </Link>
-            <Link
               href="/cosmetics"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/cosmetics") && !pathname.includes("category")
+              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${
+                isActive("/cosmetics")
                   ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
                   : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
-              All Products
+              Our Shop
             </Link>
             <Link
-              href="/about"
+              href="/services"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/about")
+              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${
+                isActive("/services")
                   ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
                   : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
               }`}
             >
-              About
+              Services
+            </Link>
+            <Link
+              href="/book-appointment"
+              onClick={() => setIsOpen(false)}
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
+                isActive("/book-appointment")
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
+              }`}
+            >
+              Booking
             </Link>
             <Link
               href="/contact"
@@ -564,6 +553,17 @@ export default function Navbar() {
               }`}
             >
               Contact
+            </Link>
+            <Link
+              href="/about"
+              onClick={() => setIsOpen(false)}
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
+                isActive("/about")
+                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
+                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
+              }`}
+            >
+              About
             </Link>
           </nav>
         </div>

@@ -10,21 +10,22 @@ export default function AboutPage() {
       <section className="relative py-24 bg-zinc-900 overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200&h=600&fit=crop"
-            alt="About Guitar & Strings Co"
+            src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1200&h=600&fit=crop"
+            alt="About Beauty & Glow"
             fill
             className="object-cover opacity-20"
           />
         </div>
         <Container className="relative z-10">
           <div className="text-center">
-            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              About Guitar & Strings Co
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-caveat">
+              About Beauty & Glow
             </h1>
-            <p className="text-lg text-zinc-200 max-w-3xl mx-auto">
-              For over three decades, we've been passionate about connecting
-              musicians with their perfect instruments. Our story is one of
-              dedication, craftsmanship, and an unwavering love for music.
+            <p className="text-lg text-zinc-200 max-w-3xl mx-auto font-outfit">
+              For over a decade, we've been passionate about enhancing natural
+              beauty and boosting confidence. Our story is one of dedication,
+              expertise, and an unwavering commitment to helping you look and
+              feel your best.
             </p>
           </div>
         </Container>
@@ -35,37 +36,37 @@ export default function AboutPage() {
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
-              <h2 className="text-3xl font-bold text-zinc-900 mb-6">
+              <h2 className="text-3xl font-bold text-zinc-900 mb-6 font-caveat">
                 Our Story
               </h2>
-              <div className="space-y-4 text-zinc-600">
+              <div className="space-y-4 text-zinc-600 font-outfit">
                 <p>
-                  Founded in 2008 by  George Corporative , a passionate
-                  guitarist and luthier, Guitar & Strings Co began as a small
-                  workshop in downtown New York. What started as a place to
-                  repair and customize guitars for local musicians quickly grew
-                  into something much bigger.
+                  Founded in 2012 by Sarah Johnson, a passionate beauty
+                  therapist and skincare expert, Beauty & Glow began as a small
+                  beauty salon in downtown New York. What started as a place to
+                  provide basic beauty treatments quickly grew into something
+                  much bigger.
                 </p>
                 <p>
-                  John's philosophy was simple: every musician deserves access
-                  to quality instruments that inspire creativity and deliver
-                  exceptional sound. This belief drove him to establish
-                  relationships with the world's finest guitar manufacturers and
-                  to develop a team of experts who share his passion.
+                  Sarah's philosophy was simple: every person deserves to feel
+                  beautiful and confident in their own skin. This belief drove
+                  her to establish relationships with the world's finest beauty
+                  brands and to develop a team of experts who share her passion
+                  for enhancing natural beauty.
                 </p>
                 <p>
-                  Today, Guitar & Strings Co stands as one of the most respected
-                  guitar retailers in the country, serving musicians from
-                  beginners to professionals, from local artists to
-                  international touring bands.
+                  Today, Beauty & Glow stands as one of the most respected
+                  beauty and wellness centers in the country, serving clients
+                  from all walks of life, from teenagers taking their first
+                  steps into beauty to professionals seeking premium treatments.
                 </p>
               </div>
             </div>
             <div className="relative">
-              <div className="aspect-[4/3] bg-zinc-100 border border-zinc-200">
+              <div className="aspect-[4/3] bg-zinc-100 border border-zinc-200 rounded-2xl overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=500&h=400&fit=crop"
-                  alt="Guitar & Strings Co store interior"
+                  src="https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=500&h=400&fit=crop"
+                  alt="Beauty & Glow salon interior"
                   fill
                   className="object-cover"
                 />
@@ -76,32 +77,34 @@ export default function AboutPage() {
       </section>
 
       {/* Statistics */}
-      <section className="py-16 bg-zinc-900">
+      <section className="py-16 bg-gradient-to-r from-rose-600 to-pink-600">
         <Container>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                10+
+                12+
               </div>
-              <div className="text-zinc-300">Years of Experience</div>
+              <div className="text-rose-100 font-outfit">
+                Years of Experience
+              </div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                1000+
+                5000+
               </div>
-              <div className="text-zinc-300">Happy Customers</div>
+              <div className="text-rose-100 font-outfit">Happy Clients</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">
-                100+
+                50+
               </div>
-              <div className="text-zinc-300">Guitars in Stock</div>
+              <div className="text-rose-100 font-outfit">Beauty Products</div>
             </div>
             <div>
               <div className="text-3xl md:text-4xl font-bold text-white mb-2">
                 24/7
               </div>
-              <div className="text-zinc-300">Expert Support</div>
+              <div className="text-rose-100 font-outfit">Expert Support</div>
             </div>
           </div>
         </Container>
@@ -110,12 +113,12 @@ export default function AboutPage() {
       {/* Our Values */}
       <section className="py-16">
         <Container>
-          <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center">
+          <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center font-caveat">
             Our Values
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="w-16 h-16 bg-zinc-900 flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -130,18 +133,19 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 mb-4">
-                Quality & Craftsmanship
+              <h3 className="text-xl font-semibold text-zinc-900 mb-4 font-caveat">
+                Quality & Expertise
               </h3>
-              <p className="text-zinc-600">
-                We believe that every guitar should be a work of art. We
-                carefully select each instrument in our collection, ensuring it
-                meets our high standards for quality, sound, and playability.
+              <p className="text-zinc-600 font-outfit">
+                We believe that every beauty treatment should be exceptional. We
+                carefully select each product and service in our collection,
+                ensuring it meets our high standards for quality, safety, and
+                effectiveness.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-zinc-900 flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -156,18 +160,18 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 mb-4">
+              <h3 className="text-xl font-semibold text-zinc-900 mb-4 font-caveat">
                 Community & Education
               </h3>
-              <p className="text-zinc-600">
-                We're more than just a store - we're a community of musicians.
-                We host workshops, clinics, and events to help musicians grow
-                and connect with each other.
+              <p className="text-zinc-600 font-outfit">
+                We're more than just a beauty salon - we're a community of
+                beauty enthusiasts. We host workshops, consultations, and events
+                to help clients understand their skin and beauty needs better.
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 bg-zinc-900 flex items-center justify-center mx-auto mb-6">
+              <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
                   className="w-8 h-8 text-white"
                   fill="none"
@@ -182,13 +186,14 @@ export default function AboutPage() {
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-zinc-900 mb-4">
+              <h3 className="text-xl font-semibold text-zinc-900 mb-4 font-caveat">
                 Passion & Dedication
               </h3>
-              <p className="text-zinc-600">
-                Our team is made up of musicians who understand the importance
-                of finding the right instrument. We're passionate about helping
-                you discover the guitar that speaks to your soul.
+              <p className="text-zinc-600 font-outfit">
+                Our team is made up of beauty professionals who understand the
+                importance of feeling confident and beautiful. We're passionate
+                about helping you discover the treatments and products that
+                enhance your natural beauty.
               </p>
             </div>
           </div>
@@ -196,15 +201,15 @@ export default function AboutPage() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-16">
+      <section className="py-16 bg-zinc-50">
         <Container>
-          <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center">
-            Why Choose Guitar & Strings Co?
+          <h2 className="text-3xl font-bold text-zinc-900 mb-12 text-center font-caveat">
+            Why Choose Beauty & Glow?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-zinc-900 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -218,19 +223,20 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2">
+                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
                     Expert Knowledge
                   </h3>
-                  <p className="text-zinc-600">
-                    Our team consists of experienced musicians and technicians
-                    who understand the nuances of different guitars and can
-                    guide you to the perfect choice.
+                  <p className="text-zinc-600 font-outfit">
+                    Our team consists of certified beauty therapists and
+                    skincare specialists who understand the nuances of different
+                    skin types and can guide you to the perfect treatments and
+                    products.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-zinc-900 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -244,19 +250,19 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2">
+                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
                     Quality Assurance
                   </h3>
-                  <p className="text-zinc-600">
-                    Every guitar in our store is carefully inspected and set up
-                    by our master technicians to ensure optimal playability and
-                    sound.
+                  <p className="text-zinc-600 font-outfit">
+                    Every product and treatment in our salon is carefully
+                    selected and tested to ensure optimal results and safety for
+                    all skin types.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-zinc-900 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -270,12 +276,13 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2">
-                    Lifetime Support
+                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                    Ongoing Support
                   </h3>
-                  <p className="text-zinc-600">
-                    We provide ongoing support for all guitars purchased from
-                    us, including maintenance, repairs, and upgrades.
+                  <p className="text-zinc-600 font-outfit">
+                    We provide ongoing support for all our clients, including
+                    follow-up consultations, skincare advice, and product
+                    recommendations.
                   </p>
                 </div>
               </div>
@@ -283,7 +290,7 @@ export default function AboutPage() {
 
             <div className="space-y-6">
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-zinc-900 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -297,18 +304,19 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2">
-                    Extensive Selection
+                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                    Comprehensive Services
                   </h3>
-                  <p className="text-zinc-600">
-                    From vintage classics to modern masterpieces, we offer one
-                    of the largest selections of guitars in the region.
+                  <p className="text-zinc-600 font-outfit">
+                    From facial treatments to makeup services, we offer a
+                    complete range of beauty and wellness services to meet all
+                    your needs.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-zinc-900 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -322,18 +330,19 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2">
-                    Community Events
+                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                    Beauty Events
                   </h3>
-                  <p className="text-zinc-600">
-                    Join our community through workshops, clinics, and events
-                    designed to help musicians grow and connect.
+                  <p className="text-zinc-600 font-outfit">
+                    Join our community through workshops, beauty consultations,
+                    and events designed to help you learn about skincare and
+                    beauty techniques.
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start space-x-4">
-                <div className="flex-shrink-0 w-8 h-8 bg-zinc-900 flex items-center justify-center">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-rose-500 to-pink-500 rounded-full flex items-center justify-center">
                   <svg
                     className="w-4 h-4 text-white"
                     fill="currentColor"
@@ -347,13 +356,13 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2">
+                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
                     Fair Pricing
                   </h3>
-                  <p className="text-zinc-600">
-                    We believe quality instruments should be accessible to all
-                    musicians, which is why we offer competitive pricing and
-                    flexible payment options.
+                  <p className="text-zinc-600 font-outfit">
+                    We believe quality beauty services should be accessible to
+                    everyone, which is why we offer competitive pricing and
+                    flexible booking options.
                   </p>
                 </div>
               </div>

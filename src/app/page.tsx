@@ -66,7 +66,6 @@ export default function Home() {
       image:
         "https://img.freepik.com/closeup-three-women39s-faces-with-long-wavy-hair_1353244-12770.jpg",
     },
-
   ];
 
   // Mock featured products data
@@ -386,7 +385,7 @@ export default function Home() {
               ))}
             </div>
           ) : featuredProducts.length > 0 ? (
-            <div className="flex overflow-x-scroll snap-x snap-proximity grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-1 md:gap-2 scrollbar-hide">
+            <div className="flex overflow-x-scroll snap-x snap-proximity grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-1 md:gap-2">
               {featuredProducts.map((product) => (
                 <div
                   key={product._id}

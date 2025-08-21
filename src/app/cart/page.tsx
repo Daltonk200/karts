@@ -2,6 +2,7 @@
 
 import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
+import { useSaveForLaterStore } from "@/store/saveForLaterStore";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { toast } from "react-hot-toast";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { AiOutlineHeart, AiOutlineGift, AiOutlineTruck } from "react-icons/ai";
+import { BiBookmark } from "react-icons/bi";
 import { BiShield } from "react-icons/bi";
 
 export default function CartPage() {
@@ -21,10 +23,17 @@ export default function CartPage() {
     getUniqueItems,
     getTotalPrice,
     clearCart,
+    addToCart,
   } = useCartStore();
   const { addToWishlist, isInWishlist } = useWishlistStore();
+  const {
+    items: savedItems,
+    addToSaved,
+    removeFromSaved,
+    moveToCart: moveSavedToCart,
+    getSavedCount,
+  } = useSaveForLaterStore();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [savedForLater, setSavedForLater] = useState<any[]>([]);
   const [recommendations] = useState([
     {
       _id: "rec1",
@@ -73,28 +82,37 @@ export default function CartPage() {
 
   const handleSaveForLater = (item: any) => {
     removeFromCart(item.id);
-    setSavedForLater((prev) => [...prev, item]);
-    toast.success(`${item.name} saved for later`);
-  };
-
-  const handleMoveToCart = (item: any) => {
-    setSavedForLater((prev) => prev.filter((saved) => saved._id !== item._id));
-    // Add back to cart with original structure
-    const cartItem = {
-      id: item._id,
+    addToSaved({
+      id: item.id,
       name: item.name,
       price: item.price,
       image: item.image,
       category: item.category,
       brand: item.brand,
-      condition: item.skinType,
-      stock: 1,
-      model: item.size || "",
-    };
-    // Use the cart store's addToCart method
-    const { addToCart } = useCartStore.getState();
-    addToCart(cartItem);
-    toast.success(`${item.name} moved to cart`);
+      skinType: item.condition,
+      size: item.model || "",
+    });
+    toast.success(`${item.name} saved for later`);
+  };
+
+  const handleMoveToCart = (item: any) => {
+    const movedItem = moveSavedToCart(item.id);
+    if (movedItem) {
+      // Add back to cart with original structure
+      const cartItem = {
+        id: movedItem.id,
+        name: movedItem.name,
+        price: movedItem.price,
+        image: movedItem.image,
+        category: movedItem.category,
+        brand: movedItem.brand,
+        condition: movedItem.skinType,
+        stock: 1,
+        model: movedItem.size || "",
+      };
+      addToCart(cartItem);
+      toast.success(`${movedItem.name} moved to cart`);
+    }
   };
 
   const handleAddToWishlist = (product: any) => {
@@ -230,7 +248,7 @@ export default function CartPage() {
               <div className="bg-white border border-zinc-200 rounded-[5px] shadow-sm">
                 <div className="p-6 border-b border-zinc-200">
                   <div className="flex justify-between items-center">
-                    <h2 className="text-xl font-semibold text-zinc-900 font-caveat">
+                    <h2 className="md:text-2xl text-lg font-semibold text-zinc-900 font-caveat">
                       Cart Items ({getUniqueItems()})
                     </h2>
                     <button
@@ -264,7 +282,7 @@ export default function CartPage() {
                         <div className="flex-1 min-w-0">
                           <div className="flex justify-between items-start">
                             <div className="flex-1">
-                              <h3 className="text-lg font-semibold text-zinc-900 mb-1 font-caveat">
+                              <h3 className="md:text-2xl text-lg font-semibold text-zinc-900 mb-1 font-caveat">
                                 {item.name}
                               </h3>
                               <p className="text-sm text-zinc-600 mb-2 font-outfit">
@@ -284,7 +302,7 @@ export default function CartPage() {
                                 className="p-2 text-zinc-400 hover:text-rose-600 transition-colors duration-200 rounded-full hover:bg-rose-50 save-later-btn"
                                 title="Save for Later"
                               >
-                                <AiOutlineHeart className="w-4 h-4" />
+                                <BiBookmark className="w-4 h-4" />
                               </button>
 
                               {/* Remove Button */}
@@ -313,7 +331,7 @@ export default function CartPage() {
                           </div>
 
                           {/* Quantity Controls */}
-                          <div className="flex items-center justify-between mt-4">
+                          <div className="flex flex-col md:flex-row items-start md:items-center justify-between mt-4">
                             <div className="flex items-center space-x-3">
                               <label className="text-sm font-medium text-zinc-700 font-outfit">
                                 Quantity:
@@ -363,16 +381,29 @@ export default function CartPage() {
               </div>
 
               {/* Saved for Later */}
-              {savedForLater.length > 0 && (
+              {savedItems.length > 0 && (
                 <div className="bg-white border border-zinc-200 rounded-[5px] shadow-sm">
                   <div className="p-6 border-b border-zinc-200">
-                    <h3 className="text-lg font-semibold text-zinc-900 font-caveat">
-                      Saved for Later ({savedForLater.length})
-                    </h3>
+                    <div className="flex justify-between items-center">
+                      <h3 className="md:text-2xl text-lg font-semibold text-zinc-900 font-caveat">
+                        Saved for Later ({getSavedCount()})
+                      </h3>
+                      <button
+                        onClick={() => {
+                          savedItems.forEach((item) =>
+                            removeFromSaved(item.id)
+                          );
+                          toast.success("All saved items cleared");
+                        }}
+                        className="text-sm text-rose-600 hover:text-rose-700 font-medium font-outfit transition-colors duration-200"
+                      >
+                        Clear All
+                      </button>
+                    </div>
                   </div>
                   <div className="divide-y divide-zinc-200">
-                    {savedForLater.map((item) => (
-                      <div key={item._id} className="p-6">
+                    {savedItems.map((item) => (
+                      <div key={item.id} className="p-6 saved-item-hover">
                         <div className="flex items-start space-x-4">
                           <div className="flex-shrink-0 w-24 h-24 bg-zinc-100 relative overflow-hidden rounded-[5px]">
                             <Image
@@ -383,31 +414,82 @@ export default function CartPage() {
                             />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-lg font-semibold text-zinc-900 mb-1 font-caveat">
-                              {item.name}
-                            </h4>
-                            <p className="text-sm text-zinc-600 mb-2 font-outfit">
-                              {item.brand} • {item.category} • {item.skinType}
-                            </p>
-                            <p className="text-lg font-bold text-rose-600 font-caveat mb-3">
-                              XAF {item.price.toLocaleString()}
-                            </p>
-                            <div className="flex gap-2">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <h4 className="text-lg font-semibold text-zinc-900 mb-1 font-caveat">
+                                  {item.name}
+                                </h4>
+                                <p className="text-sm text-zinc-600 mb-2 font-outfit">
+                                  {item.brand} • {item.category} •{" "}
+                                  {item.skinType}
+                                </p>
+                                <p className="text-lg font-bold text-rose-600 font-caveat mb-3">
+                                  XAF {item.price.toLocaleString()}
+                                </p>
+                                <p className="text-xs text-zinc-500 font-outfit">
+                                  Saved on{" "}
+                                  {new Date(item.savedAt).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <button
+                                onClick={() => {
+                                  removeFromSaved(item.id);
+                                  toast.success(
+                                    `${item.name} removed from saved items`
+                                  );
+                                }}
+                                className="p-2 text-zinc-400 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-50"
+                                title="Remove from Saved"
+                              >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                            <div className="flex flex-col md:flex-row gap-2 mt-3">
                               <button
                                 onClick={() => handleMoveToCart(item)}
-                                className="px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-[5px] hover:bg-rose-700 transition-colors duration-200 font-outfit"
+                                className="px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-[5px] hover:bg-rose-700 transition-colors duration-200 font-outfit w-[150px] md:w-auto flex items-center gap-2"
                               >
+                                <svg
+                                  className="w-4 h-4"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
+                                  />
+                                </svg>
                                 Move to Cart
                               </button>
                               <button
                                 onClick={() => handleAddToWishlist(item)}
-                                className={`px-4 py-2 border text-sm font-medium rounded-[5px] transition-all duration-200 font-outfit ${
-                                  isInWishlist(item._id)
+                                className={`px-4 py-2 border text-sm font-medium rounded-[5px] transition-all duration-200 font-outfit w-[150px] md:w-auto flex items-center gap-2 ${
+                                  isInWishlist(item.id)
                                     ? "border-rose-300 text-rose-600 bg-rose-50"
                                     : "border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50"
                                 }`}
                               >
-                                {isInWishlist(item._id)
+                                <AiOutlineHeart
+                                  className={`w-4 h-4 ${
+                                    isInWishlist(item.id) ? "fill-current" : ""
+                                  }`}
+                                />
+                                {isInWishlist(item.id)
                                   ? "In Wishlist"
                                   : "Add to Wishlist"}
                               </button>
@@ -423,7 +505,7 @@ export default function CartPage() {
               {/* Recommendations */}
               <div className="bg-white border border-zinc-200 rounded-[5px] shadow-sm">
                 <div className="p-6 border-b border-zinc-200">
-                  <h3 className="text-lg font-semibold text-zinc-900 font-caveat">
+                  <h3 className="text-2xl font-semibold text-zinc-900 font-caveat">
                     You might also like
                   </h3>
                 </div>
@@ -448,7 +530,7 @@ export default function CartPage() {
                             <h4 className="text-sm font-medium text-zinc-900 mb-1 font-outfit line-clamp-2">
                               {product.name}
                             </h4>
-                            <p className="text-sm text-rose-600 font-bold font-caveat mb-2">
+                            <p className="text-lg text-rose-600 font-bold font-caveat mb-2">
                               XAF {product.price.toLocaleString()}
                             </p>
                             <button
@@ -525,7 +607,7 @@ export default function CartPage() {
             {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-white border border-zinc-200 rounded-[5px] shadow-sm p-6 sticky top-24 order-summary">
-                <h3 className="text-lg font-semibold text-zinc-900 mb-4 font-caveat">
+                <h3 className="text-xl font-semibold text-zinc-900 mb-4 font-caveat">
                   Order Summary
                 </h3>
 
@@ -554,7 +636,7 @@ export default function CartPage() {
                   </div>
 
                   <div className="border-t border-zinc-200 pt-3">
-                    <div className="flex justify-between text-lg font-bold font-caveat">
+                    <div className="flex justify-between text-xl font-bold font-caveat">
                       <span>Total</span>
                       <span className="text-rose-600">
                         XAF {total.toFixed(0)}
@@ -565,7 +647,7 @@ export default function CartPage() {
 
                 {/* Shipping Info */}
                 {shippingCost === 0 && (
-                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-[5px] animate-shipping-badge">
+                  <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-[2px] ">
                     <div className="flex items-center gap-2 text-green-700 text-sm font-outfit">
                       <AiOutlineGift className="w-5 h-5" />
                       <span>Free shipping on orders over XAF 50K!</span>
@@ -576,7 +658,7 @@ export default function CartPage() {
                 <button
                   onClick={handleCheckout}
                   disabled={isCheckingOut}
-                  className="w-full px-6 py-3 bg-rose-600 text-white font-medium hover:bg-rose-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
+                  className="w-full px-6 py-3 bg-rose-600 text-white font-medium hover:bg-rose-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-[5px] font-outfit transform hover:scale-[1.0FV1] hover:shadow-sm"
                 >
                   {isCheckingOut ? (
                     <div className="flex items-center justify-center gap-2">

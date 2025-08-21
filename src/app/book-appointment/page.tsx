@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import {
   AiOutlineCalendar,
   AiOutlineClockCircle,
@@ -13,6 +14,7 @@ import {
 } from "react-icons/ai";
 
 export default function BookAppointmentPage() {
+  const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -23,6 +25,17 @@ export default function BookAppointmentPage() {
     service: "",
     message: "",
   });
+
+  // Get service from URL parameter and set it in form
+  useEffect(() => {
+    const serviceFromUrl = searchParams.get("service");
+    if (serviceFromUrl) {
+      setFormData((prev) => ({
+        ...prev,
+        service: serviceFromUrl,
+      }));
+    }
+  }, [searchParams]);
 
   const timeSlots = [
     "09:00",
