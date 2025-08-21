@@ -368,11 +368,11 @@ export default function Home() {
           </div>
 
           {loading ? (
-            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+            <div className=" gap-4 md:gap-8 flex overflow-x-scroll snap-x snap-proximity">
               {[...Array(5)].map((_, index) => (
                 <div
                   key={index}
-                  className="bg-white border border-zinc-200 animate-pulse rounded-[5px] shadow-sm"
+                  className="bg-white border min-w-[230px]  md:min-w-[300px] border-zinc-200 animate-pulse rounded-[5px] shadow-sm"
                 >
                   <div className="aspect-[4/3] bg-zinc-200 rounded-t-[5px]"></div>
                   <div className="p-4 md:p-6">
@@ -842,7 +842,7 @@ export default function Home() {
           </div>
         </Container>
       </section>
-      
+
 
       {/* Wide Promotional Banner */}
       <section className="py-1">
