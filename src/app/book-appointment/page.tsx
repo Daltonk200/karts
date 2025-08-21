@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { toast } from "react-hot-toast";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
@@ -31,7 +31,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-export default function BookAppointmentPage() {
+function BookAppointmentForm() {
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
@@ -438,5 +438,22 @@ export default function BookAppointmentPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function BookAppointmentPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-8 h-8 border-4 border-rose-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-zinc-600 font-outfit">Loading booking form...</p>
+          </div>
+        </div>
+      }
+    >
+      <BookAppointmentForm />
+    </Suspense>
   );
 }
