@@ -189,7 +189,7 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                  <h3 className="font-semibold text-lg md:text-xl text-zinc-900 mb-2 font-caveat">
                     Expert Knowledge
                   </h3>
                   <p className="text-zinc-600 font-outfit">
@@ -216,7 +216,7 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                  <h3 className="font-semibold text-lg md:text-xl text-zinc-900 mb-2 font-caveat">
                     Quality Assurance
                   </h3>
                   <p className="text-zinc-600 font-outfit">
@@ -242,7 +242,7 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                  <h3 className="font-semibold text-lg md:text-xl text-zinc-900 mb-2 font-caveat">
                     Ongoing Support
                   </h3>
                   <p className="text-zinc-600 font-outfit">
@@ -270,7 +270,7 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                  <h3 className="font-semibold text-lg md:text-xl text-zinc-900 mb-2 font-caveat">
                     Comprehensive Services
                   </h3>
                   <p className="text-zinc-600 font-outfit">
@@ -296,7 +296,7 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                  <h3 className="font-semibold text-lg md:text-xl text-zinc-900 mb-2 font-caveat">
                     Beauty Events
                   </h3>
                   <p className="text-zinc-600 font-outfit">
@@ -322,7 +322,7 @@ export default function AboutPage() {
                   </svg>
                 </div>
                 <div>
-                  <h3 className="font-semibold text-zinc-900 mb-2 font-caveat">
+                  <h3 className="font-semibold text-lg md:text-xl text-zinc-900 mb-2 font-caveat">
                     Fair Pricing
                   </h3>
                   <p className="text-zinc-600 font-outfit">

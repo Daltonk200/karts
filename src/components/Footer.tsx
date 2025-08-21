@@ -115,7 +115,7 @@ export default function Footer() {
               Customer Service
             </h3>
             <ul className="space-y-3">
-              <li>
+              {/* <li>
                 <Link
                   href="/shipping"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
@@ -130,7 +130,7 @@ export default function Footer() {
                 >
                   Returns & Exchanges
                 </Link>
-              </li>
+              </li> */}
               <li>
                 <Link
                   href="/skincare-guide"
@@ -147,14 +147,14 @@ export default function Footer() {
                   Beauty Tips
                 </Link>
               </li>
-              <li>
+              {/* <li>
                 <Link
                   href="/faq"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
                   FAQ
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
         </div>

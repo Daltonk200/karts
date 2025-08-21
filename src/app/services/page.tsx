@@ -21,10 +21,10 @@ export default function ServicesPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=1920&h=600&fit=crop"
+            src="https://img.freepik.com/diverse-group-women-preparing-using-makeups_53876-29637.jpg?W=2000"
             alt="Beauty Services"
             fill
-            className="object-cover opacity-60"
+            className="object-cover opacity-60 object-[50%_0%]"
             priority
           />
           {/* Dark overlay for text readability */}
