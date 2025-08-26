@@ -115,23 +115,16 @@ export default function Navbar() {
       <Container className="flex items-center justify-between h-20">
         {/* Logo */}
         <Link href="/" className="flex items-center group">
-          <div className="flex items-center space-x-3 group-hover:scale-105 transition-transform duration-200">
-            <div className="w-10 h-10 bg-gradient-to-br from-rose-500 to-rose-700 rounded-[5px] flex items-center justify-center shadow-lg">
-              <svg
-                className="w-6 h-6 text-white"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H5V21H19V9Z" />
-              </svg>
-            </div>
-            <div className="hidden sm:block">
-              <h1 className="font-caveat text-xl font-bold bg-gradient-to-r from-rose-600 to-rose-700 bg-clip-text text-transparent">
-                GlowBeauty
-              </h1>
-              <p className="text-xs text-rose-500 font-medium font-outfit">
-                Premium Cosmetics
-              </p>
+          <div className="group-hover:scale-105 transition-transform duration-200">
+            <div className="relative w-24 h-12 flex items-center justify-center">
+              <Image
+                src="/glow_logo.png"
+                alt="GlowBeauty Logo"
+                width={3000}
+                height={3000}
+                className="object-contain w-full h-full"
+                priority
+              />
             </div>
           </div>
         </Link>

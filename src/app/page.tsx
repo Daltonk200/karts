@@ -332,7 +332,7 @@ export default function Home() {
               </div>
             </div>
             <Link
-              href="/consultation"
+              href="/book-appointment"
               className="inline-flex items-center px-6 py-3 bg-rose-600 text-white font-medium  hover:bg-rose-700 rounded-sm w-fit transition-colors duration-200 whitespace-nowrap"
             >
               Book Appointment

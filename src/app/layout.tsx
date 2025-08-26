@@ -19,9 +19,9 @@ export const metadata: Metadata = {
   description:
     "Discover luxury cosmetics, skincare, and makeup products for your beauty routine",
   icons: {
-    icon: "",
-    shortcut: "",
-    apple: "",
+    icon: "/glow_logo.png",
+    shortcut: "/glow_logo.png",
+    apple: "/glow_logo.png",
   },
 };
 

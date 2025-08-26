@@ -12,24 +12,15 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <div className="mb-6">
               <div className="flex items-center mb-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-rose-400 to-pink-500 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-7 h-7 text-white"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1H5C3.89 1 3 1.89 3 3V21C3 22.11 3.89 23 5 23H19C20.11 23 21 22.11 21 21V9M19 9H14V4H5V21H19V9Z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-                      GlowBeauty
-                    </h1>
-                    <p className="text-xs text-rose-500 font-medium">
-                      Premium Cosmetics
-                    </p>
-                  </div>
+                <div className="relative w-26 h-16 flex items-center justify-center">
+                  <Image
+                    src="/glow_logo.png"
+                    alt="GlowBeauty Logo"
+                    width={3000}
+                    height={3000}
+                    className="object-contain w-full h-full"
+                    priority
+                  />
                 </div>
               </div>
               <p className="text-zinc-600 leading-relaxed max-w-md">
