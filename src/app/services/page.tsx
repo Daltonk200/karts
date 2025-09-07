@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 interface Service {
   _id: string;
-  name: string;
+  title: string;
   description: string;
   category: string;
   price: number;
@@ -17,6 +17,7 @@ interface Service {
   image: string;
   isActive: boolean;
   isFeatured: boolean;
+  features: string[];
 }
 
 export default function ServicesPage() {
