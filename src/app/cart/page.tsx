@@ -13,6 +13,19 @@ import { AiOutlineHeart, AiOutlineGift, AiOutlineTruck } from "react-icons/ai";
 import { BiBookmark } from "react-icons/bi";
 import { BiShield } from "react-icons/bi";
 
+interface Product {
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  category: string;
+  brand: string;
+  skinType: string;
+  size: string;
+  isOnSale?: boolean;
+  originalPrice?: number;
+}
+
 export default function CartPage() {
   const router = useRouter();
   const {
@@ -34,41 +47,33 @@ export default function CartPage() {
     getSavedCount,
   } = useSaveForLaterStore();
   const [isCheckingOut, setIsCheckingOut] = useState(false);
-  const [recommendations] = useState([
-    {
-      _id: "rec1",
-      name: "Hydrating Face Serum",
-      price: 28000,
-      image:
-        "https://img.freepik.com/premium-photo/beauty-product-bottle-serum_93675-123583.jpg?W=2000",
-      category: "Skincare",
-      brand: "GlowBeauty",
-      skinType: "All Types",
-      size: "30ml",
-    },
-    {
-      _id: "rec2",
-      name: "Matte Lipstick Set",
-      price: 35000,
-      image:
-        "https://img.freepik.com/high-angle-view-pen-table_1048944-18511898.jpg?W=2000",
-      category: "Makeup",
-      brand: "GlowBeauty",
-      skinType: "All Types",
-      size: "3.5g each",
-    },
-    {
-      _id: "rec3",
-      name: "Anti-Aging Night Cream",
-      price: 42000,
-      image:
-        "https://img.freepik.com/premium-photo/beauty-cream-jar-isolated_93675-123583.jpg?W=2000",
-      category: "Skincare",
-      brand: "GlowBeauty",
-      skinType: "Mature Skin",
-      size: "50ml",
-    },
-  ]);
+  const [recommendations, setRecommendations] = useState<Product[]>([]);
+  const [recommendationsLoading, setRecommendationsLoading] = useState(true);
+
+  // Fetch recommendations from backend
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        setRecommendationsLoading(true);
+        const response = await fetch(
+          "/api/products?limit=6&sortBy=createdAt&sortOrder=desc"
+        );
+        const data = await response.json();
+
+        if (response.ok) {
+          setRecommendations(data.products || []);
+        } else {
+          console.error("Failed to fetch recommendations:", data);
+        }
+      } catch (error) {
+        console.error("Error fetching recommendations:", error);
+      } finally {
+        setRecommendationsLoading(false);
+      }
+    };
+
+    fetchRecommendations();
+  }, []);
 
   const handleQuantityChange = (itemId: string, newQuantity: number) => {
     updateQuantity(itemId, newQuantity);
@@ -510,32 +515,44 @@ export default function CartPage() {
                   </h3>
                 </div>
                 <div className="p-6">
-                  {/* Mobile Carousel */}
-                  <div className="lg:hidden">
-                    <div className="relative">
-                      <div className="flex space-x-4 overflow-x-auto pb-4 scrollbar-hide carousel-container">
-                        {recommendations.map((product) => (
-                          <div
-                            key={product._id}
-                            className="flex-shrink-0 w-48 text-center group carousel-item"
-                          >
-                            <div className="aspect-square bg-zinc-100 relative overflow-hidden rounded-[5px] mb-3">
-                              <Image
-                                src={product.image}
-                                alt={product.name}
-                                fill
-                                className="object-cover group-hover:scale-110 transition-transform duration-300"
-                              />
-                            </div>
-                            <h4 className="text-sm font-medium text-zinc-900 mb-1 font-outfit line-clamp-2">
+                  {recommendationsLoading ? (
+                    <div className="flex justify-center items-center py-8">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"></div>
+                      <span className="ml-3 text-zinc-600">
+                        Loading recommendations...
+                      </span>
+                    </div>
+                  ) : recommendations.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-zinc-500">
+                        No recommendations available
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="flex overflow-x-scroll snap-x snap-proximity gap-4 md:gap-6 pb-4 scrollbar-hide">
+                      {recommendations.map((product) => (
+                        <div
+                          key={product._id}
+                          className="bg-white snap-start border min-w-[230px] md:min-w-[280px] border-zinc-200 hover:border-rose-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-md transform hover:-translate-y-1 group"
+                        >
+                          <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden rounded-t-[5px]">
+                            <Image
+                              src={product.image}
+                              alt={product.name}
+                              fill
+                              className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                            />
+                          </div>
+                          <div className="p-4 flex flex-col flex-grow">
+                            <h4 className="text-sm font-medium text-zinc-900 mb-2 font-outfit line-clamp-2">
                               {product.name}
                             </h4>
-                            <p className="text-lg text-rose-600 font-bold font-caveat mb-2">
+                            <p className="text-lg text-rose-600 font-bold font-caveat mb-3">
                               XAF {product.price.toLocaleString()}
                             </p>
                             <button
                               onClick={() => handleAddToWishlist(product)}
-                              className={`w-full px-3 py-2 text-xs font-medium rounded-[5px] transition-all duration-200 font-outfit ${
+                              className={`w-full px-3 py-2 text-xs font-medium rounded-[5px] transition-all duration-200 font-outfit mt-auto ${
                                 isInWishlist(product._id)
                                   ? "border-rose-300 text-rose-600 bg-rose-50"
                                   : "border border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50"
@@ -546,60 +563,10 @@ export default function CartPage() {
                                 : "Add to Wishlist"}
                             </button>
                           </div>
-                        ))}
-                      </div>
-
-                      {/* Carousel Scroll Indicator */}
-                      <div className="flex justify-center mt-4 space-x-2">
-                        {recommendations.map((_, index) => (
-                          <div
-                            key={index}
-                            className="w-2 h-2 rounded-full bg-zinc-300 transition-colors duration-200 hover:bg-rose-400 cursor-pointer"
-                            title={`View item ${index + 1}`}
-                          />
-                        ))}
-                      </div>
-
-                      {/* Mobile Carousel Hint */}
-                      <p className="text-xs text-zinc-500 text-center mt-2 font-outfit">
-                        Swipe to see more products →
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Desktop Grid */}
-                  <div className="hidden lg:grid grid-cols-3 gap-4">
-                    {recommendations.map((product) => (
-                      <div key={product._id} className="text-center group">
-                        <div className="aspect-square bg-zinc-100 relative overflow-hidden rounded-[5px] mb-3">
-                          <Image
-                            src={product.image}
-                            alt={product.name}
-                            fill
-                            className="object-cover group-hover:scale-110 transition-transform duration-300"
-                          />
                         </div>
-                        <h4 className="text-sm font-medium text-zinc-900 mb-1 font-outfit line-clamp-2">
-                          {product.name}
-                        </h4>
-                        <p className="text-sm text-rose-600 font-bold font-caveat mb-2">
-                          XAF {product.price.toLocaleString()}
-                        </p>
-                        <button
-                          onClick={() => handleAddToWishlist(product)}
-                          className={`w-full px-3 py-2 text-xs font-medium rounded-[5px] transition-all duration-200 font-outfit ${
-                            isInWishlist(product._id)
-                              ? "border-rose-300 text-rose-600 bg-rose-50"
-                              : "border border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50"
-                          }`}
-                        >
-                          {isInWishlist(product._id)
-                            ? "In Wishlist"
-                            : "Add to Wishlist"}
-                        </button>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
