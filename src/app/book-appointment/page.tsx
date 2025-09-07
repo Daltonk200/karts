@@ -103,7 +103,7 @@ function BookAppointmentForm() {
         console.log("Services loaded:", data.services?.length);
         console.log(
           "Service IDs:",
-          data.services?.map((s) => s._id)
+          data.services?.map((s: Service) => s._id)
         );
         setServices(data.services || []);
       } else {
