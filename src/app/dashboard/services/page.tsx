@@ -181,7 +181,8 @@ export default function ServicesPage() {
         );
         fetchServices();
       } else {
-        toast.error("Failed to update service");
+        const errorData = await response.json();
+        toast.error(errorData.error || "Failed to update service");
       }
     } catch (error) {
       console.error("Error updating service:", error);

@@ -32,7 +32,7 @@ const bookingSchema = new mongoose.Schema({
   service: {
     serviceId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Service",
+      ref: "GlowService",
       required: true,
     },
     serviceName: {

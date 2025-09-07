@@ -95,7 +95,8 @@ export async function POST(request: NextRequest) {
     const bookingData = await request.json();
 
     // Get service details
-    const service = await GlowService.findById(bookingData.serviceId);
+    const serviceId = bookingData.service?.serviceId || bookingData.serviceId;
+    const service = await GlowService.findById(serviceId);
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
     }

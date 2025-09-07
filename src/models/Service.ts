@@ -85,8 +85,30 @@ const serviceSchema = new mongoose.Schema({
 });
 
 // Update the updatedAt field before saving
-serviceSchema.pre("save", function (next) {
+serviceSchema.pre("save", async function (next) {
   this.updatedAt = new Date();
+
+  // If this service is being set as featured, check if we already have 3 featured services
+  if (this.isFeatured && this.isNew) {
+    const featuredCount = await (this.constructor as any).countDocuments({
+      isFeatured: true,
+    });
+    if (featuredCount >= 3) {
+      return next(new Error("Maximum of 3 services can be featured at a time"));
+    }
+  }
+
+  // If this service is being updated to featured, check if we already have 3 featured services
+  if (this.isFeatured && !this.isNew && this.isModified("isFeatured")) {
+    const featuredCount = await (this.constructor as any).countDocuments({
+      isFeatured: true,
+      _id: { $ne: this._id },
+    });
+    if (featuredCount >= 3) {
+      return next(new Error("Maximum of 3 services can be featured at a time"));
+    }
+  }
+
   next();
 });
 

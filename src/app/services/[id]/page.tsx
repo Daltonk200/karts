@@ -5,22 +5,69 @@ import { useParams, useRouter } from "next/navigation";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
-import { services, getServiceById, type Service } from "@/data/services";
+interface Service {
+  _id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  duration: number;
+  image: string;
+  isActive: boolean;
+  isFeatured: boolean;
+  features: string[];
+  benefits: string[];
+}
 
 export default function ServiceDetailPage() {
   const params = useParams();
   const router = useRouter();
   const [service, setService] = useState<Service | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const serviceId = params.id as string;
-    const foundService = getServiceById(serviceId);
-    setService(foundService || null);
+    if (serviceId) {
+      fetchService(serviceId);
+    }
   }, [params.id]);
 
-  const handleBookAppointment = () => {
-    router.push(`/book-appointment?service=${service?.id}`);
+  const fetchService = async (serviceId: string) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/services/${serviceId}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setService(data.service);
+      } else {
+        console.error("Failed to fetch service:", data);
+        setService(null);
+      }
+    } catch (error) {
+      console.error("Error fetching service:", error);
+      setService(null);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleBookAppointment = () => {
+    router.push(`/book-appointment?service=${service?._id}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto mb-4"></div>
+          <p className="text-zinc-600">Loading service...</p>
+        </div>
+      </div>
+    );
+  }
+  console.log(service);
+  
 
   if (!service) {
     return (
@@ -50,9 +97,11 @@ export default function ServiceDetailPage() {
         <div className="absolute inset-0 z-0">
           <Image
             src={service.image}
-            alt={service.title}
-            fill
-            className="object-cover opacity-60"
+            alt={service.name}
+            width={1000}
+            height={1000}
+            // fill
+            className="object-cover opacity-60 w-full h-full"
             priority
           />
           <div className="absolute inset-0 bg-zinc-900/40"></div>
@@ -69,7 +118,7 @@ export default function ServiceDetailPage() {
               </span>
             </div>
             <h1 className="font-caveat text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-6">
-              {service.title}
+              {service.name}
             </h1>
             <p className="text-lg md:text-xl text-zinc-200 leading-relaxed font-outfit mb-8 max-w-3xl">
               {service.description}
@@ -118,7 +167,7 @@ export default function ServiceDetailPage() {
               </h2>
             </div>
             <ul className="space-y-6">
-              {service.features.map((feature, index) => (
+              {service?.features?.map((feature, index) => (
                 <li key={index} className="flex items-start group">
                   <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
                     <svg
@@ -164,7 +213,7 @@ export default function ServiceDetailPage() {
               </h2>
             </div>
             <ul className="space-y-6">
-              {service.benefits.map((benefit, index) => (
+              {service?.benefits?.map((benefit, index) => (
                 <li key={index} className="flex items-start group">
                   <div className="w-8 h-8 bg-teal-500 rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
                     <svg

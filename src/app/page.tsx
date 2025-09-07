@@ -317,7 +317,7 @@ export default function Home() {
     try {
       setServicesLoading(true);
       const response = await fetch(
-        "/api/services?isFeatured=true&isActive=true&limit=6"
+        "/api/services?isFeatured=true&isActive=true&limit=3"
       );
       const data = await response.json();
 

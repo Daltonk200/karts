@@ -48,6 +48,7 @@ function BookAppointmentForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [services, setServices] = useState<Service[]>([]);
   const [servicesLoading, setServicesLoading] = useState(true);
+  const [urlServiceId, setUrlServiceId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -62,15 +63,35 @@ function BookAppointmentForm() {
 
   // Fetch services and handle URL parameters
   useEffect(() => {
-    fetchServices();
     const serviceFromUrl = searchParams.get("service");
-    if (serviceFromUrl) {
+
+    const initializeServices = async () => {
+      await fetchServices();
+      // Set the service after services are loaded
+      if (serviceFromUrl) {
+        console.log("Setting service from URL:", serviceFromUrl);
+        setUrlServiceId(serviceFromUrl);
+      }
+    };
+
+    initializeServices();
+  }, [searchParams]);
+
+  // Set service from URL when both services and urlServiceId are available
+  useEffect(() => {
+    if (urlServiceId && services.length > 0) {
+      console.log("Setting service in formData:", urlServiceId);
       setFormData((prev) => ({
         ...prev,
-        service: serviceFromUrl,
+        service: urlServiceId,
       }));
     }
-  }, [searchParams]);
+  }, [urlServiceId, services]);
+
+  // Debug formData changes
+  useEffect(() => {
+    console.log("formData.service changed to:", formData.service);
+  }, [formData.service]);
 
   const fetchServices = async () => {
     try {
@@ -79,6 +100,11 @@ function BookAppointmentForm() {
       const data = await response.json();
 
       if (response.ok) {
+        console.log("Services loaded:", data.services?.length);
+        console.log(
+          "Service IDs:",
+          data.services?.map((s) => s._id)
+        );
         setServices(data.services || []);
       } else {
         console.error("Failed to fetch services:", data);
@@ -162,6 +188,8 @@ function BookAppointmentForm() {
         paymentMethod: "cash", // Default to cash, can be updated later
       };
 
+      console.log("Sending booking data:", bookingData);
+
       const response = await fetch("/api/bookings", {
         method: "POST",
         headers: {
@@ -171,10 +199,26 @@ function BookAppointmentForm() {
       });
 
       const data = await response.json();
+      console.log("Booking response:", response.status, data);
 
       if (response.ok) {
+        const bookingNumber = data.booking?.bookingNumber || "N/A";
+
+        // Store booking number in localStorage for user reference
+        const userBookings = JSON.parse(
+          localStorage.getItem("userBookings") || "[]"
+        );
+        userBookings.push({
+          bookingNumber,
+          serviceName: selectedService.name,
+          date: formData.date,
+          time: formData.time,
+          createdAt: new Date().toISOString(),
+        });
+        localStorage.setItem("userBookings", JSON.stringify(userBookings));
+
         toast.success(
-          `Appointment booked successfully! Your booking number is ${data.bookingNumber}. We'll confirm via email shortly.`
+          `Appointment booked successfully! Your booking number is ${bookingNumber}. We'll confirm via email shortly.`
         );
 
         // Reset form
@@ -189,8 +233,11 @@ function BookAppointmentForm() {
         });
         setSelectedDate(undefined);
       } else {
+        console.error("Booking failed:", data);
         toast.error(
-          data.message || "Failed to book appointment. Please try again."
+          data.message ||
+            data.error ||
+            "Failed to book appointment. Please try again."
         );
       }
     } catch (error) {
@@ -345,7 +392,7 @@ function BookAppointmentForm() {
                   </SelectTrigger>
                   <SelectContent>
                     {servicesLoading ? (
-                      <SelectItem value="" disabled>
+                      <SelectItem value="all" disabled>
                         Loading services...
                       </SelectItem>
                     ) : services.length > 0 ? (
@@ -529,6 +576,25 @@ function BookAppointmentForm() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* My Bookings Section */}
+      <div className="bg-zinc-50 py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl md:text-4xl font-caveat font-bold mb-4 text-zinc-900">
+            Track Your Appointments
+          </h2>
+          <p className="text-xl font-outfit text-zinc-600 mb-8 max-w-2xl mx-auto">
+            View all your booking history and keep track of your upcoming
+            appointments.
+          </p>
+          <button
+            onClick={() => (window.location.href = "/my-bookings")}
+            className="bg-rose-600 cursor-pointer text-white px-8 py-4 rounded-[8px] font-semibold font-outfit text-lg hover:bg-rose-700 transition-all duration-300 transform hover:scale-105 shadow-lg"
+          >
+            View My Bookings
+          </button>
         </div>
       </div>
 

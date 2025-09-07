@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 
 interface Service {
   _id: string;
-  title: string;
+  name: string;
   description: string;
   category: string;
   price: number;
@@ -98,7 +98,7 @@ export default function ServicesPage() {
                 <div className="relative h-48 md:h-56 bg-zinc-100 overflow-hidden">
                   <Image
                     src={service.image}
-                    alt={service.title}
+                    alt={service.name}
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-300"
                   />
@@ -110,7 +110,7 @@ export default function ServicesPage() {
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
                     <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
-                      {service.title}
+                      {service.name}
                     </h3>
                     <p className="text-white/90 text-sm md:text-base font-medium">
                       {service.price}
