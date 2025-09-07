@@ -11,7 +11,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const booking = await Booking.findById(id).populate(
+    const booking = await GlowBooking.findById(id).populate(
       "service.serviceId",
       "name category description"
     );
