@@ -1,57 +1,35 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "react-hot-toast";
+import DashboardLayout from "@/components/admin/DashboardLayout";
 import Link from "next/link";
 
 interface DashboardStats {
   totalProducts: number;
   totalOrders: number;
-  pendingOrders: number;
   totalRevenue: number;
+  totalServices: number;
+  totalBookings: number;
+  todayBookings: number;
 }
 
 export default function DashboardPage() {
-  // Set this to true to bypass authentication
-  const BYPASS_AUTH = false;
-
-  const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState<any>(null);
   const [stats, setStats] = useState<DashboardStats>({
     totalProducts: 0,
     totalOrders: 0,
-    pendingOrders: 0,
     totalRevenue: 0,
+    totalServices: 0,
+    totalBookings: 0,
+    todayBookings: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [recentProducts, setRecentProducts] = useState<any[]>([]);
 
   useEffect(() => {
-    checkAuth();
+    fetchDashboardData();
   }, []);
 
-  const checkAuth = () => {
-    if (BYPASS_AUTH) {
-      setUser({ username: "Admin", role: "admin" });
-      setIsAuthenticated(true);
-      fetchStats();
-      return;
-    }
-
-    const token = localStorage.getItem("dashboard_token");
-    const userData = localStorage.getItem("dashboard_user");
-
-    if (token && userData) {
-      setUser(JSON.parse(userData));
-      setIsAuthenticated(true);
-      fetchStats();
-    } else {
-      router.push("/dashboard/login");
-    }
-  };
-
-  const fetchStats = async () => {
+  const fetchDashboardData = async () => {
     try {
       const token = localStorage.getItem("dashboard_token");
       const headers: HeadersInit = {};
@@ -60,124 +38,96 @@ export default function DashboardPage() {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      // Fetch products count
-      const productsRes = await fetch("/api/products?limit=1", { headers });
+      // Fetch products data
+      const productsRes = await fetch("/api/products?limit=1000", { headers });
       const productsData = await productsRes.json();
 
-      // Fetch orders count
-      const ordersRes = await fetch("/api/orders?limit=1", { headers });
+      // Fetch orders data
+      const ordersRes = await fetch("/api/orders?limit=1000", { headers });
       const ordersData = await ordersRes.json();
 
-      // Fetch pending orders
-      const pendingRes = await fetch("/api/orders?status=pending&limit=1", {
-        headers,
-      });
-      const pendingData = await pendingRes.json();
+      // Fetch services data
+      const servicesRes = await fetch("/api/services?limit=1000", { headers });
+      const servicesData = await servicesRes.json();
 
-      // Fetch all orders for revenue calculation
-      const allOrdersRes = await fetch("/api/orders?limit=1000", { headers });
-      const allOrdersData = await allOrdersRes.json();
+      // Fetch bookings data
+      const bookingsRes = await fetch("/api/bookings?limit=1000", { headers });
+      const bookingsData = await bookingsRes.json();
 
-      const totalRevenue = allOrdersData.orders.reduce(
-        (sum: number, order: any) => {
-          return sum + (order.total || 0);
-        },
-        0
-      );
+      // Calculate stats
+      const products = productsData.products || [];
+      const orders = ordersData.orders || [];
+      const services = servicesData.services || [];
+      const bookings = bookingsData.bookings || [];
+
+      const totalRevenue = orders.reduce((sum: number, order: any) => {
+        return sum + (order.total || 0);
+      }, 0);
+
+      const today = new Date().toISOString().split("T")[0];
+      const todayBookings = bookings.filter((booking: any) =>
+        booking.appointment.date.startsWith(today)
+      ).length;
+
+      // Get recent products
+      const recent = products
+        .sort(
+          (a: any, b: any) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+        .slice(0, 5);
 
       setStats({
-        totalProducts: productsData.pagination?.total || 0,
-        totalOrders: ordersData.pagination?.total || 0,
-        pendingOrders: pendingData.pagination?.total || 0,
+        totalProducts: products.length,
+        totalOrders: orders.length,
         totalRevenue,
+        totalServices: services.length,
+        totalBookings: bookings.length,
+        todayBookings,
       });
+
+      setRecentProducts(recent);
     } catch (error) {
-      console.error("Error fetching stats:", error);
+      console.error("Error fetching dashboard data:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("dashboard_token");
-    localStorage.removeItem("dashboard_user");
-    setIsAuthenticated(false);
-    router.push("/dashboard/login");
-    toast.success("Logged out successfully");
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zinc-900 mx-auto"></div>
-          <p className="mt-4 text-zinc-600">Loading dashboard...</p>
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading dashboard...</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div>
-              <h1 className="text-2xl font-bold text-zinc-900">
-                Guitar Shop Dashboard
-              </h1>
-              <p className="text-zinc-600">Welcome back, {user?.username}</p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-zinc-600">Role: {user?.role}</span>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-zinc-900 text-white hover:bg-zinc-800 transition-colors duration-200"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
+    <DashboardLayout>
+      <div className="space-y-6">
+        {/* Page Header */}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Dashboard Overview
+          </h1>
+          <p className="text-gray-600">
+            Welcome to your GlowBeauty admin panel
+          </p>
         </div>
-      </header>
 
-      {/* Navigation */}
-      <nav className="bg-white shadow-sm border-b border-zinc-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-8 py-4">
-            <Link
-              href="/dashboard"
-              className="text-zinc-900 border-b-2 border-zinc-900 pb-2 font-medium"
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/dashboard/products"
-              className="text-zinc-600 hover:text-zinc-900 pb-2 font-medium"
-            >
-              Products
-            </Link>
-            <Link
-              href="/dashboard/orders"
-              className="text-zinc-600 hover:text-zinc-900 pb-2 font-medium"
-            >
-              Orders
-            </Link>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white p-6 border border-zinc-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-blue-100 flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-blue-600"
+                    className="w-5 h-5 text-gray-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -191,23 +141,23 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-zinc-600">
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">
                   Total Products
                 </p>
-                <p className="text-2xl font-bold text-zinc-900">
+                <p className="text-2xl font-bold text-gray-900">
                   {stats.totalProducts}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 border border-zinc-200">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-green-100 flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-green-600"
+                    className="w-5 h-5 text-gray-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -221,53 +171,23 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-zinc-600">
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">
                   Total Orders
                 </p>
-                <p className="text-2xl font-bold text-zinc-900">
+                <p className="text-2xl font-bold text-gray-900">
                   {stats.totalOrders}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="bg-white p-6 border border-zinc-200">
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-yellow-100 flex items-center justify-center">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
                   <svg
-                    className="w-5 h-5 text-yellow-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-zinc-600">
-                  Pending Orders
-                </p>
-                <p className="text-2xl font-bold text-zinc-900">
-                  {stats.pendingOrders}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white p-6 border border-zinc-200">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-purple-100 flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-purple-600"
+                    className="w-5 h-5 text-gray-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -281,53 +201,227 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-zinc-600">
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">
                   Total Revenue
                 </p>
-                <p className="text-2xl font-bold text-zinc-900">
-                  ${stats.totalRevenue.toFixed(2)}
+                <p className="text-2xl font-bold text-gray-900">
+                  XAF {stats.totalRevenue.toLocaleString()}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">Services</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.totalServices}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">
+                  Total Bookings
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.totalBookings}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center">
+              <div className="flex-shrink-0">
+                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm font-medium text-gray-600">
+                  Today's Bookings
+                </p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats.todayBookings}
                 </p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 border border-zinc-200">
-            <h3 className="text-lg font-semibold text-zinc-900 mb-4">
+        {/* Quick Actions and Recent Products */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Quick Actions */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
               Quick Actions
             </h3>
             <div className="space-y-3">
               <Link
                 href="/dashboard/products/create"
-                className="block w-full px-4 py-2 bg-zinc-900 text-white text-center hover:bg-zinc-800 transition-colors duration-200"
+                className="block w-full px-4 py-3 bg-rose-600 text-white text-center rounded-lg hover:bg-rose-700 transition-colors duration-200 font-medium"
               >
                 Add New Product
               </Link>
               <Link
                 href="/dashboard/orders"
-                className="block w-full px-4 py-2 border border-zinc-300 text-zinc-700 text-center hover:bg-zinc-50 transition-colors duration-200"
+                className="block w-full px-4 py-3 border border-gray-300 text-gray-700 text-center rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
               >
                 View All Orders
+              </Link>
+              <Link
+                href="/dashboard/products"
+                className="block w-full px-4 py-3 border border-gray-300 text-gray-700 text-center rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
+              >
+                Manage Products
+              </Link>
+              <Link
+                href="/dashboard/services"
+                className="block w-full px-4 py-3 border border-gray-300 text-gray-700 text-center rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
+              >
+                Manage Services
+              </Link>
+              <Link
+                href="/dashboard/bookings"
+                className="block w-full px-4 py-3 border border-gray-300 text-gray-700 text-center rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
+              >
+                View Bookings
               </Link>
             </div>
           </div>
 
-          <div className="bg-white p-6 border border-zinc-200">
-            <h3 className="text-lg font-semibold text-zinc-900 mb-4">
-              Recent Activity
-            </h3>
-            <div className="text-zinc-600 text-sm">
-              <p>Dashboard is ready for use!</p>
-              <p className="mt-2">• Manage your guitar inventory</p>
-              <p>• Track customer orders</p>
-              <p>• Monitor sales performance</p>
+          {/* Recent Products */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-semibold text-gray-900">
+                Recent Products
+              </h3>
+              <Link
+                href="/dashboard/products"
+                className="text-sm text-rose-600 hover:text-rose-700 font-medium"
+              >
+                View all
+              </Link>
+            </div>
+            <div className="space-y-3">
+              {recentProducts.length > 0 ? (
+                recentProducts.map((product) => (
+                  <div
+                    key={product._id}
+                    className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg"
+                  >
+                    <div className="w-10 h-10 bg-gray-200 rounded-lg flex-shrink-0 overflow-hidden">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {product.name}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {product.brand} • XAF {product.price.toLocaleString()}
+                      </p>
+                    </div>
+                    <div className="flex-shrink-0">
+                      <span
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          product.stock <= 5
+                            ? "bg-red-100 text-red-800"
+                            : "bg-green-100 text-green-800"
+                        }`}
+                      >
+                        {product.stock} in stock
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-gray-500 text-sm">No products found</p>
+              )}
             </div>
           </div>
         </div>
-      </main>
-    </div>
+
+        {/* System Status */}
+        {/* <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            System Status
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              <span className="text-sm text-gray-600">Database Connected</span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              <span className="text-sm text-gray-600">
+                API Services Running
+              </span>
+            </div>
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 bg-green-400 rounded-full"></div>
+              <span className="text-sm text-gray-600">
+                Cloudinary Connected
+              </span>
+            </div>
+          </div>
+        </div> */}
+      </div>
+    </DashboardLayout>
   );
 }

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import User from "@/models/User";
+import GlowUser from "@/models/User";
 import { generateToken } from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Find user by username
-    const user = await User.findOne({ username, isActive: true });
+    const user = await GlowUser.findOne({ username, isActive: true });
 
     if (!user) {
       return NextResponse.json(

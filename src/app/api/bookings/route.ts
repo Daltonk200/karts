@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowOrder from "@/models/Order";
+import GlowBooking from "@/models/Booking";
+import GlowService from "@/models/Service";
 
-// GET /api/orders - Get all orders with pagination and filtering
+// GET /api/bookings - Get all bookings with filtering, pagination, and sorting
 export async function GET(request: NextRequest) {
   try {
     await connectDB();
@@ -12,7 +13,8 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || "";
     const status = searchParams.get("status") || "";
-    const invoiceNumber = searchParams.get("invoiceNumber") || "";
+    const dateFrom = searchParams.get("dateFrom") || "";
+    const dateTo = searchParams.get("dateTo") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
@@ -23,11 +25,11 @@ export async function GET(request: NextRequest) {
 
     if (search) {
       filter.$or = [
-        { orderNumber: { $regex: search, $options: "i" } },
+        { bookingNumber: { $regex: search, $options: "i" } },
         { "customer.firstName": { $regex: search, $options: "i" } },
         { "customer.lastName": { $regex: search, $options: "i" } },
         { "customer.email": { $regex: search, $options: "i" } },
-        { invoiceNumber: { $regex: search, $options: "i" } },
+        { "service.serviceName": { $regex: search, $options: "i" } },
       ];
     }
 
@@ -35,27 +37,40 @@ export async function GET(request: NextRequest) {
       filter.status = status;
     }
 
-    if (invoiceNumber) {
-      filter.invoiceNumber = invoiceNumber;
+    if (dateFrom || dateTo) {
+      const dateFilter: any = {};
+
+      if (dateFrom) {
+        const startDate = new Date(dateFrom);
+        dateFilter.$gte = startDate;
+      }
+
+      if (dateTo) {
+        const endDate = new Date(dateTo);
+        endDate.setDate(endDate.getDate() + 1); // Include the entire end date
+        dateFilter.$lt = endDate;
+      }
+
+      filter["appointment.date"] = dateFilter;
     }
 
     // Build sort object
     const sort: any = {};
     sort[sortBy] = sortOrder === "desc" ? -1 : 1;
 
-    // Get orders with pagination
-    const orders = await GlowOrder.find(filter)
+    // Get bookings with pagination
+    const bookings = await GlowBooking.find(filter)
+      .populate("service.serviceId", "name category")
       .sort(sort)
       .skip(skip)
       .limit(limit)
-      .populate("items.productId", "name brand model")
       .lean();
 
     // Get total count for pagination
-    const total = await GlowOrder.countDocuments(filter);
+    const total = await GlowBooking.countDocuments(filter);
 
     return NextResponse.json({
-      orders,
+      bookings,
       pagination: {
         page,
         limit,
@@ -64,7 +79,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("Get orders error:", error);
+    console.error("Get bookings error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
@@ -72,15 +87,21 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST /api/orders - Create a new order
+// POST /api/bookings - Create a new booking
 export async function POST(request: NextRequest) {
   try {
     await connectDB();
 
-    const orderData = await request.json();
+    const bookingData = await request.json();
 
-    // Generate order number if not provided
-    if (!orderData.orderNumber) {
+    // Get service details
+    const service = await GlowService.findById(bookingData.serviceId);
+    if (!service) {
+      return NextResponse.json({ error: "Service not found" }, { status: 404 });
+    }
+
+    // Generate booking number if not provided
+    if (!bookingData.bookingNumber) {
       const date = new Date();
       const year = date.getFullYear();
       const month = (date.getMonth() + 1).toString().padStart(2, "0");
@@ -88,39 +109,42 @@ export async function POST(request: NextRequest) {
       const randomNum = Math.floor(Math.random() * 1000)
         .toString()
         .padStart(3, "0");
-      orderData.orderNumber = `ORD-${year}${month}${day}-${randomNum}`;
+      bookingData.bookingNumber = `BK-${year}${month}${day}-${randomNum}`;
     }
 
-    // Generate invoice number if not provided
-    if (!orderData.invoiceNumber) {
-      const date = new Date();
-      const year = date.getFullYear();
-      const month = (date.getMonth() + 1).toString().padStart(2, "0");
-      const randomNum = Math.floor(Math.random() * 10000)
-        .toString()
-        .padStart(4, "0");
-      orderData.invoiceNumber = `INV-${year}${month}-${randomNum}`;
-    }
+    // Set service details
+    bookingData.service = {
+      serviceId: service._id,
+      serviceName: service.name,
+      servicePrice: service.price,
+      serviceDuration: service.duration,
+    };
 
-    const order = new GlowOrder(orderData);
-    await order.save();
+    // Set total amount
+    bookingData.totalAmount = service.price;
 
-    // Populate product details
-    await order.populate("items.productId", "name brand model");
+    // Set appointment duration
+    bookingData.appointment.duration = service.duration;
+
+    const booking = new GlowBooking(bookingData);
+    await booking.save();
+
+    // Populate service details
+    await booking.populate("service.serviceId", "name category");
 
     return NextResponse.json(
       {
         success: true,
-        order,
+        booking,
       },
       { status: 201 }
     );
   } catch (error) {
-    console.error("Create order error:", error);
+    console.error("Create booking error:", error);
 
     if (error instanceof Error && error.message.includes("duplicate key")) {
       return NextResponse.json(
-        { error: "Order with this number already exists" },
+        { error: "Booking with this number already exists" },
         { status: 400 }
       );
     }

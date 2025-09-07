@@ -121,7 +121,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             {product.category}
           </div>
           <h3 className="text-sm sm:text-base md:text-xl font-semibold text-zinc-900 mb-1 sm:mb-2 line-clamp-2 group-hover:text-rose-700 transition-colors duration-300">
-            {product.name}
+            {product.name.length > 25
+              ? `${product.name.slice(0, 25)}...`
+              : product.name}
           </h3>
           <div className="text-base sm:text-lg md:text-xl font-bold text-zinc-900 mb-2 sm:mb-4">
             XAF {product.price.toFixed(0).toLocaleString()}
@@ -347,7 +349,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             {product.category}
           </div>
           <h3 className="text-base sm:text-lg md:text-xl font-semibold text-zinc-900 mb-1 sm:mb-2 group-hover:text-rose-700 transition-colors duration-300">
-            {product.name}
+            {product.name.length > 60
+              ? `${product.name.slice(0, 60)}...`
+              : product.name}
           </h3>
           <p className="text-xs sm:text-sm text-zinc-600 mb-2 sm:mb-4 line-clamp-2">
             {product.description}

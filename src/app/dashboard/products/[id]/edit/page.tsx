@@ -3,33 +3,35 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import ImageUpload from "@/components/ImageUpload";
+import DashboardLayout from "@/components/admin/DashboardLayout";
 
 interface ProductForm {
   name: string;
   description: string;
   price: number;
+  originalPrice: number;
   brand: string;
-  model: string;
-  year: number;
-  condition: string;
-  color: string;
-  body: string;
-  neck: string;
-  fretboard: string;
-  pickups: string;
-  bridge: string;
-  image: string;
-  images: string[];
   category: string;
+  skinType: string;
+  size: string;
+  ingredients: string[];
+  benefits: string[];
+  application: string;
+  isOnSale: boolean;
   isFeatured: boolean;
   stock: number;
+  rating: number;
+  reviews: number;
+  tags: string[];
+  weight: string;
+  dimensions: string;
+  expiryDate: string;
+  image: string;
+  images: string[];
   sku: string;
 }
 
 export default function EditProductPage() {
-  // Set this to true to bypass authentication
-  const BYPASS_AUTH = false;
-
   const params = useParams();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
@@ -38,42 +40,33 @@ export default function EditProductPage() {
     name: "",
     description: "",
     price: 0,
+    originalPrice: 0,
     brand: "",
-    model: "",
-    year: new Date().getFullYear(),
-    condition: "Excellent",
-    color: "",
-    body: "",
-    neck: "",
-    fretboard: "",
-    pickups: "",
-    bridge: "",
-    image: "",
-    images: [],
-    category: "Electric Guitars",
+    category: "Skincare",
+    skinType: "All Types",
+    size: "",
+    ingredients: [],
+    benefits: [],
+    application: "",
+    isOnSale: false,
     isFeatured: false,
     stock: 1,
+    rating: 0,
+    reviews: 0,
+    tags: [],
+    weight: "",
+    dimensions: "",
+    expiryDate: "",
+    image: "",
+    images: [],
     sku: "",
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("dashboard_token");
-    if (!BYPASS_AUTH) {
-      // Check authentication
-      if (!token) {
-        router.push("/dashboard/login");
-        return;
-      }
-    }
-
-    // Fetch product data
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`/api/products/${params.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        setLoading(true);
+        const response = await fetch(`/api/products/${params.id}`);
 
         if (response.ok) {
           const product = await response.json();
@@ -81,21 +74,25 @@ export default function EditProductPage() {
             name: product.name || "",
             description: product.description || "",
             price: product.price || 0,
+            originalPrice: product.originalPrice || 0,
             brand: product.brand || "",
-            model: product.model || "",
-            year: product.year || new Date().getFullYear(),
-            condition: product.condition || "Excellent",
-            color: product.color || "",
-            body: product.body || "",
-            neck: product.neck || "",
-            fretboard: product.fretboard || "",
-            pickups: product.pickups || "",
-            bridge: product.bridge || "",
-            image: product.image || "",
-            images: product.images || [],
-            category: product.category || "Electric Guitars",
+            category: product.category || "Skincare",
+            skinType: product.skinType || "All Types",
+            size: product.size || "",
+            ingredients: product.ingredients || [],
+            benefits: product.benefits || [],
+            application: product.application || "",
+            isOnSale: product.isOnSale || false,
             isFeatured: product.isFeatured || false,
             stock: product.stock || 1,
+            rating: product.rating || 0,
+            reviews: product.reviews || 0,
+            tags: product.tags || [],
+            weight: product.weight || "",
+            dimensions: product.dimensions || "",
+            expiryDate: product.expiryDate || "",
+            image: product.image || "",
+            images: product.images || [],
             sku: product.sku || "",
           });
         } else {
@@ -128,6 +125,34 @@ export default function EditProductPage() {
     }));
   };
 
+  const handleArrayChange = (field: string, value: string[]) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const addArrayItem = (field: string, value: string) => {
+    if (value.trim()) {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: [
+          ...(prev[field as keyof ProductForm] as string[]),
+          value.trim(),
+        ],
+      }));
+    }
+  };
+
+  const removeArrayItem = (field: string, index: number) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: (prev[field as keyof ProductForm] as string[]).filter(
+        (_, i) => i !== index
+      ),
+    }));
+  };
+
   const handleImageUpload = (urls: string[]) => {
     setFormData((prev) => ({
       ...prev,
@@ -141,12 +166,10 @@ export default function EditProductPage() {
     setSaving(true);
 
     try {
-      const token = localStorage.getItem("dashboard_token");
       const response = await fetch(`/api/products/${params.id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(formData),
       });
@@ -165,55 +188,27 @@ export default function EditProductPage() {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("dashboard_token");
-    localStorage.removeItem("dashboard_user");
-    router.push("/dashboard/login");
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading product...</p>
+      <DashboardLayout>
+        <div className="flex items-center justify-center py-16">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading product...</p>
+          </div>
         </div>
-      </div>
+      </DashboardLayout>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Edit Product</h1>
-              <p className="mt-1 text-sm text-gray-500">
-                Update product information
-              </p>
-            </div>
-            <div className="flex items-center space-x-4">
-              <button
-                onClick={() => router.push("/dashboard/products")}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors"
-              >
-                Back to Products
-              </button>
-              <button
-                onClick={handleLogout}
-                className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
+    <DashboardLayout>
+      <div className="p-6">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900">Edit Product</h1>
+          <p className="text-gray-600">Update product information</p>
         </div>
-      </div>
 
-      {/* Form */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white shadow rounded-lg">
           <form onSubmit={handleSubmit} className="p-6 space-y-6">
             {/* Basic Information */}
@@ -232,7 +227,7 @@ export default function EditProductPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   />
                 </div>
 
@@ -246,43 +241,57 @@ export default function EditProductPage() {
                     value={formData.brand}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Model *
+                    Category *
                   </label>
-                  <input
-                    type="text"
-                    name="model"
-                    value={formData.model}
+                  <select
+                    name="category"
+                    value={formData.category}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  >
+                    <option value="Skincare">Skincare</option>
+                    <option value="Makeup">Makeup</option>
+                    <option value="Fragrances">Fragrances</option>
+                    <option value="Hair Care">Hair Care</option>
+                    <option value="Body Care">Body Care</option>
+                    <option value="Men's Grooming">Men's Grooming</option>
+                    <option value="Tools & Accessories">
+                      Tools & Accessories
+                    </option>
+                  </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Year *
+                    Skin Type *
                   </label>
-                  <input
-                    type="number"
-                    name="year"
-                    value={formData.year}
+                  <select
+                    name="skinType"
+                    value={formData.skinType}
                     onChange={handleInputChange}
                     required
-                    min="1900"
-                    max={new Date().getFullYear() + 1}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  >
+                    <option value="All Types">All Types</option>
+                    <option value="Mature Skin">Mature Skin</option>
+                    <option value="Dry Skin">Dry Skin</option>
+                    <option value="Sensitive Skin">Sensitive Skin</option>
+                    <option value="Acne-Prone Skin">Acne-Prone Skin</option>
+                    <option value="Oily Skin">Oily Skin</option>
+                    <option value="Combination Skin">Combination Skin</option>
+                  </select>
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Price ($) *
+                    Price (XAF) *
                   </label>
                   <input
                     type="number"
@@ -291,8 +300,21 @@ export default function EditProductPage() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    step="0.01"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Original Price (XAF)
+                  </label>
+                  <input
+                    type="number"
+                    name="originalPrice"
+                    value={formData.originalPrice}
+                    onChange={handleInputChange}
+                    min="0"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   />
                 </div>
 
@@ -307,7 +329,21 @@ export default function EditProductPage() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Size
+                  </label>
+                  <input
+                    type="text"
+                    name="size"
+                    value={formData.size}
+                    onChange={handleInputChange}
+                    placeholder="e.g., 30ml, 50g"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   />
                 </div>
 
@@ -320,44 +356,49 @@ export default function EditProductPage() {
                     name="sku"
                     value={formData.sku}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Category *
+                    Weight
                   </label>
-                  <select
-                    name="category"
-                    value={formData.category}
+                  <input
+                    type="text"
+                    name="weight"
+                    value={formData.weight}
                     onChange={handleInputChange}
-                    required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="Electric Guitars">Electric Guitars</option>
-                    <option value="Acoustic Guitars">Acoustic Guitars</option>
-                    <option value="Bass Guitars">Bass Guitars</option>
-                  </select>
+                    placeholder="e.g., 30g, 100ml"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Condition *
+                    Dimensions
                   </label>
-                  <select
-                    name="condition"
-                    value={formData.condition}
+                  <input
+                    type="text"
+                    name="dimensions"
+                    value={formData.dimensions}
                     onChange={handleInputChange}
-                    required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  >
-                    <option value="Excellent">Excellent</option>
-                    <option value="Very Good">Very Good</option>
-                    <option value="Good">Good</option>
-                    <option value="Fair">Fair</option>
-                    <option value="Poor">Poor</option>
-                  </select>
+                    placeholder="e.g., 15cm x 3cm x 3cm"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Expiry Date
+                  </label>
+                  <input
+                    type="date"
+                    name="expiryDate"
+                    value={formData.expiryDate}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                  />
                 </div>
               </div>
             </div>
@@ -373,99 +414,134 @@ export default function EditProductPage() {
                 onChange={handleInputChange}
                 required
                 rows={4}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                placeholder="Describe the guitar's features, sound, and any notable characteristics..."
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                placeholder="Describe the product's features, benefits, and characteristics..."
               />
             </div>
 
-            {/* Specifications */}
+            {/* Application */}
             <div>
-              <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Specifications
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Color
-                  </label>
-                  <input
-                    type="text"
-                    name="color"
-                    value={formData.color}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  />
-                </div>
+              <label className="block text-sm font-medium text-gray-700">
+                Application Instructions
+              </label>
+              <textarea
+                name="application"
+                value={formData.application}
+                onChange={handleInputChange}
+                rows={3}
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                placeholder="How to use this product..."
+              />
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Body Type
-                  </label>
-                  <input
-                    type="text"
-                    name="body"
-                    value={formData.body}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g., Solid Body, Semi-Hollow, Hollow Body"
-                  />
-                </div>
+            {/* Ingredients */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Ingredients
+              </label>
+              <div className="space-y-2">
+                {formData.ingredients.map((ingredient, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={ingredient}
+                      onChange={(e) => {
+                        const newIngredients = [...formData.ingredients];
+                        newIngredients[index] = e.target.value;
+                        handleArrayChange("ingredients", newIngredients);
+                      }}
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeArrayItem("ingredients", index)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addArrayItem("ingredients", "")}
+                  className="text-rose-600 hover:text-rose-800 text-sm"
+                >
+                  + Add Ingredient
+                </button>
+              </div>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Neck Type
-                  </label>
-                  <input
-                    type="text"
-                    name="neck"
-                    value={formData.neck}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g., Maple, Mahogany"
-                  />
-                </div>
+            {/* Benefits */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Benefits
+              </label>
+              <div className="space-y-2">
+                {formData.benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={benefit}
+                      onChange={(e) => {
+                        const newBenefits = [...formData.benefits];
+                        newBenefits[index] = e.target.value;
+                        handleArrayChange("benefits", newBenefits);
+                      }}
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeArrayItem("benefits", index)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addArrayItem("benefits", "")}
+                  className="text-rose-600 hover:text-rose-800 text-sm"
+                >
+                  + Add Benefit
+                </button>
+              </div>
+            </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Fretboard
-                  </label>
-                  <input
-                    type="text"
-                    name="fretboard"
-                    value={formData.fretboard}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g., Rosewood, Ebony"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Pickups
-                  </label>
-                  <input
-                    type="text"
-                    name="pickups"
-                    value={formData.pickups}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g., Humbucker, Single Coil"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">
-                    Bridge Type
-                  </label>
-                  <input
-                    type="text"
-                    name="bridge"
-                    value={formData.bridge}
-                    onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                    placeholder="e.g., Fixed Bridge, Tremolo"
-                  />
-                </div>
+            {/* Tags */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Tags
+              </label>
+              <div className="space-y-2">
+                {formData.tags.map((tag, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={tag}
+                      onChange={(e) => {
+                        const newTags = [...formData.tags];
+                        newTags[index] = e.target.value;
+                        handleArrayChange("tags", newTags);
+                      }}
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeArrayItem("tags", index)}
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => addArrayItem("tags", "")}
+                  className="text-rose-600 hover:text-rose-800 text-sm"
+                >
+                  + Add Tag
+                </button>
               </div>
             </div>
 
@@ -481,18 +557,33 @@ export default function EditProductPage() {
               />
             </div>
 
-            {/* Featured Product */}
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                name="isFeatured"
-                checked={formData.isFeatured}
-                onChange={handleInputChange}
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label className="ml-2 block text-sm text-gray-900">
-                Feature this product on the homepage
-              </label>
+            {/* Product Options */}
+            <div className="flex items-center space-x-6">
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="isFeatured"
+                  checked={formData.isFeatured}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 block text-sm text-gray-900">
+                  Feature this product on the homepage
+                </label>
+              </div>
+
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="isOnSale"
+                  checked={formData.isOnSale}
+                  onChange={handleInputChange}
+                  className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                />
+                <label className="ml-2 block text-sm text-gray-900">
+                  This product is on sale
+                </label>
+              </div>
             </div>
 
             {/* Submit Button */}
@@ -507,7 +598,7 @@ export default function EditProductPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-rose-600 text-white px-6 py-2 rounded-md hover:bg-rose-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>
@@ -515,6 +606,6 @@ export default function EditProductPage() {
           </form>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

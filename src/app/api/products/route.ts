@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import Product from "@/models/Product";
+import GlowProduct from "@/models/Product";
 
 // GET /api/products - Get all products with pagination and filtering
 export async function GET(request: NextRequest) {
@@ -13,7 +13,11 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") || "";
     const category = searchParams.get("category") || "";
     const brand = searchParams.get("brand") || "";
+    const skinType = searchParams.get("skinType") || "";
     const featured = searchParams.get("featured") || "";
+    const onSale = searchParams.get("onSale") || "";
+    const minPrice = searchParams.get("minPrice") || "";
+    const maxPrice = searchParams.get("maxPrice") || "";
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
@@ -26,8 +30,10 @@ export async function GET(request: NextRequest) {
       filter.$or = [
         { name: { $regex: search, $options: "i" } },
         { brand: { $regex: search, $options: "i" } },
-        { model: { $regex: search, $options: "i" } },
         { description: { $regex: search, $options: "i" } },
+        { ingredients: { $in: [new RegExp(search, "i")] } },
+        { benefits: { $in: [new RegExp(search, "i")] } },
+        { tags: { $in: [new RegExp(search, "i")] } },
       ];
     }
 
@@ -36,66 +42,64 @@ export async function GET(request: NextRequest) {
     }
 
     if (brand) {
-      // Normalize brand names to remove common suffixes and variations
-      const normalizeBrand = (brandName: string) => {
-        const lowerBrand = brandName.toLowerCase();
+      filter.brand = { $regex: brand, $options: "i" };
+    }
 
-        // Remove common suffixes
-        const suffixes = [
-          " guitars",
-          " guitar",
-          " instruments",
-          " instrument",
-          " music",
-          " co",
-          " company",
-          " corp",
-          " corporation",
-        ];
-        let normalized = lowerBrand;
-
-        for (const suffix of suffixes) {
-          if (normalized.endsWith(suffix)) {
-            normalized = normalized.slice(0, -suffix.length);
-            break;
-          }
-        }
-
-        // Capitalize first letter of each word
-        return normalized
-          .split(" ")
-          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-          .join(" ");
-      };
-
-      const normalizedSelectedBrand = normalizeBrand(brand);
-
-      // Create regex pattern to match the normalized brand and its variations
-      const brandPattern = new RegExp(
-        `^${normalizedSelectedBrand}(\\s+(guitars?|instruments?|music|co|company|corp|corporation))?$`,
-        "i"
-      );
-
-      filter.brand = brandPattern;
+    if (skinType) {
+      filter.skinType = skinType;
     }
 
     if (featured === "true") {
       filter.isFeatured = true;
     }
 
+    if (onSale === "true") {
+      filter.isOnSale = true;
+    }
+
+    // Price range filter
+    if (minPrice || maxPrice) {
+      filter.price = {};
+      if (minPrice) {
+        filter.price.$gte = parseFloat(minPrice);
+      }
+      if (maxPrice) {
+        filter.price.$lte = parseFloat(maxPrice);
+      }
+    }
+
     // Build sort object
     const sort: any = {};
-    sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    switch (sortBy) {
+      case "price-low":
+        sort.price = 1;
+        break;
+      case "price-high":
+        sort.price = -1;
+        break;
+      case "rating":
+        sort.rating = -1;
+        break;
+      case "name":
+        sort.name = 1;
+        break;
+      case "featured":
+        sort.isFeatured = -1;
+        sort.createdAt = -1;
+        break;
+      default:
+        sort[sortBy] = sortOrder === "desc" ? -1 : 1;
+    }
 
     // Get products with pagination
-    const products = await Product.find(filter)
+    const products = await GlowProduct.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(limit)
       .lean();
 
     // Get total count for pagination
-    const total = await Product.countDocuments(filter);
+    const total = await GlowProduct.countDocuments(filter);
 
     return NextResponse.json({
       products,
@@ -125,14 +129,27 @@ export async function POST(request: NextRequest) {
     // Generate SKU if not provided
     if (!productData.sku) {
       const brandCode = productData.brand.substring(0, 3).toUpperCase();
-      const modelCode = productData.model.substring(0, 3).toUpperCase();
+      const nameCode = productData.name.substring(0, 3).toUpperCase();
       const randomNum = Math.floor(Math.random() * 1000)
         .toString()
         .padStart(3, "0");
-      productData.sku = `${brandCode}${modelCode}${randomNum}`;
+      productData.sku = `${brandCode}${nameCode}${randomNum}`;
     }
 
-    const product = new Product(productData);
+    // Set main image as first image in the array
+    if (productData.images && productData.images.length > 0) {
+      productData.image = productData.images[0];
+    }
+
+    // Calculate if product is on sale
+    if (
+      productData.originalPrice &&
+      productData.originalPrice > productData.price
+    ) {
+      productData.isOnSale = true;
+    }
+
+    const product = new GlowProduct(productData);
     await product.save();
 
     return NextResponse.json(

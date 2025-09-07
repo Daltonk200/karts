@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/admin/DashboardLayout";
 import { toast } from "react-hot-toast";
-import Link from "next/link";
 import {
   Select,
   SelectContent,
@@ -11,43 +10,78 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { DateRangePicker } from "@/components/ui/date-range-picker";
 
-interface Order {
+interface Booking {
   _id: string;
-  orderNumber: string;
+  bookingNumber: string;
   customer: {
     firstName: string;
     lastName: string;
     email: string;
+    phone: string;
   };
-  items: Array<{
-    name: string;
-    price: number;
-    quantity: number;
-  }>;
-  total: number;
+  service: {
+    serviceName: string;
+    servicePrice: number;
+    serviceDuration: number;
+  };
+  appointment: {
+    date: string;
+    time: string;
+    duration: number;
+  };
   status: string;
-  paymentMethod: string;
-  invoiceNumber: string;
+  totalAmount: number;
+  paymentStatus: string;
   createdAt: string;
 }
 
-export default function OrdersPage() {
-  const [orders, setOrders] = useState<Order[]>([]);
+export default function BookingsPage() {
+  const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [status, setStatus] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedStatus, setSelectedStatus] = useState("All");
+  const [selectedDateRange, setSelectedDateRange] = useState<{
+    from: string;
+    to: string;
+  }>({ from: "", to: "" });
   const [sortBy, setSortBy] = useState("createdAt");
-  const [sortOrder, setSortOrder] = useState("desc");
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalOrders, setTotalOrders] = useState(0);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+
+  const statuses = [
+    "All",
+    "pending",
+    "confirmed",
+    "in-progress",
+    "completed",
+    "cancelled",
+    "no-show",
+  ];
+
+  const statusColors = {
+    pending: "bg-yellow-100 text-yellow-800",
+    confirmed: "bg-blue-100 text-blue-800",
+    "in-progress": "bg-purple-100 text-purple-800",
+    completed: "bg-green-100 text-green-800",
+    cancelled: "bg-red-100 text-red-800",
+    "no-show": "bg-gray-100 text-gray-800",
+  };
+
+  const paymentStatusColors = {
+    pending: "bg-yellow-100 text-yellow-800",
+    paid: "bg-green-100 text-green-800",
+    refunded: "bg-red-100 text-red-800",
+    partial: "bg-orange-100 text-orange-800",
+  };
 
   useEffect(() => {
-    fetchOrders();
-  }, [page, search, status, sortBy, sortOrder]);
+    fetchBookings();
+  }, [currentPage, searchQuery, selectedStatus, selectedDateRange, sortBy]);
 
-  const fetchOrders = async () => {
+  const fetchBookings = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("dashboard_token");
@@ -58,99 +92,73 @@ export default function OrdersPage() {
       }
 
       const params = new URLSearchParams({
-        page: page.toString(),
+        page: currentPage.toString(),
         limit: "10",
-        search,
         sortBy,
-        sortOrder,
+        sortOrder: "desc",
       });
 
-      if (status !== "all") {
-        params.append("status", status);
+      if (searchQuery) {
+        params.append("search", searchQuery);
       }
 
-      const response = await fetch(`/api/orders?${params}`, { headers });
+      if (selectedStatus !== "All") {
+        params.append("status", selectedStatus);
+      }
+
+      if (selectedDateRange.from) {
+        params.append("dateFrom", selectedDateRange.from);
+      }
+      if (selectedDateRange.to) {
+        params.append("dateTo", selectedDateRange.to);
+      }
+
+      const response = await fetch(`/api/bookings?${params}`, { headers });
       const data = await response.json();
 
       if (response.ok) {
-        setOrders(data.orders || []);
+        setBookings(data.bookings || []);
         setTotalPages(data.pagination?.pages || 1);
-        setTotalOrders(data.pagination?.total || 0);
       } else {
-        toast.error("Failed to fetch orders");
+        toast.error("Failed to fetch bookings");
       }
     } catch (error) {
-      console.error("Error fetching orders:", error);
-      toast.error("An error occurred while fetching orders");
+      console.error("Error fetching bookings:", error);
+      toast.error("Failed to fetch bookings");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+  const updateBookingStatus = async (bookingId: string, newStatus: string) => {
     try {
+      setUpdatingId(bookingId);
       const token = localStorage.getItem("dashboard_token");
-      const response = await fetch(`/api/orders/${orderId}`, {
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/bookings/${bookingId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
+        headers,
         body: JSON.stringify({ status: newStatus }),
       });
 
       if (response.ok) {
-        toast.success("Order status updated successfully");
-        fetchOrders();
+        toast.success("Booking status updated successfully");
+        fetchBookings();
       } else {
-        toast.error("Failed to update order status");
+        toast.error("Failed to update booking status");
       }
     } catch (error) {
-      console.error("Error updating order status:", error);
-      toast.error("An error occurred while updating the order status");
-    }
-  };
-
-  const handleDelete = async (orderId: string) => {
-    if (!confirm("Are you sure you want to delete this order?")) {
-      return;
-    }
-
-    try {
-      const token = localStorage.getItem("dashboard_token");
-      const response = await fetch(`/api/orders/${orderId}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      if (response.ok) {
-        toast.success("Order deleted successfully");
-        fetchOrders();
-      } else {
-        toast.error("Failed to delete order");
-      }
-    } catch (error) {
-      console.error("Error deleting order:", error);
-      toast.error("An error occurred while deleting the order");
-    }
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "confirmed":
-        return "bg-blue-100 text-blue-800";
-      case "shipped":
-        return "bg-purple-100 text-purple-800";
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "cancelled":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-zinc-100 text-zinc-800";
+      console.error("Error updating booking:", error);
+      toast.error("Failed to update booking status");
+    } finally {
+      setUpdatingId(null);
     }
   };
 
@@ -159,8 +167,14 @@ export default function OrdersPage() {
       year: "numeric",
       month: "short",
       day: "numeric",
+    });
+  };
+
+  const formatTime = (timeString: string) => {
+    return new Date(`2000-01-01T${timeString}`).toLocaleTimeString("en-US", {
       hour: "2-digit",
       minute: "2-digit",
+      hour12: true,
     });
   };
 
@@ -169,22 +183,24 @@ export default function OrdersPage() {
       <div className="space-y-6">
         {/* Page Header */}
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
-          <p className="text-gray-600">Track and manage customer orders</p>
+          <h1 className="text-2xl font-bold text-gray-900">Bookings</h1>
+          <p className="text-gray-600">
+            Manage customer appointments and bookings
+          </p>
         </div>
 
         {/* Filters */}
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Search Orders
+                Search Bookings
               </label>
               <input
                 type="text"
-                placeholder="Search by order number, customer name..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name, email, booking number..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
               />
             </div>
@@ -192,51 +208,59 @@ export default function OrdersPage() {
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Status
               </label>
-              <Select value={status} onValueChange={setStatus}>
+              <Select value={selectedStatus} onValueChange={setSelectedStatus}>
                 <SelectTrigger className="w-full py-5 !shadow-none">
                   <SelectValue placeholder="All Statuses" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All Statuses</SelectItem>
-                  <SelectItem value="pending">Pending</SelectItem>
-                  <SelectItem value="confirmed">Confirmed</SelectItem>
-                  <SelectItem value="shipped">Shipped</SelectItem>
-                  <SelectItem value="delivered">Delivered</SelectItem>
-                  <SelectItem value="cancelled">Cancelled</SelectItem>
+                  {statuses.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {status === "All"
+                        ? "All Statuses"
+                        : status.charAt(0).toUpperCase() + status.slice(1)}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
+                Date Range
+              </label>
+              <DateRangePicker
+                value={selectedDateRange}
+                onChange={setSelectedDateRange}
+                placeholder="Select date range"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Sort By
               </label>
-              <Select
-                value={`${sortBy}-${sortOrder}`}
-                onValueChange={(value) => {
-                  const [field, order] = value.split("-");
-                  setSortBy(field);
-                  setSortOrder(order);
-                }}
-              >
+              <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="w-full py-5 !shadow-none">
                   <SelectValue placeholder="Sort by..." />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="createdAt-desc">Newest First</SelectItem>
-                  <SelectItem value="createdAt-asc">Oldest First</SelectItem>
-                  <SelectItem value="total-desc">Total High to Low</SelectItem>
-                  <SelectItem value="total-asc">Total Low to High</SelectItem>
+                  <SelectItem value="createdAt">Date Created</SelectItem>
+                  <SelectItem value="appointment.date">
+                    Appointment Date
+                  </SelectItem>
+                  <SelectItem value="customer.firstName">
+                    Customer Name
+                  </SelectItem>
+                  <SelectItem value="totalAmount">Total Amount</SelectItem>
                 </SelectContent>
               </Select>
             </div>
             <div className="flex items-end">
               <button
                 onClick={() => {
-                  setSearch("");
-                  setStatus("");
+                  setSearchQuery("");
+                  setSelectedStatus("All");
+                  setSelectedDateRange({ from: "", to: "" });
                   setSortBy("createdAt");
-                  setSortOrder("desc");
-                  setPage(1);
+                  setCurrentPage(1);
                 }}
                 className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors duration-200"
               >
@@ -246,7 +270,7 @@ export default function OrdersPage() {
           </div>
         </div>
 
-        {/* Orders Table */}
+        {/* Bookings Table */}
         {loading ? (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             <div className="p-6">
@@ -262,7 +286,7 @@ export default function OrdersPage() {
               </div>
             </div>
           </div>
-        ) : orders.length > 0 ? (
+        ) : bookings.length > 0 ? (
           <>
             <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
               <div className="overflow-x-auto">
@@ -270,16 +294,16 @@ export default function OrdersPage() {
                   <thead className="bg-gray-50">
                     <tr>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Order Details
+                        Booking
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Customer
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Items
+                        Service
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Total
+                        Appointment
                       </th>
                       <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
@@ -293,66 +317,89 @@ export default function OrdersPage() {
                     </tr>
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
-                    {orders.map((order) => (
-                      <tr key={order._id} className="hover:bg-gray-50">
+                    {bookings.map((booking) => (
+                      <tr key={booking._id} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {order.orderNumber}
+                              {booking.bookingNumber}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {formatDate(order.createdAt)}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                              Invoice: {order.invoiceNumber}
+                              {formatDate(booking.createdAt)}
                             </div>
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div>
                             <div className="text-sm font-medium text-gray-900">
-                              {order.customer.firstName}{" "}
-                              {order.customer.lastName}
+                              {booking.customer.firstName}{" "}
+                              {booking.customer.lastName}
                             </div>
                             <div className="text-sm text-gray-500">
-                              {order.customer.email}
+                              {booking.customer.email}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {booking.customer.phone}
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="text-sm text-gray-900">
-                            {order.items.length} item
-                            {order.items.length !== 1 ? "s" : ""}
-                          </div>
-                          <div className="text-sm text-gray-500">
-                            {order.items.map((item) => item.name).join(", ")}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {booking.service.serviceName}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {booking.service.serviceDuration} min
+                            </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          XAF {order.total.toLocaleString()}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">
+                              {formatDate(booking.appointment.date)}
+                            </div>
+                            <div className="text-sm text-gray-500">
+                              {formatTime(booking.appointment.time)}
+                            </div>
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span
-                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(
-                              order.status
-                            )}`}
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                              statusColors[
+                                booking.status as keyof typeof statusColors
+                              ] || "bg-gray-100 text-gray-800"
+                            }`}
                           >
-                            {order.status.charAt(0).toUpperCase() +
-                              order.status.slice(1)}
+                            {booking.status.charAt(0).toUpperCase() +
+                              booking.status.slice(1)}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                          {order.paymentMethod === "invoice"
-                            ? "Invoice"
-                            : "Bank Transfer"}
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <div>
+                            <span
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                                paymentStatusColors[
+                                  booking.paymentStatus as keyof typeof paymentStatusColors
+                                ] || "bg-gray-100 text-gray-800"
+                              }`}
+                            >
+                              {booking.paymentStatus.charAt(0).toUpperCase() +
+                                booking.paymentStatus.slice(1)}
+                            </span>
+                            <div className="text-sm text-gray-900 mt-1">
+                              XAF {booking.totalAmount.toLocaleString()}
+                            </div>
+                          </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                          <div className="flex flex-col space-y-1">
+                          <div className="flex items-center space-x-2">
                             <Select
-                              value={order.status}
+                              value={booking.status}
                               onValueChange={(value) =>
-                                handleStatusUpdate(order._id, value)
+                                updateBookingStatus(booking._id, value)
                               }
+                              disabled={updatingId === booking._id}
                             >
                               <SelectTrigger className="w-32 h-7 text-xs px-2 py-1">
                                 <SelectValue />
@@ -362,27 +409,18 @@ export default function OrdersPage() {
                                 <SelectItem value="confirmed">
                                   Confirmed
                                 </SelectItem>
-                                <SelectItem value="shipped">Shipped</SelectItem>
-                                <SelectItem value="delivered">
-                                  Delivered
+                                <SelectItem value="in-progress">
+                                  In Progress
+                                </SelectItem>
+                                <SelectItem value="completed">
+                                  Completed
                                 </SelectItem>
                                 <SelectItem value="cancelled">
                                   Cancelled
                                 </SelectItem>
+                                <SelectItem value="no-show">No Show</SelectItem>
                               </SelectContent>
                             </Select>
-                            <Link
-                              href={`/dashboard/orders/${order._id}`}
-                              className="text-blue-600 hover:text-blue-900 text-xs"
-                            >
-                              View Details
-                            </Link>
-                            <button
-                              onClick={() => handleDelete(order._id)}
-                              className="text-red-600 hover:text-red-900 text-xs text-left"
-                            >
-                              Delete
-                            </button>
                           </div>
                         </td>
                       </tr>
@@ -396,18 +434,18 @@ export default function OrdersPage() {
             {totalPages > 1 && (
               <div className="flex items-center justify-center space-x-2">
                 <button
-                  onClick={() => setPage(Math.max(1, page - 1))}
-                  disabled={page === 1}
+                  onClick={() => setCurrentPage(currentPage - 1)}
+                  disabled={currentPage === 1}
                   className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
                 <span className="px-4 py-2 text-sm text-gray-600">
-                  Page {page} of {totalPages}
+                  Page {currentPage} of {totalPages}
                 </span>
                 <button
-                  onClick={() => setPage(Math.min(totalPages, page + 1))}
-                  disabled={page === totalPages}
+                  onClick={() => setCurrentPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
                   className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
@@ -427,16 +465,19 @@ export default function OrdersPage() {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
               />
             </svg>
             <h3 className="mt-2  font-medium text-gray-900 text-lg">
-              No orders found
+              No bookings found
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              {search || status !== "all"
+              {searchQuery ||
+              selectedStatus !== "All" ||
+              selectedDateRange.from ||
+              selectedDateRange.to
                 ? "Try adjusting your search or filter criteria."
-                : "No orders have been placed yet."}
+                : "No bookings have been made yet."}
             </p>
           </div>
         )}

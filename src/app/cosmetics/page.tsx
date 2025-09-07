@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { mockProducts, Product } from "@/data/mockProducts";
+import { Product } from "@/data/mockProducts";
 import CosmeticsHero from "@/components/cosmetics/CosmeticsHero";
 import CosmeticsFilters from "@/components/cosmetics/CosmeticsFilters";
 import ProductsGrid from "@/components/cosmetics/ProductsGrid";
@@ -13,15 +13,8 @@ const ITEMS_PER_PAGE = 12;
 function CosmeticsContent() {
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [availableBrands] = useState<string[]>([
-    "All",
-    "Luxe Beauty",
-    "Glow Cosmetics",
-    "Pure Skin",
-    "Lash Luxe",
-    "Aroma Luxe",
-    "Gentleman's Choice",
-  ]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [availableBrands, setAvailableBrands] = useState<string[]>(["All"]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   const [selectedSkinType, setSelectedSkinType] = useState("All");
@@ -31,7 +24,7 @@ function CosmeticsContent() {
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [totalProducts, setTotalProducts] = useState(mockProducts.length);
+  const [totalProducts, setTotalProducts] = useState(0);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Initialize search query and category from URL params
@@ -48,85 +41,77 @@ function CosmeticsContent() {
     }
   }, [searchParams]);
 
-  // Filter and sort products (client-side)
-  const filteredProducts = mockProducts
-    .filter((product) => {
-      // Search filter
-      if (
-        searchQuery &&
-        !product.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        !product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      ) {
-        return false;
-      }
-
-      // Category filter
-      if (selectedCategory !== "All" && product.category !== selectedCategory) {
-        return false;
-      }
-
-      // Brand filter
-      if (selectedBrand !== "All" && product.brand !== selectedBrand) {
-        return false;
-      }
-
-      // Skin type filter
-      if (selectedSkinType !== "All" && product.skinType !== selectedSkinType) {
-        return false;
-      }
-
-      // Price range filter
-      if (selectedPriceRange !== "All") {
-        const price = product.price;
-        switch (selectedPriceRange) {
-          case "Under XAF 5,000":
-            if (price >= 5000) return false;
-            break;
-          case "XAF 5,000 - XAF 15,000":
-            if (price < 5000 || price > 15000) return false;
-            break;
-          case "XAF 15,000 - XAF 30,000":
-            if (price < 15000 || price > 30000) return false;
-            break;
-          case "XAF 30,000 - XAF 50,000":
-            if (price < 30000 || price > 50000) return false;
-            break;
-          case "Over XAF 50,000":
-            if (price <= 50000) return false;
-            break;
-        }
-      }
-
-      return true;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "featured":
-          return b.isFeatured ? 1 : -1;
-        case "price-low":
-          return a.price - b.price;
-        case "price-high":
-          return b.price - a.price;
-        case "rating":
-          return (b.rating || 0) - (a.rating || 0);
-        case "name":
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
-
-  // Update total products count
+  // Fetch products from API
   useEffect(() => {
-    setTotalProducts(filteredProducts.length);
-    setTotalPages(Math.ceil(filteredProducts.length / ITEMS_PER_PAGE));
-  }, [filteredProducts]);
+    fetchProducts();
+  }, [
+    currentPage,
+    searchQuery,
+    selectedCategory,
+    selectedBrand,
+    selectedSkinType,
+    selectedPriceRange,
+    sortBy,
+  ]);
 
-  // Get paginated products
-  const paginatedProducts = filteredProducts.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const params = new URLSearchParams({
+        page: currentPage.toString(),
+        limit: ITEMS_PER_PAGE.toString(),
+        sortBy: sortBy === "featured" ? "isFeatured" : sortBy,
+        sortOrder: "desc",
+      });
+
+      if (searchQuery) {
+        params.append("search", searchQuery);
+      }
+
+      if (selectedCategory !== "All") {
+        params.append("category", selectedCategory);
+      }
+
+      if (selectedBrand !== "All") {
+        params.append("brand", selectedBrand);
+      }
+
+      if (selectedSkinType !== "All") {
+        params.append("skinType", selectedSkinType);
+      }
+
+      if (selectedPriceRange !== "All") {
+        const [min, max] = selectedPriceRange.split("-").map(Number);
+        if (min) params.append("minPrice", min.toString());
+        if (max) params.append("maxPrice", max.toString());
+      }
+
+      const response = await fetch(`/api/products?${params}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        setProducts(data.products || []);
+        setTotalPages(data.pagination?.pages || 1);
+        setTotalProducts(data.pagination?.total || 0);
+
+        // Extract unique brands from products
+        const brands = [
+          "All",
+          ...new Set(data.products?.map((p: Product) => p.brand) || []),
+        ];
+        setAvailableBrands(brands);
+      } else {
+        console.error("Failed to fetch products:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Products are already filtered and paginated by the API
+  const paginatedProducts = products;
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -173,7 +158,7 @@ function CosmeticsContent() {
 
       <ProductsGrid
         loading={loading}
-        filteredProducts={filteredProducts}
+        filteredProducts={products}
         viewMode={viewMode}
         paginatedProducts={paginatedProducts}
         totalPages={totalPages}

@@ -13,7 +13,7 @@ import {
   AiOutlineMail,
   AiOutlineMessage,
 } from "react-icons/ai";
-import { services, getServiceTitleById } from "@/data/services";
+// import { services, getServiceTitleById } from "@/data/services";
 import {
   Select,
   SelectContent,
@@ -31,9 +31,23 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
+interface Service {
+  _id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  duration: number;
+  image: string;
+  isActive: boolean;
+  isFeatured: boolean;
+}
+
 function BookAppointmentForm() {
   const searchParams = useSearchParams();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -46,8 +60,9 @@ function BookAppointmentForm() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined);
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
-  // Get service from URL parameter and set it in form
+  // Fetch services and handle URL parameters
   useEffect(() => {
+    fetchServices();
     const serviceFromUrl = searchParams.get("service");
     if (serviceFromUrl) {
       setFormData((prev) => ({
@@ -56,6 +71,26 @@ function BookAppointmentForm() {
       }));
     }
   }, [searchParams]);
+
+  const fetchServices = async () => {
+    try {
+      setServicesLoading(true);
+      const response = await fetch("/api/services?isActive=true&limit=50");
+      const data = await response.json();
+
+      if (response.ok) {
+        setServices(data.services || []);
+      } else {
+        console.error("Failed to fetch services:", data);
+        toast.error("Failed to load services. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      toast.error("Failed to load services. Please try again.");
+    } finally {
+      setServicesLoading(false);
+    }
+  };
 
   const timeSlots = [
     "09:00",
@@ -89,25 +124,81 @@ function BookAppointmentForm() {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      // Find the selected service to get its details
+      const selectedService = services.find(
+        (service) => service._id === formData.service
+      );
 
-    toast.success(
-      "Appointment booked successfully! We'll confirm via email shortly."
-    );
-    setIsSubmitting(false);
+      if (!selectedService) {
+        toast.error("Please select a valid service.");
+        setIsSubmitting(false);
+        return;
+      }
 
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      date: "",
-      time: "",
-      service: "",
-      message: "",
-    });
-    setSelectedDate(undefined);
+      // Prepare booking data
+      const bookingData = {
+        customer: {
+          firstName: formData.name.split(" ")[0] || formData.name,
+          lastName: formData.name.split(" ").slice(1).join(" ") || "",
+          email: formData.email,
+          phone: formData.phone,
+        },
+        service: {
+          serviceId: selectedService._id,
+          serviceName: selectedService.name,
+          servicePrice: selectedService.price,
+          serviceDuration: selectedService.duration,
+        },
+        appointment: {
+          date: formData.date,
+          time: formData.time,
+          duration: selectedService.duration,
+        },
+        status: "pending",
+        notes: formData.message,
+        totalAmount: selectedService.price,
+        paymentStatus: "pending",
+        paymentMethod: "cash", // Default to cash, can be updated later
+      };
+
+      const response = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success(
+          `Appointment booked successfully! Your booking number is ${data.bookingNumber}. We'll confirm via email shortly.`
+        );
+
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          date: "",
+          time: "",
+          service: "",
+          message: "",
+        });
+        setSelectedDate(undefined);
+      } else {
+        toast.error(
+          data.message || "Failed to book appointment. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      toast.error("Failed to book appointment. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid =
@@ -169,8 +260,20 @@ function BookAppointmentForm() {
                   Selected Service:
                 </h3>
                 <p className="text-rose-700 font-outfit">
-                  {getServiceTitleById(formData.service)}
+                  {services.find((s) => s._id === formData.service)?.name ||
+                    "Service not found"}
                 </p>
+                {services.find((s) => s._id === formData.service) && (
+                  <p className="text-rose-600 text-sm font-outfit mt-1">
+                    XAF{" "}
+                    {services
+                      .find((s) => s._id === formData.service)
+                      ?.price.toLocaleString()}{" "}
+                    -{" "}
+                    {services.find((s) => s._id === formData.service)?.duration}{" "}
+                    minutes
+                  </p>
+                )}
               </div>
             )}
 
@@ -241,11 +344,21 @@ function BookAppointmentForm() {
                     <SelectValue placeholder="Select a service" />
                   </SelectTrigger>
                   <SelectContent>
-                    {services.map((service) => (
-                      <SelectItem key={service.id} value={service.id}>
-                        {service.title} - {service.price}
+                    {servicesLoading ? (
+                      <SelectItem value="" disabled>
+                        Loading services...
                       </SelectItem>
-                    ))}
+                    ) : services.length > 0 ? (
+                      services.map((service) => (
+                        <SelectItem key={service._id} value={service._id}>
+                          {service.name} - XAF {service.price.toLocaleString()}
+                        </SelectItem>
+                      ))
+                    ) : (
+                      <SelectItem value="" disabled>
+                        No services available
+                      </SelectItem>
+                    )}
                   </SelectContent>
                 </Select>
               </div>

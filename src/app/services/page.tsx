@@ -1,14 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { services } from "@/data/services";
+// import { services } from "@/data/services";
+
+interface Service {
+  _id: string;
+  name: string;
+  description: string;
+  category: string;
+  price: number;
+  duration: number;
+  image: string;
+  isActive: boolean;
+  isFeatured: boolean;
+}
 
 export default function ServicesPage() {
   const router = useRouter();
+  const [services, setServices] = useState<Service[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchServices();
+  }, []);
+
+  const fetchServices = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch("/api/services?limit=50&isActive=true");
+      const data = await response.json();
+
+      if (response.ok) {
+        setServices(data.services || []);
+      } else {
+        console.error("Failed to fetch services:", data);
+      }
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleBookAppointment = (serviceId: string) => {
     router.push(`/book-appointment?service=${serviceId}`);
@@ -46,93 +82,110 @@ export default function ServicesPage() {
 
       {/* Services Grid */}
       <Container className="py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-          {services.map((service) => (
-            <div
-              key={service.id}
-              className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] flex flex-col h-full group"
-            >
-              {/* Service Image */}
-              <div className="relative h-48 md:h-56 bg-zinc-100 overflow-hidden">
-                <Image
-                  src={service.image}
-                  alt={service.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
-                <div className="absolute top-4 left-4">
-                  <span className="px-3 py-1.5 bg-rose-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg">
-                    {service.duration}
-                  </span>
+        {loading ? (
+          <div className="flex justify-center items-center py-16">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+            {services.map((service) => (
+              <div
+                key={service._id}
+                className="bg-white border border-zinc-200 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] flex flex-col h-full group"
+              >
+                {/* Service Image */}
+                <div className="relative h-48 md:h-56 bg-zinc-100 overflow-hidden">
+                  <Image
+                    src={service.image}
+                    alt={service.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
+                  <div className="absolute top-4 left-4">
+                    <span className="px-3 py-1.5 bg-rose-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg">
+                      {service.duration}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-4 left-4 right-4">
+                    <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
+                      {service.title}
+                    </h3>
+                    <p className="text-white/90 text-sm md:text-base font-medium">
+                      {service.price}
+                    </p>
+                  </div>
                 </div>
-                <div className="absolute bottom-4 left-4 right-4">
-                  <h3 className="text-xl md:text-2xl font-bold text-white mb-1">
-                    {service.title}
-                  </h3>
-                  <p className="text-white/90 text-sm md:text-base font-medium">
-                    {service.price}
+
+                {/* Service Content */}
+                <div className="p-6 flex flex-col flex-grow">
+                  <p className="text-zinc-600 mb-4 leading-relaxed text-sm md:text-base">
+                    {service.description}
                   </p>
-                </div>
-              </div>
 
-              {/* Service Content */}
-              <div className="p-6 flex flex-col flex-grow">
-                <p className="text-zinc-600 mb-4 leading-relaxed text-sm md:text-base">
-                  {service.description}
-                </p>
-
-                {/* Features */}
-                <div className="mb-6 flex-grow">
-                  <h4 className="font-semibold text-zinc-900 mb-3 flex items-center text-sm md:text-base">
-                    <span className="w-2 h-2 bg-rose-500 rounded-full mr-2"></span>
-                    What's Included
-                  </h4>
-                  <ul className="space-y-2">
-                    {service.features.slice(0, 3).map((feature, index) => (
-                      <li
-                        key={index}
-                        className="text-sm text-zinc-600 flex items-start"
-                      >
-                        <svg
-                          className="w-4 h-4 text-rose-500 mr-2 mt-0.5 flex-shrink-0"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+                  {/* Features */}
+                  <div className="mb-6 flex-grow">
+                    <h4 className="font-semibold text-zinc-900 mb-3 flex items-center text-sm md:text-base">
+                      <span className="w-2 h-2 bg-rose-500 rounded-full mr-2"></span>
+                      What's Included
+                    </h4>
+                    <ul className="space-y-2">
+                      {service.features.slice(0, 3).map((feature, index) => (
+                        <li
+                          key={index}
+                          className="text-sm text-zinc-600 flex items-start"
                         >
-                          <path
-                            fillRule="evenodd"
-                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                            clipRule="evenodd"
-                          />
-                        </svg>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                          <svg
+                            className="w-4 h-4 text-rose-500 mr-2 mt-0.5 flex-shrink-0"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                          >
+                            <path
+                              fillRule="evenodd"
+                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                              clipRule="evenodd"
+                            />
+                          </svg>
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                {/* Action Buttons - Always at bottom */}
-                <div className="flex gap-3 mt-auto">
-                  {/* View Details Button */}
-                  <Link
-                    href={`/services/${service.id}`}
-                    className="flex-1 bg-zinc-100 text-zinc-700 font-medium py-2.5 px-4 rounded-lg hover:bg-zinc-200 transition-all duration-300 font-outfit border border-zinc-200 text-sm md:text-base text-center"
-                  >
-                    View Details
-                  </Link>
+                  {/* Action Buttons - Always at bottom */}
+                  <div className="flex gap-3 mt-auto">
+                    {/* View Details Button */}
+                    <Link
+                      href={`/services/${service._id}`}
+                      className="flex-1 bg-zinc-100 text-zinc-700 font-medium py-2.5 px-4 rounded-lg hover:bg-zinc-200 transition-all duration-300 font-outfit border border-zinc-200 text-sm md:text-base text-center"
+                    >
+                      View Details
+                    </Link>
 
-                  {/* Book Appointment Button */}
-                  <button
-                    onClick={() => handleBookAppointment(service.id)}
-                    className="flex-[2] bg-rose-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-rose-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
-                  >
-                    Book Appointment
-                  </button>
+                    {/* Book Appointment Button */}
+                    <button
+                      onClick={() => handleBookAppointment(service._id)}
+                      className="flex-[2] bg-rose-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-rose-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+                    >
+                      Book Appointment
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+
+        {!loading && services.length === 0 && (
+          <div className="text-center py-16">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No Services Available
+            </h3>
+            <p className="text-gray-600">
+              Please check back later for our latest services.
+            </p>
+          </div>
+        )}
       </Container>
 
       {/* Why Choose Us Section */}

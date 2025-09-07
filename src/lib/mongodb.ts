@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-const MONGODB_URI =
-  process.env.MONGODB_URI || "mongodb+srv://blessednur67:HOODQUAN67@cluster0.sunbk4n.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// Load environment variables from .env file
+dotenv.config();
+
+const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
   throw new Error(

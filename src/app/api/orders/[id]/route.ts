@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import Order from "@/models/Order";
+import GlowOrder from "@/models/Order";
 
 // GET /api/orders/[id] - Get a single order
 export async function GET(
@@ -11,7 +11,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const order = await Order.findById(id).populate(
+    const order = await GlowOrder.findById(id).populate(
       "items.productId",
       "name brand model image"
     );
@@ -41,7 +41,7 @@ export async function PUT(
 
     const updateData = await request.json();
 
-    const order = await Order.findByIdAndUpdate(
+    const order = await GlowOrder.findByIdAndUpdate(
       id,
       { ...updateData, updatedAt: new Date() },
       { new: true, runValidators: true }
@@ -73,7 +73,7 @@ export async function DELETE(
   try {
     await connectDB();
 
-    const order = await Order.findByIdAndDelete(id);
+    const order = await GlowOrder.findByIdAndDelete(id);
 
     if (!order) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });

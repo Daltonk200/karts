@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
 import Link from "next/link";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -12,6 +13,7 @@ export default function LoginPage() {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     // Check if already logged in
@@ -61,24 +63,28 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-rose-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-bold text-zinc-900">
-            Guitar Shop Dashboard
+        {/* Logo and Branding */}
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-zinc-900 font-caveat">
+            GlowBeauty
           </h2>
-          <p className="mt-2 text-center text-sm text-zinc-600">
-            Sign in to your account
+          <p className="mt-2 text-lg text-rose-600 font-outfit font-medium">
+            Admin Dashboard
+          </p>
+          <p className="mt-1 text-sm text-zinc-600 font-outfit">
+            Sign in to manage your beauty empire
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-8 border border-zinc-200">
-            <div className="space-y-4">
+          <div className="bg-white p-8 rounded-2xl shadow-xl border border-rose-100">
+            <div className="space-y-6">
               <div>
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium text-zinc-700"
+                  className="block text-sm font-medium text-zinc-700 font-outfit mb-2"
                 >
                   Username
                 </label>
@@ -89,7 +95,7 @@ export default function LoginPage() {
                   required
                   value={formData.username}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent"
+                  className="mt-1 block w-full px-4 py-3 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 font-outfit placeholder-zinc-400"
                   placeholder="Enter your username"
                 />
               </div>
@@ -97,31 +103,83 @@ export default function LoginPage() {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-zinc-700"
+                  className="block text-sm font-medium text-zinc-700 font-outfit mb-2"
                 >
                   Password
                 </label>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full px-3 py-2 border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:border-transparent"
-                  placeholder="Enter your password"
-                />
+                <div className="relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full px-4 py-3 pr-12 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 font-outfit placeholder-zinc-400"
+                    placeholder="Enter your password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-rose-500 transition-colors duration-200"
+                  >
+                    {showPassword ? (
+                     <Eye className="h-5 w-5"/>
+                    ) : (
+                      <EyeOff className="h-5 w-5"/>
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
 
-            <div className="mt-6">
+            <div className="mt-8">
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-zinc-900 hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-zinc-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium text-white bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] font-outfit"
               >
-                {loading ? "Signing in..." : "Sign in"}
+                {loading ? (
+                  <>
+                    <svg
+                      className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Signing in...
+                  </>
+                ) : (
+                  "Sign in to Dashboard"
+                )}
               </button>
+            </div>
+
+            {/* Demo Credentials */}
+            <div className="mt-6 p-4 bg-rose-50 rounded-lg border border-rose-200">
+              <p className="text-xs text-rose-700 font-outfit font-medium mb-2">
+                Demo Credentials:
+              </p>
+              <p className="text-xs text-rose-600 font-outfit">
+                Username: <span className="font-semibold">admin</span>
+              </p>
+              <p className="text-xs text-rose-600 font-outfit">
+                Password: <span className="font-semibold">admin123</span>
+              </p>
             </div>
           </div>
         </form>
@@ -129,9 +187,22 @@ export default function LoginPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="text-sm text-zinc-600 hover:text-zinc-900 transition-colors duration-200"
+            className="inline-flex items-center text-sm text-zinc-600 hover:text-rose-600 transition-colors duration-200 font-outfit group"
           >
-            ← Back to website
+            <svg
+              className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            Back to GlowBeauty Store
           </Link>
         </div>
       </div>

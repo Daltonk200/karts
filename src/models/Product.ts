@@ -15,72 +15,81 @@ const productSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
+  originalPrice: {
+    type: Number,
+    min: 0,
+  },
   brand: {
     type: String,
     trim: true,
-    default: "",
+    required: true,
   },
-  model: {
-    type: String,
-    trim: true,
-    default: "",
-  },
-  year: {
-    type: Number,
-    default: new Date().getFullYear(),
-  },
-  condition: {
+  category: {
     type: String,
     enum: [
-      "New",
-      "Used",
-      "Vintage",
-      "Excellent",
-      "Very Good",
-      "Good",
-      "Fair",
-      "Poor",
+      "Skincare",
+      "Makeup",
+      "Fragrances",
+      "Hair Care",
+      "Body Care",
+      "Men's Grooming",
+      "Tools & Accessories",
     ],
-    default: "New",
+    required: true,
+  },
+  skinType: {
+    type: String,
+    enum: [
+      "All Types",
+      "Mature Skin",
+      "Dry Skin",
+      "Sensitive Skin",
+      "Acne-Prone Skin",
+      "Oily Skin",
+      "Combination Skin",
+    ],
+    default: "All Types",
+  },
+  size: {
+    type: String,
+    default: "",
   },
   color: {
     type: String,
     default: "",
   },
-  body: {
+  ingredients: {
+    type: [String],
+    default: [],
+  },
+  benefits: {
+    type: [String],
+    default: [],
+  },
+  application: {
     type: String,
     default: "",
   },
-  neck: {
-    type: String,
-    default: "",
-  },
-  fretboard: {
-    type: String,
-    default: "",
-  },
-  pickups: {
-    type: String,
-    default: "",
-  },
-  bridge: {
-    type: String,
-    default: "",
-  },
+  // Main product image (first image in the array)
   image: {
     type: String,
     default: "",
   },
+  // Multiple product images
   images: {
     type: [String],
     default: [],
   },
-  category: {
-    type: String,
-    enum: ["Electric Guitars", "Acoustic Guitars", "Bass Guitars"],
-    default: "Electric Guitars",
+  // Cloudinary public IDs for image management
+  imagePublicIds: {
+    type: [String],
+    default: [],
   },
   isFeatured: {
+    type: Boolean,
+    default: false,
+  },
+  isOnSale: {
     type: Boolean,
     default: false,
   },
@@ -93,6 +102,32 @@ const productSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
+  },
+  rating: {
+    type: Number,
+    min: 0,
+    max: 5,
+    default: 0,
+  },
+  reviews: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  tags: {
+    type: [String],
+    default: [],
+  },
+  weight: {
+    type: String,
+    default: "",
+  },
+  dimensions: {
+    type: String,
+    default: "",
+  },
+  expiryDate: {
+    type: Date,
   },
   createdAt: {
     type: Date,
@@ -110,5 +145,5 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-export default mongoose.models.Product ||
-  mongoose.model("Product", productSchema);
+export default mongoose.models.GlowProduct ||
+  mongoose.model("GlowProduct", productSchema);
