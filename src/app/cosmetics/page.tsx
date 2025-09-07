@@ -99,7 +99,7 @@ function CosmeticsContent() {
           "All",
           ...new Set(data.products?.map((p: Product) => p.brand) || []),
         ];
-        setAvailableBrands(brands);
+        setAvailableBrands(brands as string[]);
       } else {
         console.error("Failed to fetch products:", data);
       }
