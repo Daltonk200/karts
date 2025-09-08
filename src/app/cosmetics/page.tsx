@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 import { Product } from "@/data/mockProducts";
 import CosmeticsHero from "@/components/cosmetics/CosmeticsHero";
 import CosmeticsFilters from "@/components/cosmetics/CosmeticsFilters";
@@ -11,8 +10,17 @@ import Loader from "@/components/Loader";
 const ITEMS_PER_PAGE = 12;
 
 function CosmeticsContent() {
-  const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const hasInitialized = useRef(false);
+
+  // Debug component lifecycle
+  useEffect(() => {
+    console.log("🔄 CosmeticsContent component MOUNTED");
+    return () => {
+      console.log("🔄 CosmeticsContent component UNMOUNTED");
+    };
+  }, []);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [availableBrands, setAvailableBrands] = useState<string[]>(["All"]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -20,6 +28,74 @@ function CosmeticsContent() {
   const [selectedSkinType, setSelectedSkinType] = useState("All");
   const [selectedPriceRange, setSelectedPriceRange] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Debug function to track search query changes
+  const debugSetSearchQuery = (newQuery: string, source: string) => {
+    console.log(
+      `Search query changed from "${searchQuery}" to "${newQuery}" (source: ${source})`
+    );
+    setSearchQuery(newQuery);
+
+    // Update sessionStorage
+    if (typeof window !== "undefined") {
+      if (newQuery) {
+        sessionStorage.setItem("cosmetics_search_query", newQuery);
+      } else {
+        sessionStorage.removeItem("cosmetics_search_query");
+      }
+    }
+  };
+
+  // Initialize state from URL params only once
+  useEffect(() => {
+    if (!hasInitialized.current && typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSearchQuery = urlParams.get("search") || "";
+      const urlCategory = urlParams.get("category") || "All";
+
+      console.log("🏗️ Initializing state from URL:", {
+        search: urlSearchQuery,
+        category: urlCategory,
+      });
+
+      if (urlSearchQuery) {
+        debugSetSearchQuery(urlSearchQuery, "URL initialization");
+        // Store in sessionStorage to persist across remounts
+        sessionStorage.setItem("cosmetics_search_query", urlSearchQuery);
+      }
+      if (urlCategory !== "All") {
+        setSelectedCategory(urlCategory);
+        sessionStorage.setItem("cosmetics_category", urlCategory);
+      }
+
+      hasInitialized.current = true;
+    }
+  }, []);
+
+  // Restore state from sessionStorage if component remounts
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedSearchQuery = sessionStorage.getItem("cosmetics_search_query");
+      const savedCategory = sessionStorage.getItem("cosmetics_category");
+
+      if (savedSearchQuery && savedSearchQuery !== searchQuery) {
+        console.log(
+          "🔄 Restoring search query from sessionStorage:",
+          savedSearchQuery
+        );
+        debugSetSearchQuery(savedSearchQuery, "sessionStorage restore");
+      }
+
+      if (savedCategory && savedCategory !== selectedCategory) {
+        console.log(
+          "🔄 Restoring category from sessionStorage:",
+          savedCategory
+        );
+        setSelectedCategory(savedCategory);
+      }
+    }
+  }, []);
+
   const [sortBy, setSortBy] = useState("featured");
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,19 +103,33 @@ function CosmeticsContent() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Initialize search query and category from URL params
+  // Handle URL parameter changes (for navigation within the app)
   useEffect(() => {
-    const urlSearchQuery = searchParams.get("search");
-    const urlCategory = searchParams.get("category");
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlSearchQuery = urlParams.get("search");
+      const urlCategory = urlParams.get("category");
 
-    if (urlSearchQuery) {
-      setSearchQuery(urlSearchQuery);
-    }
+      console.log("URL params changed via popstate:", {
+        urlSearchQuery,
+        urlCategory,
+        currentSearchQuery: searchQuery,
+      });
 
-    if (urlCategory) {
-      setSelectedCategory(urlCategory);
-    }
-  }, [searchParams]);
+      // Only update if the URL parameter is different from current state
+      if (urlSearchQuery !== searchQuery) {
+        // console.log("Updating search query from URL:", urlSearchQuery);
+        debugSetSearchQuery(urlSearchQuery || "", "URL params effect");
+      }
+
+      if (urlCategory !== selectedCategory) {
+        setSelectedCategory(urlCategory || "All");
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, [searchQuery, selectedCategory]);
 
   // Fetch products from API
   useEffect(() => {
@@ -66,6 +156,7 @@ function CosmeticsContent() {
 
       if (searchQuery) {
         params.append("search", searchQuery);
+        // console.log("Search query being sent to API:", searchQuery);
       }
 
       if (selectedCategory !== "All") {
@@ -127,7 +218,7 @@ function CosmeticsContent() {
     setSelectedBrand("All");
     setSelectedSkinType("All");
     setSelectedPriceRange("All");
-    setSearchQuery("");
+    debugSetSearchQuery("", "clearAllFilters");
     setCurrentPage(1);
   };
 
@@ -137,7 +228,9 @@ function CosmeticsContent() {
 
       <CosmeticsFilters
         searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
+        setSearchQuery={(query) =>
+          debugSetSearchQuery(query, "CosmeticsFilters input")
+        }
         sortBy={sortBy}
         setSortBy={setSortBy}
         viewMode={viewMode}
@@ -172,9 +265,5 @@ function CosmeticsContent() {
 }
 
 export default function CosmeticsPage() {
-  return (
-    <Suspense fallback={<Loader />}>
-      <CosmeticsContent />
-    </Suspense>
-  );
+  return <CosmeticsContent />;
 }

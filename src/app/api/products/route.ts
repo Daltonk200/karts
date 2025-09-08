@@ -21,6 +21,8 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get("sortBy") || "createdAt";
     const sortOrder = searchParams.get("sortOrder") || "desc";
 
+    console.log("API received search parameter:", search);
+
     const skip = (page - 1) * limit;
 
     // Build filter object

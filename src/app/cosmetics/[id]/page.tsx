@@ -9,7 +9,8 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
-import { mockProducts, Product } from "@/data/mockProducts";
+import { Product } from "@/data/mockProducts";
+import ProductRating from "@/components/cosmetics/ProductRating";
 
 export default function CosmeticsDetailPage() {
   const params = useParams();
@@ -17,6 +18,7 @@ export default function CosmeticsDetailPage() {
   const productId = params.id as string;
   const [selectedImage, setSelectedImage] = useState(0);
   const [product, setProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,22 +26,57 @@ export default function CosmeticsDetailPage() {
     useWishlistStore();
   const { addToCart, removeFromCart, isInCart } = useCartStore();
 
+  // Fetch related products
+  const fetchRelatedProducts = async (
+    category: string,
+    currentProductId: string
+  ) => {
+    try {
+      const response = await fetch(
+        `/api/products?category=${encodeURIComponent(category)}&limit=8`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        // Filter out the current product and limit to 8 products
+        const related = data.products
+          .filter((p: Product) => p._id !== currentProductId)
+          .slice(0, 8);
+        setRelatedProducts(related);
+      }
+    } catch (error) {
+      console.error("Error fetching related products:", error);
+      // Don't set error state for related products, just log it
+    }
+  };
+
   // Fetch product data
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 300));
+        setError(null);
 
-        const foundProduct = mockProducts.find((p) => p._id === productId);
+        const response = await fetch(`/api/products/${productId}`);
 
-        if (!foundProduct) {
-          setError("Product not found");
+        if (!response.ok) {
+          if (response.status === 404) {
+            setError("Product not found");
+          } else {
+            setError("Failed to load product");
+          }
           return;
         }
 
-        setProduct(foundProduct);
+        const productData = await response.json();
+        setProduct(productData);
+
+        // Fetch related products after main product is loaded
+        if (productData.category) {
+          fetchRelatedProducts(productData.category, productId);
+        }
       } catch (error) {
+        console.error("Error fetching product:", error);
         setError("Failed to load product");
       } finally {
         setLoading(false);
@@ -129,11 +166,6 @@ export default function CosmeticsDetailPage() {
     product.image,
     product.image,
   ];
-
-  // Get related products
-  const relatedProducts = mockProducts
-    .filter((p) => p.category === product.category && p._id !== product._id)
-    .slice(0, 8);
 
   return (
     <div className="min-h-screen bg-white">
@@ -417,6 +449,15 @@ export default function CosmeticsDetailPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Product Rating & Reviews */}
+        <div className="mb-20">
+          <ProductRating
+            productId={product._id}
+            currentRating={product.rating || 0}
+            reviewCount={product.reviews || 0}
+          />
         </div>
 
         {/* Related Products Slider */}
