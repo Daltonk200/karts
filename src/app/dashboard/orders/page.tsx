@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DeleteConfirmationModal from "@/components/ui/delete-confirmation-modal";
 
 interface Order {
   _id: string;
@@ -42,6 +43,15 @@ export default function OrdersPage() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalOrders, setTotalOrders] = useState(0);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    orderId: string | null;
+    orderNumber: string;
+  }>({
+    isOpen: false,
+    orderId: null,
+    orderNumber: "",
+  });
 
   useEffect(() => {
     fetchOrders();
@@ -111,14 +121,20 @@ export default function OrdersPage() {
     }
   };
 
-  const handleDelete = async (orderId: string) => {
-    if (!confirm("Are you sure you want to delete this order?")) {
-      return;
-    }
+  const handleDeleteClick = (orderId: string, orderNumber: string) => {
+    setDeleteModal({
+      isOpen: true,
+      orderId,
+      orderNumber,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.orderId) return;
 
     try {
       const token = localStorage.getItem("dashboard_token");
-      const response = await fetch(`/api/orders/${orderId}`, {
+      const response = await fetch(`/api/orders/${deleteModal.orderId}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -128,6 +144,7 @@ export default function OrdersPage() {
       if (response.ok) {
         toast.success("Order deleted successfully");
         fetchOrders();
+        setDeleteModal({ isOpen: false, orderId: null, orderNumber: "" });
       } else {
         toast.error("Failed to delete order");
       }
@@ -135,6 +152,10 @@ export default function OrdersPage() {
       console.error("Error deleting order:", error);
       toast.error("An error occurred while deleting the order");
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, orderId: null, orderNumber: "" });
   };
 
   const getStatusColor = (status: string) => {
@@ -378,7 +399,9 @@ export default function OrdersPage() {
                               View Details
                             </Link>
                             <button
-                              onClick={() => handleDelete(order._id)}
+                              onClick={() =>
+                                handleDeleteClick(order._id, order.orderNumber)
+                              }
                               className="text-red-600 hover:text-red-900 text-xs text-left"
                             >
                               Delete
@@ -441,6 +464,17 @@ export default function OrdersPage() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Order"
+        description="Are you sure you want to delete this order? This action cannot be undone."
+        itemName={`Order #${deleteModal.orderNumber}`}
+        isLoading={false}
+      />
     </DashboardLayout>
   );
 }

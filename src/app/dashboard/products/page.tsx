@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DeleteConfirmationModal from "@/components/ui/delete-confirmation-modal";
 
 interface Product {
   _id: string;
@@ -39,6 +40,15 @@ export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    productId: string | null;
+    productName: string;
+  }>({
+    isOpen: false,
+    productId: null,
+    productName: "",
+  });
 
   const categories = [
     "All",
@@ -97,13 +107,19 @@ export default function ProductsPage() {
     }
   };
 
-  const handleDelete = async (productId: string) => {
-    if (!confirm("Are you sure you want to delete this product?")) {
-      return;
-    }
+  const handleDeleteClick = (productId: string, productName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      productId,
+      productName,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.productId) return;
 
     try {
-      setDeletingId(productId);
+      setDeletingId(deleteModal.productId);
       const token = localStorage.getItem("dashboard_token");
       const headers: HeadersInit = {};
 
@@ -111,7 +127,7 @@ export default function ProductsPage() {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const response = await fetch(`/api/products/${productId}`, {
+      const response = await fetch(`/api/products/${deleteModal.productId}`, {
         method: "DELETE",
         headers,
       });
@@ -119,6 +135,7 @@ export default function ProductsPage() {
       if (response.ok) {
         toast.success("Product deleted successfully");
         fetchProducts();
+        setDeleteModal({ isOpen: false, productId: null, productName: "" });
       } else {
         toast.error("Failed to delete product");
       }
@@ -128,6 +145,10 @@ export default function ProductsPage() {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, productId: null, productName: "" });
   };
 
   const toggleFeatured = async (productId: string, currentStatus: boolean) => {
@@ -402,7 +423,9 @@ export default function ProductsPage() {
                           </svg>
                         </Link>
                         <button
-                          onClick={() => handleDelete(product._id)}
+                          onClick={() =>
+                            handleDeleteClick(product._id, product.name)
+                          }
                           disabled={deletingId === product._id}
                           className="p-1 text-gray-400 hover:text-red-600 rounded disabled:opacity-50"
                           title="Delete product"
@@ -502,6 +525,17 @@ export default function ProductsPage() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Product"
+        description="Are you sure you want to delete this product? This action cannot be undone."
+        itemName={deleteModal.productName}
+        isLoading={deletingId === deleteModal.productId}
+      />
     </DashboardLayout>
   );
 }

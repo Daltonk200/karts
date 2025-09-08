@@ -11,6 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import DeleteConfirmationModal from "@/components/ui/delete-confirmation-modal";
 
 interface Service {
   _id: string;
@@ -34,6 +35,15 @@ export default function ServicesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteModal, setDeleteModal] = useState<{
+    isOpen: boolean;
+    serviceId: string | null;
+    serviceName: string;
+  }>({
+    isOpen: false,
+    serviceId: null,
+    serviceName: "",
+  });
 
   const categories = [
     "All",
@@ -93,13 +103,19 @@ export default function ServicesPage() {
     }
   };
 
-  const handleDelete = async (serviceId: string) => {
-    if (!confirm("Are you sure you want to delete this service?")) {
-      return;
-    }
+  const handleDeleteClick = (serviceId: string, serviceName: string) => {
+    setDeleteModal({
+      isOpen: true,
+      serviceId,
+      serviceName,
+    });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deleteModal.serviceId) return;
 
     try {
-      setDeletingId(serviceId);
+      setDeletingId(deleteModal.serviceId);
       const token = localStorage.getItem("dashboard_token");
       const headers: HeadersInit = {};
 
@@ -107,7 +123,7 @@ export default function ServicesPage() {
         headers.Authorization = `Bearer ${token}`;
       }
 
-      const response = await fetch(`/api/services/${serviceId}`, {
+      const response = await fetch(`/api/services/${deleteModal.serviceId}`, {
         method: "DELETE",
         headers,
       });
@@ -115,6 +131,7 @@ export default function ServicesPage() {
       if (response.ok) {
         toast.success("Service deleted successfully");
         fetchServices();
+        setDeleteModal({ isOpen: false, serviceId: null, serviceName: "" });
       } else {
         const errorData = await response.json();
         toast.error(errorData.error || "Failed to delete service");
@@ -125,6 +142,10 @@ export default function ServicesPage() {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteModal({ isOpen: false, serviceId: null, serviceName: "" });
   };
 
   const toggleStatus = async (serviceId: string, currentStatus: boolean) => {
@@ -433,7 +454,9 @@ export default function ServicesPage() {
                           </svg>
                         </Link>
                         <button
-                          onClick={() => handleDelete(service._id)}
+                          onClick={() =>
+                            handleDeleteClick(service._id, service.name)
+                          }
                           disabled={deletingId === service._id}
                           className="p-1 text-gray-400 hover:text-red-600 rounded disabled:opacity-50"
                           title="Delete service"
@@ -533,6 +556,17 @@ export default function ServicesPage() {
           </div>
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <DeleteConfirmationModal
+        isOpen={deleteModal.isOpen}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete Service"
+        description="Are you sure you want to delete this service? This action cannot be undone."
+        itemName={deleteModal.serviceName}
+        isLoading={deletingId === deleteModal.serviceId}
+      />
     </DashboardLayout>
   );
 }

@@ -224,7 +224,7 @@ export default function Navbar() {
         <div className="flex items-center space-x-3">
           {/* Enhanced Search - Hidden on Mobile */}
           <div className="relative hidden lg:block">
-            <div className="relative">
+            <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 type="text"
                 placeholder="Search products..."
@@ -266,7 +266,7 @@ export default function Navbar() {
                   </svg>
                 )}
               </div>
-            </div>
+            </form>
 
             {/* Enhanced Search Results Dropdown */}
             {isSearchOpen && searchQuery.trim().length >= 2 && (
@@ -277,7 +277,7 @@ export default function Navbar() {
                       <button
                         key={product._id}
                         onClick={() => handleResultClick(product._id)}
-                        className="w-full px-4 py-3 text-left  border-b border-zinc-100 last:border-b-0 flex items-center space-x-3 transition-colors duration-200"
+                        className="w-full px-4 py-3 text-left border-b border-zinc-100 last:border-b-0 flex items-center space-x-3 transition-colors duration-200 hover:bg-zinc-50"
                       >
                         <div className="w-12 h-12 bg-rose-100 flex-shrink-0 rounded-[5px] overflow-hidden">
                           <Image
@@ -292,7 +292,8 @@ export default function Navbar() {
                             {product.name}
                           </div>
                           <div className="text-xs text-zinc-500">
-                            {product.brand} • ${product.price.toLocaleString()}
+                            {product.brand} • XAF{" "}
+                            {product.price.toLocaleString()}
                           </div>
                         </div>
                       </button>
@@ -471,12 +472,13 @@ export default function Navbar() {
 
           {/* Mobile Search */}
           <div className="mb-6">
-            <div className="relative">
+            <form onSubmit={handleSearchSubmit} className="relative">
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchOpen(true)}
                 className="w-full px-4 py-3 pr-12 bg-zinc-50 border border-zinc-200 text-sm rounded-[5px] focus:outline-none focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100 transition-all duration-200"
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -498,7 +500,73 @@ export default function Navbar() {
                   </svg>
                 )}
               </div>
-            </div>
+            </form>
+
+            {/* Mobile Search Results */}
+            {isSearchOpen && searchQuery.trim().length >= 2 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-zinc-200 rounded-[5px] shadow-xl z-50 max-h-64 overflow-y-auto">
+                {searchResults.length > 0 ? (
+                  <>
+                    {searchResults.map((product) => (
+                      <button
+                        key={product._id}
+                        onClick={() => handleResultClick(product._id)}
+                        className="w-full px-4 py-3 text-left border-b border-zinc-100 last:border-b-0 flex items-center space-x-3 transition-colors duration-200 hover:bg-zinc-50"
+                      >
+                        <div className="w-10 h-10 bg-rose-100 flex-shrink-0 rounded-[5px] overflow-hidden">
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-zinc-900 truncate">
+                            {product.name}
+                          </div>
+                          <div className="text-xs text-zinc-500">
+                            {product.brand} • XAF{" "}
+                            {product.price.toLocaleString()}
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                    <div className="px-4 py-3 bg-rose-50 border-t border-rose-200">
+                      <button
+                        type="submit"
+                        onClick={handleSearchSubmit}
+                        className="w-full text-sm text-rose-600 hover:text-rose-700 text-center font-medium"
+                      >
+                        View all results ({searchResults.length})
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <div className="px-4 py-6 text-center">
+                    <div className="text-zinc-400 mb-2">
+                      <svg
+                        className="w-6 h-6 mx-auto"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                        />
+                      </svg>
+                    </div>
+                    <p className="text-sm text-zinc-500">No products found</p>
+                    <p className="text-xs text-zinc-400 mt-1">
+                      Try different keywords
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Mobile Navigation Links */}
