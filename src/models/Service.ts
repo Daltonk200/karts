@@ -36,7 +36,7 @@ const serviceSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: "",
+    required: true,
   },
   images: {
     type: [String],
@@ -63,8 +63,8 @@ const serviceSchema = new mongoose.Schema({
     default: [],
   },
   requirements: {
-    type: String,
-    default: "",
+    type: [String],
+    default: [],
   },
   preparation: {
     type: String,

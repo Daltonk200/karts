@@ -157,6 +157,13 @@ export default function CreateServicePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!formData.image) {
+      toast.error("Please upload a cover image for the service");
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -296,6 +303,70 @@ export default function CreateServicePage() {
                   placeholder="Describe the service in detail..."
                   required
                 />
+              </div>
+            </div>
+
+            {/* Cover Image */}
+            <div className="bg-white shadow rounded-lg p-6">
+              <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                Cover Image
+              </h2>
+
+              <div className="space-y-4">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Service Cover Image *
+                </label>
+                <div className="space-y-4">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (file) {
+                        setIsSubmitting(true);
+                        try {
+                          const formData = new FormData();
+                          formData.append("images", file);
+                          formData.append("folder", "glowbeauty/services");
+
+                          const response = await fetch("/api/upload", {
+                            method: "POST",
+                            body: formData,
+                          });
+
+                          if (response.ok) {
+                            const data = await response.json();
+                            setFormData((prev) => ({
+                              ...prev,
+                              image: data.images[0].secureUrl,
+                            }));
+                            toast.success("Image uploaded successfully!");
+                          } else {
+                            toast.error("Failed to upload image");
+                          }
+                        } catch (error) {
+                          console.error("Upload error:", error);
+                          toast.error("Failed to upload image");
+                        } finally {
+                          setIsSubmitting(false);
+                        }
+                      }
+                    }}
+                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                  />
+                </div>
+                {formData.image && (
+                  <div className="mt-4">
+                    <p className="text-sm text-gray-600 mb-2">Preview:</p>
+                    <div className="relative w-32 h-32 border border-gray-200 rounded-lg overflow-hidden">
+                      <img
+                        src={formData.image}
+                        alt="Service preview"
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
 

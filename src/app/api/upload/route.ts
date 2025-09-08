@@ -6,6 +6,7 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
     const files = formData.getAll("images") as File[];
+    const folder = (formData.get("folder") as string) || "glowbeauty/products";
 
     if (!files || files.length === 0) {
       return NextResponse.json(
@@ -16,19 +17,24 @@ export async function POST(request: NextRequest) {
 
     // Validate file types
     const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-    const invalidFiles = files.filter(file => !allowedTypes.includes(file.type));
-    
+    const invalidFiles = files.filter(
+      (file) => !allowedTypes.includes(file.type)
+    );
+
     if (invalidFiles.length > 0) {
       return NextResponse.json(
-        { error: "Invalid file type. Only JPEG, PNG, and WebP images are allowed." },
+        {
+          error:
+            "Invalid file type. Only JPEG, PNG, and WebP images are allowed.",
+        },
         { status: 400 }
       );
     }
 
     // Validate file sizes (max 10MB per file)
     const maxSize = 10 * 1024 * 1024; // 10MB
-    const oversizedFiles = files.filter(file => file.size > maxSize);
-    
+    const oversizedFiles = files.filter((file) => file.size > maxSize);
+
     if (oversizedFiles.length > 0) {
       return NextResponse.json(
         { error: "File size too large. Maximum size is 10MB per file." },
@@ -40,11 +46,11 @@ export async function POST(request: NextRequest) {
 
     if (files.length === 1) {
       // Upload single image
-      const result = await uploadSingleImage(files[0]);
+      const result = await uploadSingleImage(files[0], folder);
       uploadResults = [result];
     } else {
       // Upload multiple images
-      uploadResults = await uploadMultipleImages(files);
+      uploadResults = await uploadMultipleImages(files, folder);
     }
 
     // Extract relevant data from upload results
@@ -61,7 +67,6 @@ export async function POST(request: NextRequest) {
       images: uploadedImages,
       count: uploadedImages.length,
     });
-
   } catch (error) {
     console.error("Upload error:", error);
     return NextResponse.json(

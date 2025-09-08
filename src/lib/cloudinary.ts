@@ -7,7 +7,10 @@ cloudinary.config({
 });
 
 // Helper function to upload multiple images
-export const uploadMultipleImages = async (files: File[]) => {
+export const uploadMultipleImages = async (
+  files: File[],
+  folder: string = "glowbeauty/products"
+) => {
   const uploadPromises = files.map(async (file) => {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
@@ -17,7 +20,7 @@ export const uploadMultipleImages = async (files: File[]) => {
         .upload_stream(
           {
             resource_type: "auto",
-            folder: "glowbeauty/products",
+            folder: folder,
             transformation: [
               { width: 800, height: 800, crop: "fill", quality: "auto" },
               { format: "webp" },
@@ -36,7 +39,10 @@ export const uploadMultipleImages = async (files: File[]) => {
 };
 
 // Helper function to upload single image
-export const uploadSingleImage = async (file: File) => {
+export const uploadSingleImage = async (
+  file: File,
+  folder: string = "glowbeauty/products"
+) => {
   const bytes = await file.arrayBuffer();
   const buffer = Buffer.from(bytes);
 
@@ -45,7 +51,7 @@ export const uploadSingleImage = async (file: File) => {
       .upload_stream(
         {
           resource_type: "auto",
-          folder: "glowbeauty/products",
+          folder: folder,
           transformation: [
             { width: 800, height: 800, crop: "fill", quality: "auto" },
             { format: "webp" },

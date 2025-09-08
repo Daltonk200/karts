@@ -83,8 +83,20 @@ export async function POST(request: NextRequest) {
 
     const serviceData = await request.json();
 
-    // Set main image as first image in the array
-    if (serviceData.images && serviceData.images.length > 0) {
+    // Validate required fields
+    if (!serviceData.image) {
+      return NextResponse.json(
+        { error: "Cover image is required" },
+        { status: 400 }
+      );
+    }
+
+    // If images array is provided and main image is not set, use first image
+    if (
+      serviceData.images &&
+      serviceData.images.length > 0 &&
+      !serviceData.image
+    ) {
       serviceData.image = serviceData.images[0];
     }
 
