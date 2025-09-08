@@ -352,8 +352,58 @@ export default function CreateServicePage() {
                         }
                       }
                     }}
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="hidden"
+                    id="service-image-upload"
                   />
+
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
+                      isSubmitting
+                        ? "border-rose-300 bg-rose-50"
+                        : "border-zinc-300 hover:border-rose-400 hover:bg-rose-50"
+                    }`}
+                    onClick={() =>
+                      document.getElementById("service-image-upload")?.click()
+                    }
+                  >
+                    <div className="space-y-2">
+                      <svg
+                        className="mx-auto h-12 w-12 text-zinc-400"
+                        stroke="currentColor"
+                        fill="none"
+                        viewBox="0 0 48 48"
+                      >
+                        <path
+                          d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                          strokeWidth={2}
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+
+                      <div className="text-sm text-zinc-600">
+                        <span className="font-medium text-rose-600 hover:text-rose-500">
+                          {formData.image ? "Change Image" : "Click to upload"}
+                        </span>{" "}
+                        or drag and drop
+                      </div>
+
+                      <p className="text-xs text-zinc-500">
+                        PNG, JPG, GIF up to 10MB
+                      </p>
+                    </div>
+
+                    {isSubmitting && (
+                      <div className="mt-4">
+                        <div className="flex items-center justify-center space-x-2">
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-rose-600"></div>
+                          <span className="text-sm text-zinc-600">
+                            Uploading...
+                          </span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
                 {formData.image && (
                   <div className="mt-4">
