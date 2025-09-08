@@ -429,7 +429,7 @@ export default function CosmeticsDetailPage() {
                 {/* Buy Now Button */}
                 <button
                   onClick={() => router.push(`/purchase/${product._id}`)}
-                  className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-teal-600 text-white font-medium hover:bg-teal-700 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2 hover:scale-[1.02]"
+                  className="flex-1 inline-flex items-center justify-center px-4 py-3 bg-transparent border-2 border-rose-600 text-rose-600 font-medium hover:bg-rose-50 hover:border-rose-700 hover:text-rose-700 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2 hover:scale-[1.02]"
                 >
                   <svg
                     className="w-4 h-4"

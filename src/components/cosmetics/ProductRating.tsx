@@ -181,18 +181,29 @@ export default function ProductRating({
                 Rating Distribution
               </div>
               <div className="space-y-1">
-                {[5, 4, 3, 2, 1].map((star) => (
-                  <div key={star} className="flex items-center space-x-2">
-                    <span className="text-xs text-gray-500 w-3">{star}</span>
-                    <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                    <div className="w-20 bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-yellow-400 h-2 rounded-full"
-                        style={{ width: `${Math.random() * 100}%` }}
-                      ></div>
+                {[5, 4, 3, 2, 1].map((star) => {
+                  const starCount = ratings.filter(
+                    (r) => r.rating === star
+                  ).length;
+                  const percentage =
+                    ratings.length > 0 ? (starCount / ratings.length) * 100 : 0;
+
+                  return (
+                    <div key={star} className="flex items-center space-x-2">
+                      <span className="text-xs text-gray-500 w-3">{star}</span>
+                      <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                      <div className="w-20 bg-gray-200 rounded-full h-2">
+                        <div
+                          className="bg-yellow-400 h-2 rounded-full transition-all duration-500"
+                          style={{ width: `${percentage}%` }}
+                        ></div>
+                      </div>
+                      <span className="text-xs text-gray-500 w-8">
+                        {starCount}
+                      </span>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </div>
