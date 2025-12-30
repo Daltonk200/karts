@@ -89,7 +89,7 @@ export default function Navbar() {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(
-        `/cosmetics?search=${encodeURIComponent(searchQuery.trim())}`
+        `/karts?search=${encodeURIComponent(searchQuery.trim())}`
       );
       setIsSearchOpen(false);
       setSearchQuery("");
@@ -98,7 +98,7 @@ export default function Navbar() {
   };
 
   const handleResultClick = (productId: string) => {
-    router.push(`/cosmetics/${productId}`);
+    router.push(`/karts/${productId}`);
     setIsSearchOpen(false);
     setSearchQuery("");
     setSearchResults([]);
@@ -106,11 +106,10 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-[999] transition-all duration-300 -mt-1 ${
-        isScrolled || !isHomePage
-          ? "bg-white/95 border-b border-rose-200 shadow-sm"
-          : "bg-transparent border-b border-transparent"
-      }`}
+      className={`sticky top-0 z-[999] transition-all duration-300 -mt-1 ${isScrolled || !isHomePage
+        ? "bg-white/95 border-b border-red-200 shadow-sm"
+        : "bg-transparent border-b border-transparent"
+        }`}
     >
       <Container className="flex items-center justify-between h-20">
         {/* Logo */}
@@ -118,8 +117,8 @@ export default function Navbar() {
           <div className="group-hover:scale-105 transition-transform duration-200">
             <div className="relative w-24 h-12 flex items-center justify-center">
               <Image
-                src="/glow_logo.png"
-                alt="GlowBeauty Logo"
+                src="/apex_logo.png"
+                alt="Apex Rush Karts Logo"
                 width={3000}
                 height={3000}
                 className="object-contain w-full h-full"
@@ -132,90 +131,64 @@ export default function Navbar() {
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center space-x-1">
           <Link
-            href="/cosmetics"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/cosmetics")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
+            href="/karts"
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${isActive("/karts")
+              ? " text-red-700"
+              : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-red-600 "
+                : "text-white hover:text-red-600 "
+              }`}
           >
             Our Shop
             <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/cosmetics") ? "w-full" : "w-0 group-hover:w-full"
-              }`}
+              className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 transition-all duration-200 ${isActive("/karts") ? "w-full" : "w-0 group-hover:w-full"
+                }`}
             ></span>
           </Link>
           <Link
             href="/services"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/services")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${isActive("/services")
+              ? " text-red-700"
+              : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-red-600 "
+                : "text-white hover:text-red-600 "
+              }`}
           >
             Services
             <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/services") ? "w-full" : "w-0 group-hover:w-full"
-              }`}
+              className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 transition-all duration-200 ${isActive("/services") ? "w-full" : "w-0 group-hover:w-full"
+                }`}
             ></span>
           </Link>
-          <Link
-            href="/book-appointment"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/book-appointment")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
-          >
-            Booking
-            <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/book-appointment")
-                  ? "w-full"
-                  : "w-0 group-hover:w-full"
-              }`}
-            ></span>
-          </Link>
+
           <Link
             href="/contact"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/contact")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${isActive("/contact")
+              ? " text-red-700"
+              : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-red-600 "
+                : "text-white hover:text-red-600 "
+              }`}
           >
             Contact
             <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/contact") ? "w-full" : "w-0 group-hover:w-full"
-              }`}
+              className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 transition-all duration-200 ${isActive("/contact") ? "w-full" : "w-0 group-hover:w-full"
+                }`}
             ></span>
           </Link>
           <Link
             href="/about"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${
-              isActive("/about")
-                ? " text-rose-700"
-                : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-rose-600 "
-                : "text-white hover:text-rose-600 "
-            }`}
+            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${isActive("/about")
+              ? " text-red-700"
+              : isScrolled || !isHomePage
+                ? "text-zinc-700 hover:text-red-600 "
+                : "text-white hover:text-red-600 "
+              }`}
           >
             About
             <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-rose-600 transition-all duration-200 ${
-                isActive("/about") ? "w-full" : "w-0 group-hover:w-full"
-              }`}
+              className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 transition-all duration-200 ${isActive("/about") ? "w-full" : "w-0 group-hover:w-full"
+                }`}
             ></span>
           </Link>
         </nav>
@@ -231,28 +204,25 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchOpen(true)}
-                className={`w-64 px-4 py-2.5 pr-10 text-sm rounded-[5px] focus:outline-none focus:ring-2 focus:ring-rose-100 transition-all duration-200 ${
-                  isScrolled || !isHomePage
-                    ? "bg-zinc-50 border border-zinc-200 focus:border-rose-300 focus:bg-white"
-                    : "bg-white/20 border border-white/30 text-white placeholder-white/70 focus:border-white/50 focus:bg-white/30"
-                }`}
+                className={`w-64 px-4 py-2.5 pr-10 text-sm rounded-[5px] focus:outline-none focus:ring-2 focus:ring-red-100 transition-all duration-200 ${isScrolled || !isHomePage
+                  ? "bg-zinc-50 border border-zinc-200 focus:border-red-300 focus:bg-white"
+                  : "bg-white/20 border border-white/30 text-white placeholder-white/70 focus:border-white/50 focus:bg-white/30"
+                  }`}
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 {isSearching ? (
                   <div
-                    className={`w-4 h-4 border-2 rounded-full animate-spin ${
-                      isScrolled || !isHomePage
-                        ? "border-rose-200 border-t-rose-500"
-                        : "border-white/50 border-t-white"
-                    }`}
+                    className={`w-4 h-4 border-2 rounded-full animate-spin ${isScrolled || !isHomePage
+                      ? "border-red-200 border-t-red-500"
+                      : "border-white/50 border-t-white"
+                      }`}
                   ></div>
                 ) : (
                   <svg
-                    className={`w-4 h-4 ${
-                      isScrolled || !isHomePage
-                        ? "text-zinc-400"
-                        : "text-white/70"
-                    }`}
+                    className={`w-4 h-4 ${isScrolled || !isHomePage
+                      ? "text-zinc-400"
+                      : "text-white/70"
+                      }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -279,7 +249,7 @@ export default function Navbar() {
                         onClick={() => handleResultClick(product._id)}
                         className="w-full px-4 py-3 text-left border-b border-zinc-100 last:border-b-0 flex items-center space-x-3 transition-colors duration-200 hover:bg-zinc-50"
                       >
-                        <div className="w-12 h-12 bg-rose-100 flex-shrink-0 rounded-[5px] overflow-hidden">
+                        <div className="w-12 h-12 bg-red-100 flex-shrink-0 rounded-[5px] overflow-hidden">
                           <Image
                             src={product.image}
                             alt={product.name}
@@ -300,11 +270,11 @@ export default function Navbar() {
                         </div>
                       </button>
                     ))}
-                    <div className="px-4 py-3 bg-rose-50 border-t border-rose-200">
+                    <div className="px-4 py-3 bg-red-50 border-t border-red-200">
                       <button
                         type="submit"
                         onClick={handleSearchSubmit}
-                        className="w-full text-sm text-rose-600 hover:text-rose-700 text-center font-medium"
+                        className="w-full text-sm text-red-600 hover:text-red-700 text-center font-medium"
                       >
                         View all results ({searchResults.length})
                       </button>
@@ -340,18 +310,16 @@ export default function Navbar() {
           {/* Cart Icon */}
           <Link
             href="/cart"
-            className={`relative flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${
-              isScrolled || !isHomePage
-                ? "bg-zinc-50 border border-zinc-200  hover:border-rose-200"
-                : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
-            }`}
+            className={`relative flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${isScrolled || !isHomePage
+              ? "bg-zinc-50 border border-zinc-200  hover:border-red-200"
+              : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
+              }`}
           >
             <svg
-              className={`w-5 h-5 transition-colors duration-200 ${
-                isScrolled || !isHomePage
-                  ? "text-zinc-600 group-hover:text-rose-600"
-                  : "text-white/80 group-hover:text-white"
-              }`}
+              className={`w-5 h-5 transition-colors duration-200 ${isScrolled || !isHomePage
+                ? "text-zinc-600 group-hover:text-red-600"
+                : "text-white/80 group-hover:text-white"
+                }`}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -364,7 +332,7 @@ export default function Navbar() {
               />
             </svg>
             {getCartItems() > 0 && (
-              <span className="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg">
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg">
                 {getCartItems()}
               </span>
             )}
@@ -373,22 +341,20 @@ export default function Navbar() {
           {/* Wishlist Icon */}
           <Link
             href="/wishlist"
-            className={`relative flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${
-              isScrolled || !isHomePage
-                ? "bg-zinc-50 border border-zinc-200  hover:border-rose-200"
-                : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
-            }`}
+            className={`relative flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${isScrolled || !isHomePage
+              ? "bg-zinc-50 border border-zinc-200  hover:border-red-200"
+              : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
+              }`}
           >
             <svg
-              className={`w-5 h-5 transition-colors duration-200 ${
-                wishlistItems.length > 0
-                  ? isScrolled || !isHomePage
-                    ? "text-rose-600"
-                    : "text-rose-600"
-                  : isScrolled || !isHomePage
-                  ? "text-zinc-600 group-hover:text-rose-600"
+              className={`w-5 h-5 transition-colors duration-200 ${wishlistItems.length > 0
+                ? isScrolled || !isHomePage
+                  ? "text-red-600"
+                  : "text-red-600"
+                : isScrolled || !isHomePage
+                  ? "text-zinc-600 group-hover:text-red-600"
                   : "text-white/80 group-hover:text-white"
-              }`}
+                }`}
               fill={wishlistItems.length > 0 ? "currentColor" : "none"}
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -401,7 +367,7 @@ export default function Navbar() {
               />
             </svg>
             {wishlistItems.length > 0 && (
-              <span className="absolute -top-2 -right-2 bg-rose-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg">
+              <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg">
                 {wishlistItems.length}
               </span>
             )}
@@ -410,28 +376,24 @@ export default function Navbar() {
           {/* Mobile menu button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className={`lg:hidden flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] ${
-              isScrolled || !isHomePage
-                ? "bg-zinc-50 border border-zinc-200  hover:border-rose-200"
-                : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
-            }`}
+            className={`lg:hidden flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] ${isScrolled || !isHomePage
+              ? "bg-zinc-50 border border-zinc-200  hover:border-red-200"
+              : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
+              }`}
             aria-label="Toggle menu"
           >
             <div className="flex flex-col space-y-1">
               <span
-                className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
-                } ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}
+                className={`block w-5 h-0.5 transition-all duration-300 ${isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
+                  } ${isOpen ? "rotate-45 translate-y-1.5" : ""}`}
               ></span>
               <span
-                className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
-                } ${isOpen ? "opacity-0" : ""}`}
+                className={`block w-5 h-0.5 transition-all duration-300 ${isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
+                  } ${isOpen ? "opacity-0" : ""}`}
               ></span>
               <span
-                className={`block w-5 h-0.5 transition-all duration-300 ${
-                  isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
-                } ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
+                className={`block w-5 h-0.5 transition-all duration-300 ${isScrolled || !isHomePage ? "bg-zinc-600" : "bg-white/80"
+                  } ${isOpen ? "-rotate-45 -translate-y-1.5" : ""}`}
               ></span>
             </div>
           </button>
@@ -440,11 +402,10 @@ export default function Navbar() {
 
       {/* Mobile Navigation - Slide from right */}
       <div
-        className={`lg:hidden mobile-menu-container w-80 bg-white border-l border-rose-200 shadow-2xl transform transition-all duration-300 ease-in-out mobile-menu-full-height z-[9999] ${
-          isOpen
-            ? "translate-x-0 opacity-100 visible"
-            : "translate-x-full opacity-0 invisible pointer-events-none"
-        }`}
+        className={`lg:hidden mobile-menu-container w-80 bg-white border-l border-red-200 shadow-2xl transform transition-all duration-300 ease-in-out mobile-menu-full-height z-[9999] ${isOpen
+          ? "translate-x-0 opacity-100 visible"
+          : "translate-x-full opacity-0 invisible pointer-events-none"
+          }`}
       >
         <div className="p-6 h-full overflow-y-auto overscroll-contain">
           {/* Mobile Menu Header */}
@@ -481,11 +442,11 @@ export default function Navbar() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onFocus={() => setIsSearchOpen(true)}
-                className="w-full px-4 py-3 pr-12 bg-zinc-50 border border-zinc-200 text-sm rounded-[5px] focus:outline-none focus:border-rose-300 focus:bg-white focus:ring-2 focus:ring-rose-100 transition-all duration-200"
+                className="w-full px-4 py-3 pr-12 bg-zinc-50 border border-zinc-200 text-sm rounded-[5px] focus:outline-none focus:border-red-300 focus:bg-white focus:ring-2 focus:ring-red-100 transition-all duration-200"
               />
               <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
                 {isSearching ? (
-                  <div className="w-5 h-5 border-2 border-rose-200 border-t-rose-500 rounded-full animate-spin"></div>
+                  <div className="w-5 h-5 border-2 border-red-200 border-t-red-500 rounded-full animate-spin"></div>
                 ) : (
                   <svg
                     className="w-5 h-5 text-zinc-400"
@@ -515,7 +476,7 @@ export default function Navbar() {
                         onClick={() => handleResultClick(product._id)}
                         className="w-full px-4 py-3 text-left border-b border-zinc-100 last:border-b-0 flex items-center space-x-3 transition-colors duration-200 hover:bg-zinc-50"
                       >
-                        <div className="w-10 h-10 bg-rose-100 flex-shrink-0 rounded-[5px] overflow-hidden">
+                        <div className="w-10 h-10 bg-red-100 flex-shrink-0 rounded-[5px] overflow-hidden">
                           <Image
                             src={product.image}
                             alt={product.name}
@@ -534,11 +495,11 @@ export default function Navbar() {
                         </div>
                       </button>
                     ))}
-                    <div className="px-4 py-3 bg-rose-50 border-t border-rose-200">
+                    <div className="px-4 py-3 bg-red-50 border-t border-red-200">
                       <button
                         type="submit"
                         onClick={handleSearchSubmit}
-                        className="w-full text-sm text-rose-600 hover:text-rose-700 text-center font-medium"
+                        className="w-full text-sm text-red-600 hover:text-red-700 text-center font-medium"
                       >
                         View all results ({searchResults.length})
                       </button>
@@ -574,57 +535,43 @@ export default function Navbar() {
           {/* Mobile Navigation Links */}
           <nav className="space-y-3">
             <Link
-              href="/cosmetics"
+              href="/karts"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${
-                isActive("/cosmetics")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
+              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${isActive("/karts")
+                ? "bg-red-100 text-red-700 border-l-4 border-red-600"
+                : "text-zinc-700 hover:text-red-600 hover:bg-red-50"
+                }`}
             >
               Our Shop
             </Link>
             <Link
               href="/services"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${
-                isActive("/services")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
+              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${isActive("/services")
+                ? "bg-red-100 text-red-700 border-l-4 border-red-600"
+                : "text-zinc-700 hover:text-red-600 hover:bg-red-50"
+                }`}
             >
               Services
             </Link>
-            <Link
-              href="/book-appointment"
-              onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/book-appointment")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
-            >
-              Booking
-            </Link>
+
             <Link
               href="/contact"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/contact")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${isActive("/contact")
+                ? "bg-red-100 text-red-700 border-l-4 border-red-600"
+                : "text-zinc-700 hover:text-red-600 hover:bg-red-50"
+                }`}
             >
               Contact
             </Link>
             <Link
               href="/about"
               onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${
-                isActive("/about")
-                  ? "bg-rose-100 text-rose-700 border-l-4 border-rose-600"
-                  : "text-zinc-700 hover:text-rose-600 hover:bg-rose-50"
-              }`}
+              className={`block px-4 py-3  font-medium transition-all duration-200 font-outfit ${isActive("/about")
+                ? "bg-red-100 text-red-700 border-l-4 border-red-600"
+                : "text-zinc-700 hover:text-red-600 hover:bg-red-50"
+                }`}
             >
               About
             </Link>

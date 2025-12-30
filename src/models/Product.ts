@@ -27,26 +27,25 @@ const productSchema = new mongoose.Schema({
   category: {
     type: String,
     enum: [
-      "Skincare",
-      "Makeup",
-      "Fragrances",
-      "Hair Care",
-      "Body Care",
-      "Men's Grooming",
-      "Tools & Accessories",
+      "Racing Karts",
+      "Recreational Karts",
+      "Electric Karts",
+      "Racing Gear",
+      "Safety Equipment",
+      "Parts & Accessories",
+      "Services",
     ],
     required: true,
   },
-  skinType: {
+  kartType: {
     type: String,
     enum: [
       "All Types",
-      "Mature Skin",
-      "Dry Skin",
-      "Sensitive Skin",
-      "Acne-Prone Skin",
-      "Oily Skin",
-      "Combination Skin",
+      "Professional",
+      "Intermediate",
+      "Youth",
+      "Family",
+      "Eco-Friendly",
     ],
     default: "All Types",
   },
@@ -145,5 +144,5 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-export default mongoose.models.GlowProduct ||
-  mongoose.model("GlowProduct", productSchema);
+export default mongoose.models.ApexProduct ||
+  mongoose.model("ApexProduct", productSchema);

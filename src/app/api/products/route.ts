@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowProduct from "@/models/Product";
+import ApexProduct from "@/models/Product";
 
 // GET /api/products - Get all products with pagination and filtering
 export async function GET(request: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get("search") || "";
     const category = searchParams.get("category") || "";
     const brand = searchParams.get("brand") || "";
-    const skinType = searchParams.get("skinType") || "";
+    const kartType = searchParams.get("kartType") || "";
     const featured = searchParams.get("featured") || "";
     const onSale = searchParams.get("onSale") || "";
     const minPrice = searchParams.get("minPrice") || "";
@@ -47,8 +47,8 @@ export async function GET(request: NextRequest) {
       filter.brand = { $regex: brand, $options: "i" };
     }
 
-    if (skinType) {
-      filter.skinType = skinType;
+    if (kartType) {
+      filter.kartType = kartType;
     }
 
     if (featured === "true") {
@@ -94,14 +94,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Get products with pagination
-    const products = await GlowProduct.find(filter)
+    const products = await ApexProduct.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(limit)
       .lean();
 
     // Get total count for pagination
-    const total = await GlowProduct.countDocuments(filter);
+    const total = await ApexProduct.countDocuments(filter);
 
     return NextResponse.json({
       products,
@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
       productData.isOnSale = true;
     }
 
-    const product = new GlowProduct(productData);
+    const product = new ApexProduct(productData);
     await product.save();
 
     return NextResponse.json(

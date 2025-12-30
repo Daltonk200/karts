@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowProduct from "@/models/Product";
+import ApexProduct from "@/models/Product";
 
 // GET /api/products/[id] - Get a single product
 export async function GET(
@@ -11,7 +11,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const product = await GlowProduct.findById(id);
+    const product = await ApexProduct.findById(id);
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -38,7 +38,7 @@ export async function PUT(
 
     const updateData = await request.json();
 
-    const product = await GlowProduct.findByIdAndUpdate(
+    const product = await ApexProduct.findByIdAndUpdate(
       id,
       { ...updateData, updatedAt: new Date() },
       { new: true, runValidators: true }
@@ -78,7 +78,7 @@ export async function DELETE(
   try {
     await connectDB();
 
-    const product = await GlowProduct.findByIdAndDelete(id);
+    const product = await ApexProduct.findByIdAndDelete(id);
 
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });

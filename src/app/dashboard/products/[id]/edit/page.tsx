@@ -193,7 +193,7 @@ export default function EditProductPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading product...</p>
           </div>
         </div>
@@ -227,7 +227,7 @@ export default function EditProductPage() {
                     value={formData.name}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -241,7 +241,7 @@ export default function EditProductPage() {
                     value={formData.brand}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -254,7 +254,7 @@ export default function EditProductPage() {
                     value={formData.category}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   >
                     <option value="Skincare">Skincare</option>
                     <option value="Makeup">Makeup</option>
@@ -277,7 +277,7 @@ export default function EditProductPage() {
                     value={formData.skinType}
                     onChange={handleInputChange}
                     required
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   >
                     <option value="All Types">All Types</option>
                     <option value="Mature Skin">Mature Skin</option>
@@ -300,7 +300,7 @@ export default function EditProductPage() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -314,7 +314,7 @@ export default function EditProductPage() {
                     value={formData.originalPrice}
                     onChange={handleInputChange}
                     min="0"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -329,7 +329,7 @@ export default function EditProductPage() {
                     onChange={handleInputChange}
                     required
                     min="0"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -343,7 +343,7 @@ export default function EditProductPage() {
                     value={formData.size}
                     onChange={handleInputChange}
                     placeholder="e.g., 30ml, 50g"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -356,7 +356,7 @@ export default function EditProductPage() {
                     name="sku"
                     value={formData.sku}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -370,7 +370,7 @@ export default function EditProductPage() {
                     value={formData.weight}
                     onChange={handleInputChange}
                     placeholder="e.g., 30g, 100ml"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -384,7 +384,7 @@ export default function EditProductPage() {
                     value={formData.dimensions}
                     onChange={handleInputChange}
                     placeholder="e.g., 15cm x 3cm x 3cm"
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
 
@@ -397,7 +397,7 @@ export default function EditProductPage() {
                     name="expiryDate"
                     value={formData.expiryDate}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                    className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                   />
                 </div>
               </div>
@@ -414,7 +414,7 @@ export default function EditProductPage() {
                 onChange={handleInputChange}
                 required
                 rows={4}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                 placeholder="Describe the product's features, benefits, and characteristics..."
               />
             </div>
@@ -429,7 +429,7 @@ export default function EditProductPage() {
                 value={formData.application}
                 onChange={handleInputChange}
                 rows={3}
-                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                 placeholder="How to use this product..."
               />
             </div>
@@ -450,7 +450,7 @@ export default function EditProductPage() {
                         newIngredients[index] = e.target.value;
                         handleArrayChange("ingredients", newIngredients);
                       }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                     <button
                       type="button"
@@ -464,7 +464,7 @@ export default function EditProductPage() {
                 <button
                   type="button"
                   onClick={() => addArrayItem("ingredients", "")}
-                  className="text-rose-600 hover:text-rose-800 text-sm"
+                  className="text-red-600 hover:text-red-800 text-sm"
                 >
                   + Add Ingredient
                 </button>
@@ -487,7 +487,7 @@ export default function EditProductPage() {
                         newBenefits[index] = e.target.value;
                         handleArrayChange("benefits", newBenefits);
                       }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                     <button
                       type="button"
@@ -501,7 +501,7 @@ export default function EditProductPage() {
                 <button
                   type="button"
                   onClick={() => addArrayItem("benefits", "")}
-                  className="text-rose-600 hover:text-rose-800 text-sm"
+                  className="text-red-600 hover:text-red-800 text-sm"
                 >
                   + Add Benefit
                 </button>
@@ -524,7 +524,7 @@ export default function EditProductPage() {
                         newTags[index] = e.target.value;
                         handleArrayChange("tags", newTags);
                       }}
-                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="flex-1 border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                     <button
                       type="button"
@@ -538,7 +538,7 @@ export default function EditProductPage() {
                 <button
                   type="button"
                   onClick={() => addArrayItem("tags", "")}
-                  className="text-rose-600 hover:text-rose-800 text-sm"
+                  className="text-red-600 hover:text-red-800 text-sm"
                 >
                   + Add Tag
                 </button>
@@ -565,7 +565,7 @@ export default function EditProductPage() {
                   name="isFeatured"
                   checked={formData.isFeatured}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                 />
                 <label className="ml-2 block text-sm text-gray-900">
                   Feature this product on the homepage
@@ -578,7 +578,7 @@ export default function EditProductPage() {
                   name="isOnSale"
                   checked={formData.isOnSale}
                   onChange={handleInputChange}
-                  className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                 />
                 <label className="ml-2 block text-sm text-gray-900">
                   This product is on sale
@@ -598,7 +598,7 @@ export default function EditProductPage() {
               <button
                 type="submit"
                 disabled={saving}
-                className="bg-rose-600 text-white px-6 py-2 rounded-md hover:bg-rose-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-red-600 text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {saving ? "Saving..." : "Save Changes"}
               </button>

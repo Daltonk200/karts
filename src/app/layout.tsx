@@ -15,13 +15,13 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "GlowBeauty - Premium Cosmetics & Skincare",
+  title: "Apex Rush Karts - Premium Go-Karts & Racing Equipment",
   description:
-    "Discover luxury cosmetics, skincare, and makeup products for your beauty routine",
+    "Discover high-performance go-karts, racing equipment, and accessories for your ultimate racing experience",
   icons: {
-    icon: "/glow_logo.png",
-    shortcut: "/glow_logo.png",
-    apple: "/glow_logo.png",
+    icon: "/apex_logo.png",
+    shortcut: "/apex_logo.png",
+    apple: "/apex_logo.png",
   },
 };
 

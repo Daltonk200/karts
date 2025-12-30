@@ -95,14 +95,14 @@ h6 {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
   border-radius: 6px;
   border: 2px solid #f8fafc;
   transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #e11d48, #be123c);
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
   transform: scale(1.05);
 }
 
@@ -113,7 +113,7 @@ h6 {
 /* Firefox Scrollbar */
 * {
   scrollbar-width: thin;
-  scrollbar-color: #f43f5e #f8fafc;
+  scrollbar-color: #dc2626 #f8fafc;
 }
 
 /* Custom Scrollbar for specific elements */
@@ -128,12 +128,12 @@ h6 {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
   border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #e11d48, #be123c);
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
 }
 
 /* Smooth scrolling for the whole page */
@@ -153,12 +153,12 @@ html {
 }
 
 .product-grid::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
   border-radius: 3px;
 }
 
 .product-grid::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #e11d48, #be123c);
+  background: linear-gradient(135deg, #b91c1c, #991b1b);
 }
 
 /* Cart Page Animations */
@@ -273,7 +273,7 @@ html {
 
 .trust-badge:hover {
   transform: translateY(-2px);
-  color: #e11d48;
+  color: #dc2626;
 }
 
 .trust-badge:hover svg {
@@ -400,7 +400,7 @@ body.menu-open {
 
 /* Carousel scroll indicator active state */
 .carousel-indicator-active {
-  background-color: #e11d48;
+  background-color: #dc2626;
   transform: scale(1.2);
 }
 
@@ -539,12 +539,12 @@ body.menu-open {
 }
 
 .swiper-pagination-custom .swiper-pagination-bullet-active {
-  background: #e11d48;
+  background: #dc2626;
   transform: scale(1.2);
 }
 
 .swiper-pagination-custom .swiper-pagination-bullet:hover {
-  background: #f43f5e;
+  background: #dc2626;
   transform: scale(1.1);
 }
 

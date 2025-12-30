@@ -170,7 +170,7 @@ export default function CartPage() {
     return (
       <>
         {/* Hero Section */}
-        <section className="relative  border-b border-rose-200 overflow-hidden">
+        <section className="relative  border-b border-red-200 overflow-hidden">
           <div className="absolute inset-0">
             <Image
               src="https://img.freepik.com/free-photo/supermarket-trolleys-gift-boxes_23-2148663146.jpg?t=st=1755685004~exp=1755688604~hmac=7fbf3c9f68d42b024c4b15f88dd3ecf14b9a18cb0541525f71d1b731e519b073&w=2000"
@@ -178,7 +178,7 @@ export default function CartPage() {
               fill
               className="object-cover "
             />
-            {/* <div className="absolute inset-0 bg-gradient-to-r from-rose-900/20 to-pink-900/20"></div> */}
+            {/* <div className="absolute inset-0 bg-gradient-to-r from-red-900/20 to-red-900/20"></div> */}
           </div>
           <Container className="relative py-16">
             <div className="text-center">
@@ -203,11 +203,11 @@ export default function CartPage() {
               </h2>
               <p className="text-zinc-600 mb-8 max-w-md mx-auto font-outfit">
                 Looks like you haven't added any beauty products to your cart
-                yet. Browse our collection and find your perfect cosmetics.
+                yet. Browse our collection and find your perfect karts.
               </p>
               <Link
-                href="/cosmetics"
-                className="inline-flex items-center px-8 py-3 bg-rose-600 text-white font-medium tracking-wide uppercase hover:bg-rose-700 transition-all duration-300 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
+                href="/karts"
+                className="inline-flex items-center px-8 py-3 bg-red-600 text-white font-medium tracking-wide uppercase hover:bg-red-700 transition-all duration-300 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
               >
                 Browse Cosmetics
               </Link>
@@ -221,7 +221,7 @@ export default function CartPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative  border-b border-rose-200 overflow-hidden">
+      <section className="relative  border-b border-red-200 overflow-hidden">
         <div className="absolute inset-0">
           <Image
             src="https://img.freepik.com/free-photo/supermarket-trolleys-gift-boxes_23-2148663146.jpg?t=st=1755685004~exp=1755688604~hmac=7fbf3c9f68d42b024c4b15f88dd3ecf14b9a18cb0541525f71d1b731e519b073&w=2000"
@@ -258,7 +258,7 @@ export default function CartPage() {
                     </h2>
                     <button
                       onClick={handleClearCart}
-                      className="text-sm text-rose-600 hover:text-rose-700 font-medium font-outfit transition-colors duration-200"
+                      className="text-sm text-red-600 hover:text-red-700 font-medium font-outfit transition-colors duration-200"
                     >
                       Clear Cart
                     </button>
@@ -294,7 +294,7 @@ export default function CartPage() {
                                 {item.brand} • {item.category} •{" "}
                                 {item.condition}
                               </p>
-                              <p className="text-lg font-bold text-rose-600 font-caveat">
+                              <p className="text-lg font-bold text-red-600 font-caveat">
                                 XAF {item.price.toLocaleString()}
                               </p>
                             </div>
@@ -304,7 +304,7 @@ export default function CartPage() {
                               {/* Save for Later */}
                               <button
                                 onClick={() => handleSaveForLater(item)}
-                                className="p-2 text-zinc-400 hover:text-rose-600 transition-colors duration-200 rounded-full hover:bg-rose-50 save-later-btn"
+                                className="p-2 text-zinc-400 hover:text-red-600 transition-colors duration-200 rounded-full hover:bg-red-50 save-later-btn"
                                 title="Save for Later"
                               >
                                 <BiBookmark className="w-4 h-4" />
@@ -372,7 +372,7 @@ export default function CartPage() {
                             </div>
 
                             <div className="text-right">
-                              <p className="text-lg font-bold text-rose-600 font-caveat">
+                              <p className="text-lg font-bold text-red-600 font-caveat">
                                 XAF{" "}
                                 {(item.price * item.quantity).toLocaleString()}
                               </p>
@@ -400,7 +400,7 @@ export default function CartPage() {
                           );
                           toast.success("All saved items cleared");
                         }}
-                        className="text-sm text-rose-600 hover:text-rose-700 font-medium font-outfit transition-colors duration-200"
+                        className="text-sm text-red-600 hover:text-red-700 font-medium font-outfit transition-colors duration-200"
                       >
                         Clear All
                       </button>
@@ -428,7 +428,7 @@ export default function CartPage() {
                                   {item.brand} • {item.category} •{" "}
                                   {item.skinType}
                                 </p>
-                                <p className="text-lg font-bold text-rose-600 font-caveat mb-3">
+                                <p className="text-lg font-bold text-red-600 font-caveat mb-3">
                                   XAF {item.price.toLocaleString()}
                                 </p>
                                 <p className="text-xs text-zinc-500 font-outfit">
@@ -464,7 +464,7 @@ export default function CartPage() {
                             <div className="flex flex-col md:flex-row gap-2 mt-3">
                               <button
                                 onClick={() => handleMoveToCart(item)}
-                                className="px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-[5px] hover:bg-rose-700 transition-colors duration-200 font-outfit w-[150px] md:w-auto flex items-center gap-2"
+                                className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-[5px] hover:bg-red-700 transition-colors duration-200 font-outfit w-[150px] md:w-auto flex items-center gap-2"
                               >
                                 <svg
                                   className="w-4 h-4"
@@ -485,8 +485,8 @@ export default function CartPage() {
                                 onClick={() => handleAddToWishlist(item)}
                                 className={`px-4 py-2 border text-sm font-medium rounded-[5px] transition-all duration-200 font-outfit w-[150px] md:w-auto flex items-center gap-2 ${
                                   isInWishlist(item.id)
-                                    ? "border-rose-300 text-rose-600 bg-rose-50"
-                                    : "border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50"
+                                    ? "border-red-300 text-red-600 bg-red-50"
+                                    : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50"
                                 }`}
                               >
                                 <AiOutlineHeart
@@ -517,7 +517,7 @@ export default function CartPage() {
                 <div className="p-6">
                   {recommendationsLoading ? (
                     <div className="flex justify-center items-center py-8">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-rose-600"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600"></div>
                       <span className="ml-3 text-zinc-600">
                         Loading recommendations...
                       </span>
@@ -533,7 +533,7 @@ export default function CartPage() {
                       {recommendations.map((product) => (
                         <div
                           key={product._id}
-                          className="bg-white snap-start border min-w-[230px] md:min-w-[280px] border-zinc-200 hover:border-rose-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-md transform hover:-translate-y-1 group"
+                          className="bg-white snap-start border min-w-[230px] md:min-w-[280px] border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-md transform hover:-translate-y-1 group"
                         >
                           <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden rounded-t-[5px]">
                             <Image
@@ -547,15 +547,15 @@ export default function CartPage() {
                             <h4 className="text-sm font-medium text-zinc-900 mb-2 font-outfit line-clamp-2">
                               {product.name}
                             </h4>
-                            <p className="text-lg text-rose-600 font-bold font-caveat mb-3">
+                            <p className="text-lg text-red-600 font-bold font-caveat mb-3">
                               XAF {product.price.toLocaleString()}
                             </p>
                             <button
                               onClick={() => handleAddToWishlist(product)}
                               className={`w-full px-3 py-2 text-xs font-medium rounded-[5px] transition-all duration-200 font-outfit mt-auto ${
                                 isInWishlist(product._id)
-                                  ? "border-rose-300 text-rose-600 bg-rose-50"
-                                  : "border border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50"
+                                  ? "border-red-300 text-red-600 bg-red-50"
+                                  : "border border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50"
                               }`}
                             >
                               {isInWishlist(product._id)
@@ -605,7 +605,7 @@ export default function CartPage() {
                   <div className="border-t border-zinc-200 pt-3">
                     <div className="flex justify-between text-xl font-bold font-caveat">
                       <span>Total</span>
-                      <span className="text-rose-600">
+                      <span className="text-red-600">
                         XAF {total.toFixed(0)}
                       </span>
                     </div>
@@ -625,7 +625,7 @@ export default function CartPage() {
                 <button
                   onClick={handleCheckout}
                   disabled={isCheckingOut}
-                  className="w-full px-6 py-3 bg-rose-600 text-white font-medium hover:bg-rose-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-[5px] font-outfit transform hover:scale-[1.0FV1] hover:shadow-sm"
+                  className="w-full px-6 py-3 bg-red-600 text-white font-medium hover:bg-red-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-[5px] font-outfit transform hover:scale-[1.0FV1] hover:shadow-sm"
                 >
                   {isCheckingOut ? (
                     <div className="flex items-center justify-center gap-2">
@@ -649,8 +649,8 @@ export default function CartPage() {
 
                 <div className="mt-4 text-center">
                   <Link
-                    href="/cosmetics"
-                    className="text-sm text-zinc-600 hover:text-rose-600 font-medium font-outfit transition-colors duration-200"
+                    href="/karts"
+                    className="text-sm text-zinc-600 hover:text-red-600 font-medium font-outfit transition-colors duration-200"
                   >
                     Continue Shopping
                   </Link>
@@ -660,11 +660,11 @@ export default function CartPage() {
                 <div className="mt-6 pt-6 border-t border-zinc-200">
                   <div className="grid grid-cols-2 gap-4 text-center">
                     <div className="text-xs text-zinc-500 font-outfit trust-badge">
-                      <BiShield className="w-5 h-5 mx-auto mb-1 text-rose-600" />
+                      <BiShield className="w-5 h-5 mx-auto mb-1 text-red-600" />
                       Secure Checkout
                     </div>
                     <div className="text-xs text-zinc-500 font-outfit trust-badge">
-                      <AiOutlineTruck className="w-5 h-5 mx-auto mb-1 text-rose-500" />
+                      <AiOutlineTruck className="w-5 h-5 mx-auto mb-1 text-red-500" />
                       Fast Delivery
                     </div>
                   </div>

@@ -63,23 +63,23 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-rose-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-red-50 to-red-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         {/* Logo and Branding */}
         <div className="text-center">
           <h2 className="text-3xl font-bold text-zinc-900 font-caveat">
-            GlowBeauty
+            Apex Rush Karts
           </h2>
-          <p className="mt-2 text-lg text-rose-600 font-outfit font-medium">
+          <p className="mt-2 text-lg text-red-600 font-outfit font-medium">
             Admin Dashboard
           </p>
           <p className="mt-1 text-sm text-zinc-600 font-outfit">
-            Sign in to manage your beauty empire
+            Sign in to manage your racing empire
           </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="bg-white p-8 rounded-2xl shadow-xl border border-rose-100">
+          <div className="bg-white p-8 rounded-2xl shadow-xl border border-red-100">
             <div className="space-y-6">
               <div>
                 <label
@@ -95,7 +95,7 @@ export default function LoginPage() {
                   required
                   value={formData.username}
                   onChange={handleInputChange}
-                  className="mt-1 block w-full px-4 py-3 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 font-outfit placeholder-zinc-400"
+                  className="mt-1 block w-full px-4 py-3 border border-red-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 font-outfit placeholder-zinc-400"
                   placeholder="Enter your username"
                 />
               </div>
@@ -115,18 +115,18 @@ export default function LoginPage() {
                     required
                     value={formData.password}
                     onChange={handleInputChange}
-                    className="mt-1 block w-full px-4 py-3 pr-12 border border-rose-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 font-outfit placeholder-zinc-400"
+                    className="mt-1 block w-full px-4 py-3 pr-12 border border-red-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 font-outfit placeholder-zinc-400"
                     placeholder="Enter your password"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-rose-500 transition-colors duration-200"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-400 hover:text-red-500 transition-colors duration-200"
                   >
                     {showPassword ? (
-                     <Eye className="h-5 w-5"/>
+                      <Eye className="h-5 w-5" />
                     ) : (
-                      <EyeOff className="h-5 w-5"/>
+                      <EyeOff className="h-5 w-5" />
                     )}
                   </button>
                 </div>
@@ -137,7 +137,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium text-white bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] font-outfit"
+                className="w-full flex justify-center items-center py-3 px-4 border border-transparent text-sm font-medium text-white bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 rounded-lg shadow-lg hover:shadow-xl transform hover:scale-[1.02] font-outfit"
               >
                 {loading ? (
                   <>
@@ -170,14 +170,14 @@ export default function LoginPage() {
             </div>
 
             {/* Demo Credentials */}
-            <div className="mt-6 p-4 bg-rose-50 rounded-lg border border-rose-200">
-              <p className="text-xs text-rose-700 font-outfit font-medium mb-2">
+            <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200">
+              <p className="text-xs text-red-700 font-outfit font-medium mb-2">
                 Demo Credentials:
               </p>
-              <p className="text-xs text-rose-600 font-outfit">
+              <p className="text-xs text-red-600 font-outfit">
                 Username: <span className="font-semibold">admin</span>
               </p>
-              <p className="text-xs text-rose-600 font-outfit">
+              <p className="text-xs text-red-600 font-outfit">
                 Password: <span className="font-semibold">admin123</span>
               </p>
             </div>
@@ -187,7 +187,7 @@ export default function LoginPage() {
         <div className="text-center">
           <Link
             href="/"
-            className="inline-flex items-center text-sm text-zinc-600 hover:text-rose-600 transition-colors duration-200 font-outfit group"
+            className="inline-flex items-center text-sm text-zinc-600 hover:text-red-600 transition-colors duration-200 font-outfit group"
           >
             <svg
               className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-200"
@@ -202,7 +202,7 @@ export default function LoginPage() {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Back to GlowBeauty Store
+            Back to Apex Rush Store
           </Link>
         </div>
       </div>

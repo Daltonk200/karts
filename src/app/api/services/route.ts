@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowService from "@/models/Service";
+import ApexService from "@/models/Service";
 
 // GET /api/services - Get all services with filtering, pagination, and sorting
 export async function GET(request: NextRequest) {
@@ -49,14 +49,14 @@ export async function GET(request: NextRequest) {
     sort[sortBy] = sortOrder === "desc" ? -1 : 1;
 
     // Get services with pagination
-    const services = await GlowService.find(filter)
+    const services = await ApexService.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(limit)
       .lean();
 
     // Get total count for pagination
-    const total = await GlowService.countDocuments(filter);
+    const total = await ApexService.countDocuments(filter);
 
     return NextResponse.json({
       services,
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
       serviceData.image = serviceData.images[0];
     }
 
-    const service = new GlowService(serviceData);
+    const service = new ApexService(serviceData);
     await service.save();
 
     return NextResponse.json(

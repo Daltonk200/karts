@@ -222,7 +222,7 @@ export default function CreateServicePage() {
                     name="name"
                     value={formData.name}
                     onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="e.g., Deep Cleansing Facial"
                     required
                   />
@@ -262,7 +262,7 @@ export default function CreateServicePage() {
                     onChange={(e) =>
                       handleNumberChange("price", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="0"
                     min="0"
                     step="100"
@@ -281,7 +281,7 @@ export default function CreateServicePage() {
                     onChange={(e) =>
                       handleNumberChange("duration", e.target.value)
                     }
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="60"
                     min="15"
                     step="15"
@@ -299,7 +299,7 @@ export default function CreateServicePage() {
                   value={formData.description}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                  className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                   placeholder="Describe the service in detail..."
                   required
                 />
@@ -359,8 +359,8 @@ export default function CreateServicePage() {
                   <div
                     className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
                       isSubmitting
-                        ? "border-rose-300 bg-rose-50"
-                        : "border-zinc-300 hover:border-rose-400 hover:bg-rose-50"
+                        ? "border-red-300 bg-red-50"
+                        : "border-zinc-300 hover:border-red-400 hover:bg-red-50"
                     }`}
                     onClick={() =>
                       document.getElementById("service-image-upload")?.click()
@@ -382,7 +382,7 @@ export default function CreateServicePage() {
                       </svg>
 
                       <div className="text-sm text-zinc-600">
-                        <span className="font-medium text-rose-600 hover:text-rose-500">
+                        <span className="font-medium text-red-600 hover:text-red-500">
                           {formData.image ? "Change Image" : "Click to upload"}
                         </span>{" "}
                         or drag and drop
@@ -396,7 +396,7 @@ export default function CreateServicePage() {
                     {isSubmitting && (
                       <div className="mt-4">
                         <div className="flex items-center justify-center space-x-2">
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-rose-600"></div>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
                           <span className="text-sm text-zinc-600">
                             Uploading...
                           </span>
@@ -432,7 +432,7 @@ export default function CreateServicePage() {
                     type="text"
                     value={newFeature}
                     onChange={(e) => setNewFeature(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="Add a feature..."
                     onKeyPress={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addFeature())
@@ -441,7 +441,7 @@ export default function CreateServicePage() {
                   <button
                     type="button"
                     onClick={addFeature}
-                    className="px-4 py-3 bg-rose-500 text-white rounded-[8px] hover:bg-rose-600 transition-colors duration-200"
+                    className="px-4 py-3 bg-red-500 text-white rounded-[8px] hover:bg-red-600 transition-colors duration-200"
                   >
                     Add
                   </button>
@@ -452,13 +452,13 @@ export default function CreateServicePage() {
                     {formData.features.map((feature, index) => (
                       <span
                         key={index}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-rose-100 text-rose-800"
+                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-red-100 text-red-800"
                       >
                         {feature}
                         <button
                           type="button"
                           onClick={() => removeFeature(index)}
-                          className="ml-2 text-rose-600 hover:text-rose-800"
+                          className="ml-2 text-red-600 hover:text-red-800"
                         >
                           ×
                         </button>
@@ -481,7 +481,7 @@ export default function CreateServicePage() {
                     type="text"
                     value={newBenefit}
                     onChange={(e) => setNewBenefit(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="Add a benefit..."
                     onKeyPress={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addBenefit())
@@ -490,7 +490,7 @@ export default function CreateServicePage() {
                   <button
                     type="button"
                     onClick={addBenefit}
-                    className="px-4 py-3 bg-rose-500 text-white rounded-[8px] hover:bg-rose-600 transition-colors duration-200"
+                    className="px-4 py-3 bg-red-500 text-white rounded-[8px] hover:bg-red-600 transition-colors duration-200"
                   >
                     Add
                   </button>
@@ -528,7 +528,7 @@ export default function CreateServicePage() {
                     type="text"
                     value={newTag}
                     onChange={(e) => setNewTag(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="Add a tag..."
                     onKeyPress={(e) =>
                       e.key === "Enter" && (e.preventDefault(), addTag())
@@ -537,7 +537,7 @@ export default function CreateServicePage() {
                   <button
                     type="button"
                     onClick={addTag}
-                    className="px-4 py-3 bg-rose-500 text-white rounded-[8px] hover:bg-rose-600 transition-colors duration-200"
+                    className="px-4 py-3 bg-red-500 text-white rounded-[8px] hover:bg-red-600 transition-colors duration-200"
                   >
                     Add
                   </button>
@@ -577,7 +577,7 @@ export default function CreateServicePage() {
                     type="text"
                     value={newRequirement}
                     onChange={(e) => setNewRequirement(e.target.value)}
-                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="flex-1 px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="Add a requirement..."
                     onKeyPress={(e) =>
                       e.key === "Enter" &&
@@ -587,7 +587,7 @@ export default function CreateServicePage() {
                   <button
                     type="button"
                     onClick={addRequirement}
-                    className="px-4 py-3 bg-rose-500 text-white rounded-[8px] hover:bg-rose-600 transition-colors duration-200"
+                    className="px-4 py-3 bg-red-500 text-white rounded-[8px] hover:bg-red-600 transition-colors duration-200"
                   >
                     Add
                   </button>
@@ -631,7 +631,7 @@ export default function CreateServicePage() {
                     value={formData.preparation}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="Instructions for client preparation..."
                   />
                 </div>
@@ -645,7 +645,7 @@ export default function CreateServicePage() {
                     value={formData.aftercare}
                     onChange={handleInputChange}
                     rows={4}
-                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200 font-outfit"
+                    className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200 font-outfit"
                     placeholder="Instructions for post-treatment care..."
                   />
                 </div>
@@ -665,7 +665,7 @@ export default function CreateServicePage() {
                     name="isActive"
                     checked={formData.isActive}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   />
                   <label className="ml-2 block text-sm text-gray-900">
                     Active Service
@@ -678,7 +678,7 @@ export default function CreateServicePage() {
                     name="isFeatured"
                     checked={formData.isFeatured}
                     onChange={handleInputChange}
-                    className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   />
                   <label className="ml-2 block text-sm text-gray-900">
                     Featured Service
@@ -699,7 +699,7 @@ export default function CreateServicePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="px-6 py-3 bg-rose-500 text-white rounded-lg hover:bg-rose-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
               >
                 {isSubmitting ? "Creating..." : "Create Service"}
               </button>

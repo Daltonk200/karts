@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
 import connectDB from "../lib/mongodb";
-import GlowProduct from "../models/Product";
-import GlowService from "../models/Service";
-import GlowUser from "../models/User";
+import ApexProduct from "../models/Product";
+import ApexService from "../models/Service";
+import ApexUser from "../models/User";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -12,517 +12,499 @@ const seedData = async () => {
     await connectDB();
 
     // Clear existing data
-    await GlowProduct.deleteMany({});
-    await GlowService.deleteMany({});
-    await GlowUser.deleteMany({});
+    await ApexProduct.deleteMany({});
+    await ApexService.deleteMany({});
+    await ApexUser.deleteMany({});
 
     // Create admin user
-    const adminUser = new GlowUser({
+    const adminUser = new ApexUser({
       username: "admin",
-      email: "admin@glowbeauty.com",
+      email: "admin@apexkarts.com",
       password: "admin123",
       role: "admin",
     });
     await adminUser.save();
     console.log("✅ Admin user created");
 
-    // Create sample cosmetics products
+    // Create sample karts products
     const products = [
       {
-        name: "Hydrating Vitamin C Serum",
+        name: "Apex Pro Racing Kart",
         description:
-          "Brightening serum with 20% Vitamin C for radiant, even-toned skin",
-        price: 45000,
-        originalPrice: 55000,
-        brand: "GlowBeauty",
-        category: "Skincare",
-        skinType: "All Types",
-        size: "30ml",
+          "Championship-winning professional racing kart chassis with aerodynamic improvements and lightweight frame.",
+        price: 4500000,
+        originalPrice: 5000000,
+        brand: "Apex Rush",
+        category: "Racing Karts",
+        kartType: "Professional",
+        size: "Adult",
+        benefits: [
+          "Lightweight Chromoly chassis",
+          "High-performance hydraulic brakes",
+          "Aerodynamic bodywork",
+          "Adjustable pedal position",
+        ],
         ingredients: [
-          "Vitamin C",
-          "Hyaluronic Acid",
-          "Niacinamide",
-          "Green Tea Extract",
+          "Chromoly Steel",
+          "Aluminum",
+          "Carbon Fiber",
+          "Rubber",
         ],
-        benefits: [
-          "Brightens skin",
-          "Reduces dark spots",
-          "Boosts collagen",
-          "Hydrates",
-        ],
-        application: "Apply 2-3 drops to clean skin morning and evening",
+        application: "Professional racing circuits only",
         isOnSale: true,
         isFeatured: true,
-        stock: 25,
-        rating: 4.8,
-        reviews: 156,
-        tags: ["vitamin-c", "brightening", "anti-aging", "hydrating"],
-        weight: "30g",
-        dimensions: "15cm x 3cm x 3cm",
-        expiryDate: "2025-12-31",
-        images: [
-          "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop",
-        ],
-        image:
-          "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
-        sku: "GB-VC001",
-      },
-      {
-        name: "Luxury Foundation - Medium Coverage",
-        description:
-          "Long-lasting foundation with SPF 30 for flawless, natural-looking coverage",
-        price: 35000,
-        originalPrice: 40000,
-        brand: "GlowBeauty",
-        category: "Makeup",
-        skinType: "All Types",
-        size: "30ml",
-        ingredients: [
-          "SPF 30",
-          "Hyaluronic Acid",
-          "Vitamin E",
-          "Mineral Pigments",
-        ],
-        benefits: [
-          "Full coverage",
-          "Long-lasting",
-          "SPF protection",
-          "Hydrating",
-        ],
-        application:
-          "Apply with brush or sponge, blend outward from center of face",
-        isOnSale: true,
-        isFeatured: true,
-        stock: 18,
-        rating: 4.6,
-        reviews: 89,
-        tags: ["foundation", "spf", "long-lasting", "full-coverage"],
-        weight: "30g",
-        dimensions: "12cm x 4cm x 4cm",
-        expiryDate: "2026-06-30",
-        images: [
-          "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop",
-        ],
-        image:
-          "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop",
-        sku: "GB-FD001",
-      },
-      {
-        name: "Rose Gold Eyeshadow Palette",
-        description:
-          "12-shade palette with matte and shimmer finishes for versatile eye looks",
-        price: 28000,
-        brand: "GlowBeauty",
-        category: "Makeup",
-        skinType: "All Types",
-        size: "15g",
-        ingredients: ["Mica", "Talc", "Iron Oxides", "Rose Gold Pigments"],
-        benefits: [
-          "Versatile shades",
-          "Long-lasting",
-          "Blendable",
-          "Pigmented",
-        ],
-        application: "Apply with brush, blend for desired intensity",
-        isOnSale: false,
-        isFeatured: true,
-        stock: 32,
-        rating: 4.7,
-        reviews: 124,
-        tags: ["eyeshadow", "palette", "rose-gold", "versatile"],
-        weight: "15g",
-        dimensions: "18cm x 12cm x 2cm",
-        expiryDate: "2027-03-15",
-        images: [
-          "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop",
-        ],
-        image:
-          "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",
-        sku: "GB-ES001",
-      },
-      {
-        name: "Moisturizing Night Cream",
-        description:
-          "Rich night cream with retinol and peptides for anti-aging and repair",
-        price: 52000,
-        originalPrice: 60000,
-        brand: "GlowBeauty",
-        category: "Skincare",
-        skinType: "Dry Skin",
-        size: "50ml",
-        ingredients: ["Retinol", "Peptides", "Ceramides", "Shea Butter"],
-        benefits: [
-          "Anti-aging",
-          "Moisturizing",
-          "Skin repair",
-          "Reduces fine lines",
-        ],
-        application: "Apply to clean skin before bedtime, avoid eye area",
-        isOnSale: true,
-        isFeatured: false,
-        stock: 15,
+        stock: 5,
         rating: 4.9,
-        reviews: 203,
-        tags: ["night-cream", "retinol", "anti-aging", "moisturizing"],
-        weight: "50g",
-        dimensions: "8cm x 8cm x 6cm",
-        expiryDate: "2025-09-20",
+        reviews: 24,
+        tags: ["racing", "pro", "high-performance", "chassis"],
+        weight: "75kg",
+        dimensions: "200cm x 140cm x 60cm",
         images: [
-          "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1596700815136-1594916258cc?w=800&q=80",
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
         ],
         image:
-          "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop",
-        sku: "GB-NC001",
+          "https://images.unsplash.com/photo-1596700815136-1594916258cc?w=800&q=80",
+        sku: "APK-PRO-001",
       },
       {
-        name: "Luxury Perfume - Rose Garden",
+        name: "Thunder 250cc Racing Kart",
         description:
-          "Elegant floral fragrance with notes of rose, jasmine, and vanilla",
-        price: 85000,
-        brand: "GlowBeauty",
-        category: "Fragrances",
-        skinType: "All Types",
-        size: "50ml",
-        ingredients: [
-          "Rose Extract",
-          "Jasmine Absolute",
-          "Vanilla",
-          "Sandalwood",
-        ],
+          "Powerful 250cc 4-stroke racing kart designed for endurance and speed. Perfect for intermediate racers.",
+        price: 3800000,
+        brand: "Thunder Karts",
+        category: "Racing Karts",
+        kartType: "Intermediate",
+        size: "Adult",
         benefits: [
-          "Long-lasting",
-          "Elegant scent",
-          "Unisex appeal",
-          "Premium quality",
+          "250cc 4-stroke engine",
+          "Reliable performance",
+          "Durable construction",
+          "Low maintenance",
         ],
-        application: "Spray on pulse points: wrists, neck, behind ears",
+        ingredients: [
+          "Steel",
+          "Plastic",
+          "Aluminum",
+        ],
+        application: "Club racing and practice sessions",
         isOnSale: false,
         isFeatured: true,
         stock: 8,
-        rating: 4.8,
-        reviews: 67,
-        tags: ["perfume", "rose", "floral", "luxury"],
-        weight: "50g",
-        dimensions: "12cm x 4cm x 4cm",
-        expiryDate: "2028-01-10",
+        rating: 4.7,
+        reviews: 18,
+        tags: ["250cc", "endurance", "racing", "intermediate"],
+        weight: "85kg",
+        dimensions: "190cm x 135cm x 65cm",
         images: [
-          "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+          "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
         ],
         image:
-          "https://images.unsplash.com/photo-1541643600914-78b084683601?w=400&h=400&fit=crop",
-        sku: "GB-PF001",
+          "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+        sku: "TH-250-001",
       },
       {
-        name: "Hydrating Shampoo & Conditioner Set",
-        description: "Professional hair care set for damaged and dry hair",
-        price: 32000,
-        originalPrice: 38000,
-        brand: "GlowBeauty",
-        category: "Hair Care",
-        skinType: "All Types",
-        size: "500ml each",
-        ingredients: ["Argan Oil", "Keratin", "Biotin", "Coconut Oil"],
-        benefits: [
-          "Repairs damage",
-          "Adds shine",
-          "Reduces frizz",
-          "Strengthens hair",
-        ],
-        application:
-          "Wet hair, apply shampoo, rinse, apply conditioner, leave 2-3 minutes, rinse",
-        isOnSale: true,
-        isFeatured: false,
-        stock: 22,
-        rating: 4.5,
-        reviews: 98,
-        tags: ["shampoo", "conditioner", "hydrating", "repair"],
-        weight: "1000g",
-        dimensions: "25cm x 8cm x 8cm",
-        expiryDate: "2026-08-15",
-        images: [
-          "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop",
-        ],
-        image:
-          "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
-        sku: "GB-HC001",
-      },
-      {
-        name: "Anti-Aging Eye Cream",
+        name: "Velocity Electric Kart",
         description:
-          "Advanced eye cream with caffeine and hyaluronic acid for dark circles and puffiness",
-        price: 38000,
-        brand: "GlowBeauty",
-        category: "Skincare",
-        skinType: "All Types",
-        size: "15ml",
-        ingredients: ["Caffeine", "Hyaluronic Acid", "Vitamin K", "Peptides"],
+          "Eco-friendly high-torque electric kart with instant acceleration. Quiet but deadly fast.",
+        price: 5200000,
+        originalPrice: 5500000,
+        brand: "Volt Racing",
+        category: "Electric Karts",
+        kartType: "Eco-Friendly",
+        size: "Adult",
         benefits: [
-          "Reduces dark circles",
-          "Diminishes puffiness",
-          "Smooths fine lines",
-          "Brightens",
+          "Instant torque",
+          "Zero emissions",
+          "Low noise",
+          "Reverse gear",
         ],
-        application: "Apply gently around eye area morning and evening",
+        ingredients: [
+          "Lithium Battery",
+          "Electric Motor",
+          "Aluminum Chassis",
+        ],
+        application: "Indoor and outdoor tracks",
+        isOnSale: true,
+        isFeatured: true,
+        stock: 3,
+        rating: 4.8,
+        reviews: 32,
+        tags: ["electric", "eco", "fast", "innovative"],
+        weight: "95kg",
+        dimensions: "195cm x 138cm x 62cm",
+        images: [
+          "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        ],
+        image:
+          "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+        sku: "VR-ELE-001",
+      },
+      {
+        name: "Junior Racer Kart",
+        description:
+          "Safe and reliable kart for young racers starting their journey. Adjustable speed limiter included.",
+        price: 2500000,
+        brand: "Apex Rush",
+        category: "Recreational Karts",
+        kartType: "Youth",
+        size: "Junior",
+        benefits: [
+          "Adjustable pedals and seat",
+          "Speed limiter",
+          "Roll bar protection",
+          "Soft compound tires",
+        ],
+        ingredients: [
+          "Steel Tube Frame",
+          "Plastic Bodywork",
+        ],
+        application: "Training and youth leagues",
         isOnSale: false,
         isFeatured: true,
-        stock: 28,
-        rating: 4.7,
-        reviews: 145,
-        tags: ["eye-cream", "anti-aging", "caffeine", "dark-circles"],
-        weight: "15g",
-        dimensions: "6cm x 3cm x 3cm",
-        expiryDate: "2025-11-30",
+        stock: 12,
+        rating: 4.6,
+        reviews: 45,
+        tags: ["junior", "kids", "safe", "starter"],
+        weight: "60kg",
+        dimensions: "160cm x 110cm x 50cm",
         images: [
-          "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
         ],
         image:
-          "https://images.unsplash.com/photo-1570194065650-d99fb4bedf0a?w=400&h=400&fit=crop",
-        sku: "GB-EC001",
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        sku: "APK-JR-001",
       },
       {
-        name: "Luxury Lipstick Set - Nude Collection",
+        name: "Pro Racing Helmet",
         description:
-          "Set of 3 nude lipsticks in matte, satin, and glossy finishes",
-        price: 25000,
-        originalPrice: 30000,
-        brand: "GlowBeauty",
-        category: "Makeup",
-        skinType: "All Types",
-        size: "3.5g each",
-        ingredients: [
-          "Vitamin E",
-          "Shea Butter",
-          "Natural Pigments",
-          "Moisturizers",
-        ],
+          "FIA approved racing helmet with advanced ventilation and lightweight carbon composite shell.",
+        price: 180000,
+        brand: "Apex Rush",
+        category: "Racing Gear",
+        kartType: "Professional",
+        size: "M-XL",
         benefits: [
-          "Long-lasting",
-          "Moisturizing",
-          "Versatile shades",
-          "High pigmentation",
+          "Carbon composite shell",
+          "Fire resistant lining",
+          "Advanced airflow system",
+          "Anti-fog visor",
         ],
-        application: "Apply directly to lips or use lip brush for precision",
-        isOnSale: true,
-        isFeatured: false,
-        stock: 35,
-        rating: 4.6,
-        reviews: 112,
-        tags: ["lipstick", "nude", "set", "long-lasting"],
-        weight: "10.5g",
-        dimensions: "15cm x 8cm x 3cm",
-        expiryDate: "2026-04-20",
+        ingredients: [
+          "Carbon Fiber",
+          "Nomex",
+          "Polycarbonate",
+        ],
+        application: "Head protection for racing",
+        isOnSale: false,
+        isFeatured: true,
+        stock: 25,
+        rating: 4.9,
+        reviews: 110,
+        tags: ["helmet", "safety", "carbon", "gear"],
+        weight: "1.2kg",
+        dimensions: "30cm x 30cm x 30cm",
         images: [
-          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop",
-          "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
         ],
         image:
-          "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=400&h=400&fit=crop",
-        sku: "GB-LS001",
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        sku: "GR-HLM-001",
+      },
+      {
+        name: "Racing Suit Pro Series",
+        description:
+          "Professional karting suit offering abrasion resistance and comfort. CIK-FIA Level 2 approved.",
+        price: 280000,
+        originalPrice: 320000,
+        brand: "Apex Rush",
+        category: "Racing Gear",
+        kartType: "Professional",
+        size: "S-XXL",
+        benefits: [
+          "Abrasion resistant",
+          "Breathable panels",
+          "Ergonomic fit",
+          "Lightweight",
+        ],
+        ingredients: [
+          "Cordura",
+          "Cotton",
+          "Polyester",
+        ],
+        application: "Body protection for racing",
+        isOnSale: true,
+        isFeatured: true,
+        stock: 15,
+        rating: 4.8,
+        reviews: 65,
+        tags: ["suit", "racing", "gear", "protection"],
+        weight: "1.5kg",
+        dimensions: "50cm x 40cm x 5cm",
+        images: [
+          "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+        ],
+        image:
+          "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+        sku: "GR-SUIT-001",
+      },
+      {
+        name: "Performance Kart Tires (Set)",
+        description:
+          "Set of 4 high-grip slick tires for dry weather racing conditions. Soft compound for maximum traction.",
+        price: 120000,
+        brand: "GripMaster",
+        category: "Parts & Accessories",
+        kartType: "Professional",
+        size: "Standard",
+        benefits: [
+          "High grip",
+          "Consistent performance",
+          "Durable sidewall",
+        ],
+        ingredients: [
+          "Rubber compound",
+          "Nylon",
+        ],
+        application: "Racing wheels",
+        isOnSale: false,
+        isFeatured: false,
+        stock: 50,
+        rating: 4.7,
+        reviews: 89,
+        tags: ["tires", "parts", "grip", "racing"],
+        weight: "10kg",
+        dimensions: "50cm x 50cm x 60cm",
+        images: [
+          "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+        ],
+        image:
+          "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+        sku: "PT-TIRE-001",
+      },
+      {
+        name: "Family Fun Kart",
+        description:
+          "Two-seater go-kart designed for family fun. Take your child or partner along for the ride.",
+        price: 2200000,
+        brand: "Apex Rush",
+        category: "Recreational Karts",
+        kartType: "Family",
+        size: "Adult + Child",
+        benefits: [
+          "Dual seat",
+          "Passenger steering lock",
+          "High safety rails",
+          "Easy to drive",
+        ],
+        ingredients: [
+          "Steel",
+          "Fiberglass",
+        ],
+        application: "Recreational use",
+        isOnSale: false,
+        isFeatured: true,
+        stock: 4,
+        rating: 4.5,
+        reviews: 12,
+        tags: ["family", "two-seater", "fun", "recreational"],
+        weight: "110kg",
+        dimensions: "210cm x 140cm x 60cm",
+        images: [
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        ],
+        image:
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        sku: "APK-FAM-001",
       },
     ];
 
-    // Create sample beauty services
+    // Create sample kart services
     const services = [
       {
-        name: "Signature Facial Treatment",
+        name: "Full Maintenance Package",
         description:
-          "Deep cleansing facial with extraction, mask, and massage for glowing skin",
-        category: "Facial Treatments",
-        price: 25000,
-        duration: 60,
-        image:
-          "https://images.unsplash.com/photo-1616394584738-fc6e612e71b9?w=400&h=400&fit=crop",
-        features: [
-          "Deep cleansing",
-          "Extraction",
-          "Hydrating mask",
-          "Facial massage",
-          "Moisturizing",
-        ],
-        benefits: [
-          "Clearer skin",
-          "Reduced blackheads",
-          "Improved texture",
-          "Relaxation",
-        ],
-        isActive: true,
-        isFeatured: true,
-        tags: ["facial", "cleansing", "relaxation", "skincare"],
-        requirements: "Clean face, No makeup, Arrive 10 minutes early",
-        preparation: "Avoid exfoliating 24 hours before treatment",
-        aftercare: "Avoid sun exposure and heavy makeup for 24 hours",
-      },
-      {
-        name: "Hair Cut & Style",
-        description:
-          "Professional haircut with wash, cut, and styling for your perfect look",
-        category: "Hair Styling",
-        price: 15000,
-        duration: 45,
-        image:
-          "https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&h=400&fit=crop",
-        features: [
-          "Hair wash",
-          "Professional cut",
-          "Blow dry",
-          "Styling",
-          "Hair care advice",
-        ],
-        benefits: [
-          "Fresh look",
-          "Healthy hair",
-          "Professional styling",
-          "Hair care tips",
-        ],
-        isActive: true,
-        isFeatured: true,
-        tags: ["haircut", "styling", "wash", "professional"],
-        requirements: "Clean hair preferred, Bring inspiration photos",
-        preparation: "Come with clean, dry hair if possible",
-        aftercare: "Use recommended hair products for best results",
-      },
-      {
-        name: "Manicure & Pedicure",
-        description:
-          "Complete nail care with cuticle treatment, shaping, and polish",
-        category: "Nail Services",
-        price: 18000,
-        duration: 90,
-        image:
-          "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=400&fit=crop",
-        features: [
-          "Cuticle care",
-          "Nail shaping",
-          "Hand/foot massage",
-          "Polish application",
-          "Moisturizing",
-        ],
-        benefits: [
-          "Beautiful nails",
-          "Relaxation",
-          "Soft skin",
-          "Professional finish",
-        ],
-        isActive: true,
-        isFeatured: false,
-        tags: ["manicure", "pedicure", "nails", "relaxation"],
-        requirements: "Remove existing polish, Clean hands and feet",
-        preparation: "Remove all nail polish before appointment",
-        aftercare: "Avoid water for 2 hours, use cuticle oil daily",
-      },
-      {
-        name: "Bridal Makeup",
-        description:
-          "Complete bridal makeup with trial session and touch-up kit",
-        category: "Makeup Services",
-        price: 45000,
+          "Complete check-up and maintenance for your go-kart, including engine, chassis, and brakes.",
+        category: "Maintenance",
+        price: 50000,
         duration: 120,
         image:
-          "https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1629814498709-66c5e6383617?w=800&q=80",
         features: [
-          "Consultation",
-          "Trial session",
-          "Wedding day makeup",
-          "Touch-up kit",
-          "Long-lasting formula",
+          "Engine oil change",
+          "Brake bleed/check",
+          "Chain tensioning",
+          "Alignment check",
+          "Nut and bolt check",
         ],
         benefits: [
-          "Perfect bridal look",
-          "Photography ready",
-          "Long-lasting",
-          "Professional finish",
+          "Improved reliability",
+          "Safety assurance",
+          "Extended lifespan",
         ],
         isActive: true,
         isFeatured: true,
-        tags: ["bridal", "makeup", "wedding", "photography"],
-        requirements:
-          "Skin consultation, Inspiration photos, Dress color reference",
-        preparation: "Good skincare routine, avoid new products 1 week before",
-        aftercare: "Gentle makeup removal, moisturize well",
+        tags: ["maintenance", "service", "reliability"],
+        requirements: "Bring kart to workshop",
+        preparation: "Clean kart before arrival preferred",
+        aftercare: "Test drive to confirm adjustments",
       },
       {
-        name: "Deep Tissue Massage",
+        name: "Engine Tuning & Optimization",
         description:
-          "Therapeutic massage to relieve muscle tension and promote relaxation",
-        category: "Massage Therapy",
-        price: 35000,
+          "Professional dyno tuning to extract maximum power and efficiency from your racing engine.",
+        category: "Tuning",
+        price: 75000,
+        duration: 180,
+        image:
+          "https://images.unsplash.com/photo-1596700815136-1594916258cc?w=800&q=80",
+        features: [
+          "Dyno testing",
+          "Carburetor adjustment",
+          "Ignition timing",
+          "Exhaust optimization",
+        ],
+        benefits: [
+          "More power",
+          "Better response",
+          "Competitive edge",
+        ],
+        isActive: true,
+        isFeatured: true,
+        tags: ["tuning", "performance", "race", "engine"],
+        requirements: "Engine in good running condition",
+        preparation: "Fresh fuel",
+        aftercare: "Follow break-in procedure if new parts installed",
+      },
+      {
+        name: "1-on-1 Coaching Session",
+        description:
+          "Personalized coaching session with a professional racer to improve your lap times and racecraft.",
+        category: "Coaching",
+        price: 40000,
         duration: 60,
         image:
-          "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
         features: [
-          "Deep tissue techniques",
-          "Muscle tension relief",
-          "Relaxation",
-          "Aromatherapy",
-          "Hot stones",
+          "Track walk",
+          "Lead-follow sessions",
+          "Data analysis",
+          "Video review",
+          "Line correction",
         ],
         benefits: [
-          "Pain relief",
-          "Stress reduction",
-          "Improved circulation",
-          "Better sleep",
+          "Faster lap times",
+          "Better technique",
+          "Increased confidence",
         ],
         isActive: true,
-        isFeatured: false,
-        tags: ["massage", "therapy", "relaxation", "pain-relief"],
-        requirements: "Health consultation, Comfortable clothing",
-        preparation: "Stay hydrated, avoid heavy meals 2 hours before",
-        aftercare: "Drink plenty of water, rest and relax",
+        isFeatured: true,
+        tags: ["coaching", "learning", "speed", "driver-development"],
+        requirements: "Own kart or rental",
+        preparation: "Arrive 30 mins early",
+        aftercare: "Review notes and practice",
       },
       {
-        name: "Eyebrow Shaping & Tinting",
+        name: "Track Day Pass",
         description:
-          "Professional eyebrow shaping with tinting for perfect brows",
-        category: "Skin Care",
-        price: 12000,
-        duration: 30,
+          "Full day access to our premium racing circuit for practice and testing.",
+        category: "Track Days",
+        price: 25000,
+        duration: 480, // 8 hours
         image:
-          "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=400&h=400&fit=crop",
+          "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
         features: [
-          "Brow consultation",
-          "Shaping",
-          "Tinting",
-          "Trimming",
-          "Aftercare advice",
+          "Open pit lane",
+          "Safety marshals",
+          "Timing system access",
+          "Paddock space",
         ],
         benefits: [
-          "Perfect brow shape",
-          "Enhanced features",
-          "Long-lasting color",
-          "Professional finish",
+          "Unlimited laps",
+          "Testing time",
+          "Social atmosphere",
         ],
         isActive: true,
         isFeatured: false,
-        tags: ["eyebrows", "shaping", "tinting", "beauty"],
-        requirements: "No eye makeup, Clean face",
-        preparation: "Remove all eye makeup before appointment",
-        aftercare: "Avoid water and makeup for 24 hours",
+        tags: ["track-day", "practice", "circuit"],
+        requirements: "Safety gear mandatory",
+        preparation: "Check kart safety",
+        aftercare: "Clean pit area",
+      },
+      {
+        name: "Kart Storage (Monthly)",
+        description:
+          "Secure, climate-controlled storage for your go-kart at the track facility.",
+        category: "Storage",
+        price: 15000,
+        duration: 0,
+        image:
+          "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+        features: [
+          "24/7 Security",
+          "Climate control",
+          "Battery charging",
+          "Easy track access",
+        ],
+        benefits: [
+          "Convenience",
+          "Protection",
+          "Space saving at home",
+        ],
+        isActive: true,
+        isFeatured: false,
+        tags: ["storage", "garage", "convenience"],
+        requirements: "Insurance recommended",
+        preparation: "Clean kart before storage",
+        aftercare: "none",
+      },
+      {
+        name: "Custom Livery Design",
+        description:
+          "Unique custom sticker kit design and application for your kart and helmet.",
+        category: "Customization",
+        price: 60000,
+        duration: 240, // variable
+        image:
+          "https://images.unsplash.com/photo-1596700815136-1594916258cc?w=800&q=80",
+        features: [
+          "Custom design consultation",
+          "High-quality vinyl",
+          "Professional application",
+          "Unique style",
+        ],
+        benefits: [
+          "Stand out on track",
+          "Sponsor visibility",
+          "Personalized look",
+        ],
+        isActive: true,
+        isFeatured: false,
+        tags: ["design", "stickers", "custom", "look"],
+        requirements: "Clean bodywork",
+        preparation: "Provide logos/ideas",
+        aftercare: "Avoid pressure washing edges",
       },
     ];
 
     // Save products
     for (const productData of products) {
-      const product = new GlowProduct(productData);
+      const product = new ApexProduct(productData);
       await product.save();
     }
 
     // Save services
     for (const serviceData of services) {
-      const service = new GlowService(serviceData);
+      const service = new ApexService(serviceData);
       await service.save();
     }
 
-    console.log("✅ Sample cosmetics products created");
-    console.log("✅ Sample beauty services created");
-    console.log("🌸 Database seeded successfully!");
-    console.log("📧 Admin login: admin@glowbeauty.com / admin123");
+    console.log("✅ Sample karts products created");
+    console.log("✅ Sample kart services created");
+    console.log("🏎️  Database seeded successfully!");
+    console.log("📧 Admin login: admin@apexkarts.com / admin123");
   } catch (error) {
     console.error("❌ Error seeding database:", error);
   } finally {

@@ -14,8 +14,8 @@ export default function Footer() {
               <div className="flex items-center mb-4">
                 <div className="relative w-26 h-16 flex items-center justify-center">
                   <Image
-                    src="/glow_logo.png"
-                    alt="GlowBeauty Logo"
+                    src="/apex_logo.png"
+                    alt="Apex Logo"
                     width={3000}
                     height={3000}
                     className="object-contain w-full h-full"
@@ -24,9 +24,9 @@ export default function Footer() {
                 </div>
               </div>
               <p className="text-zinc-600 leading-relaxed max-w-md">
-                Since 2008, we've been curating the finest collection of luxury
-                cosmetics and beauty products. Our passion for quality and
-                beauty drives everything we do.
+                Since 2012, we've been delivering the finest collection of
+                high-performance go-karts and racing equipment. Our passion for
+                speed and innovation drives everything we do.
               </p>
             </div>
 
@@ -46,7 +46,7 @@ export default function Footer() {
                     d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   />
                 </svg>
-                contact@glowbeauty.com
+                contact@apexrushkarts.com
               </div>
             </div>
           </div>
@@ -59,10 +59,10 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/cosmetics"
+                  href="/karts"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Shop Cosmetics
+                  Shop Karts
                 </Link>
               </li>
               <li>
@@ -89,14 +89,7 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
-              <li>
-                <Link
-                  href="/consultation"
-                  className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
-                >
-                  Beauty Consultation
-                </Link>
-              </li>
+
             </ul>
           </div>
 
@@ -106,46 +99,30 @@ export default function Footer() {
               Customer Service
             </h3>
             <ul className="space-y-3">
-              {/* <li>
+              <li>
                 <Link
-                  href="/shipping"
+                  href="/racing-guide"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Shipping & Delivery
+                  Racing Guide
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/returns"
+                  href="/maintenance-tips"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
-                  Returns & Exchanges
-                </Link>
-              </li> */}
-              <li>
-                <Link
-                  href="/skincare-guide"
-                  className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
-                >
-                  Skincare Guide
+                  Maintenance Tips
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/beauty-tips"
-                  className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
-                >
-                  Beauty Tips
-                </Link>
-              </li>
-              {/* <li>
                 <Link
                   href="/faq"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
                   FAQ
                 </Link>
-              </li> */}
+              </li>
             </ul>
           </div>
         </div>
@@ -161,7 +138,7 @@ export default function Footer() {
               <div className="flex space-x-4">
                 {/* Instagram */}
                 <Link
-                  href="https://www.instagram.com/glowbeauty"
+                  href="https://www.instagram.com/apexrushkarts"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-10 h-10 border border-zinc-300 hover:bg-zinc-50 transition-colors duration-200"
@@ -177,7 +154,7 @@ export default function Footer() {
 
                 {/* TikTok */}
                 <Link
-                  href="https://www.tiktok.com/@glowbeauty"
+                  href="https://www.tiktok.com/@apexrushkarts"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-10 h-10 border border-zinc-300 hover:bg-zinc-50 transition-colors duration-200"
@@ -193,7 +170,7 @@ export default function Footer() {
 
                 {/* YouTube */}
                 <Link
-                  href="https://www.youtube.com/@glowbeauty"
+                  href="https://www.youtube.com/@apexrushkarts"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-10 h-10 border border-zinc-300 hover:bg-zinc-50 transition-colors duration-200"
@@ -220,7 +197,7 @@ export default function Footer() {
                   placeholder="Enter your email"
                   className="flex-1 px-4 py-2 border border-zinc-300 text-sm focus:outline-none focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500 transition-all duration-200"
                 />
-                <button className="px-6 py-2 bg-rose-600 text-white text-sm font-medium uppercase tracking-wide hover:bg-rose-800 transition-colors duration-200 border border-rose-600 cursor-pointer">
+                <button className="px-6 py-2 bg-red-600 text-white text-sm font-medium uppercase tracking-wide hover:bg-red-800 transition-colors duration-200 border border-red-600 cursor-pointer">
                   Subscribe
                 </button>
               </div>
@@ -232,7 +209,7 @@ export default function Footer() {
         <div className="border-t border-zinc-200 pt-8 mt-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-sm text-zinc-600">
             <div>
-              © {new Date().getFullYear()} GlowBeauty - Premium Cosmetics. All
+              © {new Date().getFullYear()} Apex Rush Karts - Premium Go-Karts & Racing Equipment. All
               rights reserved.
             </div>
             <div className="flex flex-wrap gap-6">

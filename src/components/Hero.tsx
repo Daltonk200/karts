@@ -28,21 +28,19 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         {/* Banner Image (shown first) */}
         <Image
-          src="https://img.freepik.com/makeup-brush-decorative-cosmetics-red-background-with-empty-space-top-view_250469-11169.jpg?W=6000"
-          alt="Luxury cosmetics and beauty products background"
+          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2000&q=80"
+          alt="High-speed go-kart racing action"
           fill
-          className={`object-cover transition-opacity duration-1000 ${
-            showVideo ? "opacity-0" : "opacity-100"
-          }`}
+          className={`object-cover transition-opacity duration-1000 ${showVideo ? "opacity-0" : "opacity-100"
+            }`}
           priority
         />
 
         {/* Video (fades in after delay) */}
         <video
           ref={videoRef}
-          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-            showVideo ? "opacity-100" : "opacity-0"
-          }`}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${showVideo ? "opacity-100" : "opacity-0"
+            }`}
           muted
           loop
           playsInline
@@ -61,33 +59,33 @@ export default function Hero() {
           <div className="space-y-8">
             <div className="space-y-6">
               <h1 className="font-caveat text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight">
-                Premium Cosmetics,
+                Premium Go-Karts,
                 <br />
-                <span className="text-zinc-200">Timeless Beauty</span>
+                <span className="text-zinc-200">Ultimate Racing</span>
               </h1>
               <p className="text-lg md:text-xl text-zinc-200 leading-relaxed font-outfit">
-                Luxury beauty products with the quality and effectiveness that
-                only comes from decades of beauty expertise. Each product
-                enhances your natural beauty.
+                High-performance go-karts engineered for speed and precision.
+                Experience the thrill of racing with our cutting-edge karts
+                designed for both professionals and enthusiasts.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/cosmetics"
-                className="group rounded-sm relative inline-flex items-center justify-center px-8 py-4 bg-rose-600 text-white font-medium tracking-wide uppercase border border-rose-600 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl"
+                href="/karts"
+                className="group rounded-sm relative inline-flex items-center justify-center px-8 py-4 bg-red-600 text-white font-medium tracking-wide uppercase border border-red-600 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <span className="relative z-10 transition-colors duration-300 group-hover:text-white">
-                  Shop Collection
+                  Shop Karts
                 </span>
-                <div className="absolute inset-0 bg-rose-700 transform -translate-x-full transition-transform duration-300 ease-out group-hover:translate-x-0"></div>
+                <div className="absolute inset-0 bg-red-700 transform -translate-x-full transition-transform duration-300 ease-out group-hover:translate-x-0"></div>
               </Link>
               <Link
                 href="/about"
-                className="group relative rounded-sm inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-medium tracking-wide uppercase overflow-hidden transition-all duration-300 hover:border-rose-200"
+                className="group relative rounded-sm inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-medium tracking-wide uppercase overflow-hidden transition-all duration-300 hover:border-red-200"
               >
-                <span className="relative z-10 transition-colors duration-300 group-hover:text-rose-600">
-                  Book Now
+                <span className="relative z-10 transition-colors duration-300 group-hover:text-red-600">
+                  Learn More
                 </span>
                 <div className="absolute inset-0 bg-white transform -translate-x-full transition-transform duration-300 ease-out group-hover:translate-x-0"></div>
               </Link>

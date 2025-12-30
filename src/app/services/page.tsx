@@ -5,7 +5,6 @@ import Container from "@/components/Container";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-// import { services } from "@/data/services";
 
 interface Service {
   _id: string;
@@ -15,8 +14,6 @@ interface Service {
   price: number;
   duration: number;
   image: string;
-  isActive: boolean;
-  isFeatured: boolean;
   features: string[];
 }
 
@@ -32,7 +29,7 @@ export default function ServicesPage() {
   const fetchServices = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/services?limit=50&isActive=true");
+      const response = await fetch("/api/services");
       const data = await response.json();
 
       if (response.ok) {
@@ -47,35 +44,33 @@ export default function ServicesPage() {
     }
   };
 
-  const handleBookAppointment = (serviceId: string) => {
-    router.push(`/book-appointment?service=${serviceId}`);
+  const handleContact = (serviceId: string) => {
+    router.push(`/contact?service=${serviceId}`);
   };
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Hero Section - Following the proper pattern */}
+      {/* Hero Section */}
       <section className="relative bg-black border-b border-zinc-200 overflow-hidden">
-        {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://img.freepik.com/diverse-group-women-preparing-using-makeups_53876-29637.jpg?W=2000"
-            alt="Beauty Services"
+            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2000&q=80"
+            alt="Go-Kart Services"
             fill
-            className="object-cover opacity-60 object-[50%_0%]"
+            className="object-cover opacity-60"
             priority
           />
-          {/* Dark overlay for text readability */}
           <div className="absolute inset-0 bg-zinc-900/40"></div>
         </div>
 
         <Container className="py-16 md:py-20 lg:py-24 relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="font-caveat text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-tight mb-6">
-              Our Services
+              Professional Kart Services
             </h1>
             <p className="text-lg md:text-xl text-zinc-200 leading-relaxed font-outfit mb-8 max-w-3xl mx-auto">
-              Discover our comprehensive range of beauty and wellness services,
-              designed to enhance your natural beauty and boost your confidence.
+              Expert maintenance, performance upgrades, and customization services
+              to keep your kart at peak performance.
             </p>
           </div>
         </Container>
@@ -84,10 +79,10 @@ export default function ServicesPage() {
       {/* Services Grid */}
       <Container className="py-16 md:py-20">
         {loading ? (
-          <div className="flex justify-center items-center py-16">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600"></div>
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-600"></div>
           </div>
-        ) : (
+        ) : services.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {services.map((service) => (
               <div
@@ -104,8 +99,8 @@ export default function ServicesPage() {
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent"></div>
                   <div className="absolute top-4 left-4">
-                    <span className="px-3 py-1.5 bg-rose-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg">
-                      {service.duration}
+                    <span className="px-3 py-1.5 bg-red-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg">
+                      {service.duration} mins
                     </span>
                   </div>
                   <div className="absolute bottom-4 left-4 right-4">
@@ -113,21 +108,21 @@ export default function ServicesPage() {
                       {service.name}
                     </h3>
                     <p className="text-white/90 text-sm md:text-base font-medium">
-                      {service.price}
+                      XAF {service.price.toLocaleString()}
                     </p>
                   </div>
                 </div>
 
                 {/* Service Content */}
                 <div className="p-6 flex flex-col flex-grow">
-                  <p className="text-zinc-600 mb-4 leading-relaxed text-sm md:text-base">
+                  <p className="text-zinc-600 mb-4 leading-relaxed text-sm md:text-base line-clamp-3">
                     {service.description}
                   </p>
 
                   {/* Features */}
                   <div className="mb-6 flex-grow">
                     <h4 className="font-semibold text-zinc-900 mb-3 flex items-center text-sm md:text-base">
-                      <span className="w-2 h-2 bg-rose-500 rounded-full mr-2"></span>
+                      <span className="w-2 h-2 bg-red-500 rounded-full mr-2"></span>
                       What's Included
                     </h4>
                     <ul className="space-y-2">
@@ -137,7 +132,7 @@ export default function ServicesPage() {
                           className="text-sm text-zinc-600 flex items-start"
                         >
                           <svg
-                            className="w-4 h-4 text-rose-500 mr-2 mt-0.5 flex-shrink-0"
+                            className="w-4 h-4 text-red-500 mr-2 mt-0.5 flex-shrink-0"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
@@ -153,9 +148,8 @@ export default function ServicesPage() {
                     </ul>
                   </div>
 
-                  {/* Action Buttons - Always at bottom */}
+                  {/* Action Buttons */}
                   <div className="flex gap-3 mt-auto">
-                    {/* View Details Button */}
                     <Link
                       href={`/services/${service._id}`}
                       className="flex-1 bg-zinc-100 text-zinc-700 font-medium py-2.5 px-4 rounded-lg hover:bg-zinc-200 transition-all duration-300 font-outfit border border-zinc-200 text-sm md:text-base text-center"
@@ -163,28 +157,20 @@ export default function ServicesPage() {
                       View Details
                     </Link>
 
-                    {/* Book Appointment Button */}
                     <button
-                      onClick={() => handleBookAppointment(service._id)}
-                      className="flex-[2] bg-rose-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-rose-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+                      onClick={() => handleContact(service._id)}
+                      className="flex-[2] bg-red-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
                     >
-                      Book Appointment
+                      Contact Us
                     </button>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        )}
-
-        {!loading && services.length === 0 && (
-          <div className="text-center py-16">
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              No Services Available
-            </h3>
-            <p className="text-gray-600">
-              Please check back later for our latest services.
-            </p>
+        ) : (
+          <div className="text-center py-20">
+            <p className="text-zinc-500 text-lg">No services found.</p>
           </div>
         )}
       </Container>
@@ -197,16 +183,16 @@ export default function ServicesPage() {
               Why Choose Our Services?
             </h2>
             <p className="text-lg md:text-xl text-zinc-600 max-w-3xl mx-auto font-outfit">
-              We combine expertise, premium products, and personalized care to
+              We combine expertise, quality parts, and personalized service to
               deliver exceptional results
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             <div className="text-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
                 <svg
-                  className="w-8 h-8 md:w-10 md:h-10 text-rose-600"
+                  className="w-8 h-8 md:w-10 md:h-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -220,17 +206,17 @@ export default function ServicesPage() {
                 </svg>
               </div>
               <h3 className="text-lg md:text-xl font-semibold text-zinc-900 mb-2 md:mb-3">
-                Expert Professionals
+                Expert Technicians
               </h3>
               <p className="text-zinc-600 text-sm md:text-base">
-                Certified and experienced beauty specialists
+                Certified mechanics with years of racing experience
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
                 <svg
-                  className="w-8 h-8 md:w-10 md:h-10 text-rose-600"
+                  className="w-8 h-8 md:w-10 md:h-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -244,17 +230,17 @@ export default function ServicesPage() {
                 </svg>
               </div>
               <h3 className="text-lg md:text-xl font-semibold text-zinc-900 mb-2 md:mb-3">
-                Premium Products
+                Quality Parts
               </h3>
               <p className="text-zinc-600 text-sm md:text-base">
-                High-quality, safe, and effective products
+                OEM and premium aftermarket components
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
                 <svg
-                  className="w-8 h-8 md:w-10 md:h-10 text-rose-600"
+                  className="w-8 h-8 md:w-10 md:h-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -263,22 +249,22 @@ export default function ServicesPage() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
                   />
                 </svg>
               </div>
               <h3 className="text-lg md:text-xl font-semibold text-zinc-900 mb-2 md:mb-3">
-                Personalized Care
+                Fast Turnaround
               </h3>
               <p className="text-zinc-600 text-sm md:text-base">
-                Tailored treatments for your unique needs
+                Quick service to get you back on track
               </p>
             </div>
 
             <div className="text-center">
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-rose-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 md:mb-6">
                 <svg
-                  className="w-8 h-8 md:w-10 md:h-10 text-rose-600"
+                  className="w-8 h-8 md:w-10 md:h-10 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -292,10 +278,10 @@ export default function ServicesPage() {
                 </svg>
               </div>
               <h3 className="text-lg md:text-xl font-semibold text-zinc-900 mb-2 md:mb-3">
-                Convenient Booking
+                Flexible Scheduling
               </h3>
               <p className="text-zinc-600 text-sm md:text-base">
-                Easy online booking and flexible scheduling
+                Easy online booking and convenient hours
               </p>
             </div>
           </div>
@@ -303,27 +289,21 @@ export default function ServicesPage() {
       </div>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-rose-600 to-pink-600 py-16 md:py-20">
+      <div className="bg-gradient-to-r from-red-600 to-red-700 py-16 md:py-20">
         <Container>
           <div className="text-center text-white">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 font-caveat">
-              Ready to Transform Your Beauty?
+              Ready to Optimize Your Kart?
             </h2>
             <p className="text-lg md:text-xl mb-8 md:mb-10 opacity-90 font-outfit">
-              Book your appointment today and experience the difference
+              Contact us today to schedule your service and experience peak performance
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/book-appointment"
-                className="bg-white text-rose-600 font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
-              >
-                Book Appointment
-              </Link>
-              <Link
                 href="/contact"
-                className="border-2 border-white text-white font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-white hover:text-rose-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+                className="bg-white text-red-600 font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base shadow-lg"
               >
-                Contact Us
+                Contact Us Now
               </Link>
             </div>
           </div>

@@ -1,21 +1,21 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export interface CosmeticProduct {
+export interface KartProduct {
   id: string;
   name: string;
   price: number;
   image: string;
   category: string;
   brand: string;
-  skinType: string;
+  kartType: string;
   size: string;
   isFeatured: boolean;
 }
 
 interface WishlistStore {
-  items: CosmeticProduct[];
-  addToWishlist: (product: CosmeticProduct) => void;
+  items: KartProduct[];
+  addToWishlist: (product: KartProduct) => void;
   removeFromWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
   clearWishlist: () => void;
@@ -26,7 +26,7 @@ export const useWishlistStore = create<WishlistStore>()(
     (set, get) => ({
       items: [],
 
-      addToWishlist: (product: CosmeticProduct) => {
+      addToWishlist: (product: KartProduct) => {
         const { items } = get();
         if (!items.find((item) => item.id === product.id)) {
           set({ items: [...items, product] });

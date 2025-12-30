@@ -9,8 +9,7 @@ interface DashboardStats {
   totalOrders: number;
   totalRevenue: number;
   totalServices: number;
-  totalBookings: number;
-  todayBookings: number;
+
 }
 
 export default function DashboardPage() {
@@ -19,8 +18,7 @@ export default function DashboardPage() {
     totalOrders: 0,
     totalRevenue: 0,
     totalServices: 0,
-    totalBookings: 0,
-    todayBookings: 0,
+
   });
   const [loading, setLoading] = useState(true);
   const [recentProducts, setRecentProducts] = useState<any[]>([]);
@@ -31,64 +29,64 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      const token = localStorage.getItem("dashboard_token");
-      const headers: HeadersInit = {};
+      // Use mock data for frontend-only mode
+      const mockProducts = [
+        {
+          _id: "1",
+          name: "Apex Pro Racing Kart",
+          price: 4500000,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          brand: "Apex Rush",
+          stock: 5,
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "2",
+          name: "Thunder 250cc Racing Kart",
+          price: 3800000,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          brand: "Apex Rush",
+          stock: 8,
+          createdAt: new Date().toISOString()
+        },
+        {
+          _id: "3",
+          name: "Pro Racing Helmet",
+          price: 180000,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          brand: "Apex Rush",
+          stock: 15,
+          createdAt: new Date().toISOString()
+        }
+      ];
 
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
+      const mockOrders = [
+        { _id: "1", total: 4500000 },
+        { _id: "2", total: 3800000 },
+        { _id: "3", total: 180000 }
+      ];
 
-      // Fetch products data
-      const productsRes = await fetch("/api/products?limit=1000", { headers });
-      const productsData = await productsRes.json();
+      const mockServices = [
+        { _id: "1", name: "Kart Maintenance" },
+        { _id: "2", name: "Performance Tuning" },
+        { _id: "3", name: "Custom Paint Job" }
+      ];
 
-      // Fetch orders data
-      const ordersRes = await fetch("/api/orders?limit=1000", { headers });
-      const ordersData = await ordersRes.json();
 
-      // Fetch services data
-      const servicesRes = await fetch("/api/services?limit=1000", { headers });
-      const servicesData = await servicesRes.json();
-
-      // Fetch bookings data
-      const bookingsRes = await fetch("/api/bookings?limit=1000", { headers });
-      const bookingsData = await bookingsRes.json();
-
-      // Calculate stats
-      const products = productsData.products || [];
-      const orders = ordersData.orders || [];
-      const services = servicesData.services || [];
-      const bookings = bookingsData.bookings || [];
-
-      const totalRevenue = orders.reduce((sum: number, order: any) => {
+      const totalRevenue = mockOrders.reduce((sum: number, order: any) => {
         return sum + (order.total || 0);
       }, 0);
 
-      const today = new Date().toISOString().split("T")[0];
-      const todayBookings = bookings.filter((booking: any) =>
-        booking.appointment.date.startsWith(today)
-      ).length;
-
-      // Get recent products
-      const recent = products
-        .sort(
-          (a: any, b: any) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        .slice(0, 5);
-
       setStats({
-        totalProducts: products.length,
-        totalOrders: orders.length,
+        totalProducts: mockProducts.length,
+        totalOrders: mockOrders.length,
         totalRevenue,
-        totalServices: services.length,
-        totalBookings: bookings.length,
-        todayBookings,
+        totalServices: mockServices.length,
       });
 
-      setRecentProducts(recent);
+      setRecentProducts(mockProducts);
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      console.error("Error loading mock data:", error);
     } finally {
       setLoading(false);
     }
@@ -99,7 +97,7 @@ export default function DashboardPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading dashboard...</p>
           </div>
         </div>
@@ -116,7 +114,7 @@ export default function DashboardPage() {
             Dashboard Overview
           </h1>
           <p className="text-gray-600">
-            Welcome to your GlowBeauty admin panel
+            Welcome to your Apex Rush Karts admin panel
           </p>
         </div>
 
@@ -240,65 +238,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-600">
-                  Total Bookings
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.totalBookings}
-                </p>
-              </div>
-            </div>
-          </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <svg
-                    className="w-5 h-5 text-gray-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="ml-3">
-                <p className="text-sm font-medium text-gray-600">
-                  Today's Bookings
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.todayBookings}
-                </p>
-              </div>
-            </div>
-          </div>
         </div>
 
         {/* Quick Actions and Recent Products */}
@@ -311,7 +251,7 @@ export default function DashboardPage() {
             <div className="space-y-3">
               <Link
                 href="/dashboard/products/create"
-                className="block w-full px-4 py-3 bg-rose-600 text-white text-center rounded-lg hover:bg-rose-700 transition-colors duration-200 font-medium"
+                className="block w-full px-4 py-3 bg-red-600 text-white text-center rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
               >
                 Add New Product
               </Link>
@@ -333,12 +273,7 @@ export default function DashboardPage() {
               >
                 Manage Services
               </Link>
-              <Link
-                href="/dashboard/bookings"
-                className="block w-full px-4 py-3 border border-gray-300 text-gray-700 text-center rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
-              >
-                View Bookings
-              </Link>
+
             </div>
           </div>
 
@@ -350,7 +285,7 @@ export default function DashboardPage() {
               </h3>
               <Link
                 href="/dashboard/products"
-                className="text-sm text-rose-600 hover:text-rose-700 font-medium"
+                className="text-sm text-red-600 hover:text-red-700 font-medium"
               >
                 View all
               </Link>
@@ -379,11 +314,10 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex-shrink-0">
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          product.stock <= 5
-                            ? "bg-red-100 text-red-800"
-                            : "bg-green-100 text-green-800"
-                        }`}
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${product.stock <= 5
+                          ? "bg-red-100 text-red-800"
+                          : "bg-green-100 text-green-800"
+                          }`}
                       >
                         {product.stock} in stock
                       </span>

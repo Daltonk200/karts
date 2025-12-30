@@ -210,7 +210,7 @@ export default function CreateProductPage() {
               Create New Product
             </h1>
             <p className="text-gray-600">
-              Add a new cosmetics product to your inventory
+              Add a new karts product to your inventory
             </p>
           </div>
           <button
@@ -241,7 +241,7 @@ export default function CreateProductPage() {
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="Enter product name"
                     />
                   </div>
@@ -255,7 +255,7 @@ export default function CreateProductPage() {
                       value={formData.brand}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="Enter brand name"
                     />
                   </div>
@@ -268,7 +268,7 @@ export default function CreateProductPage() {
                       name="sku"
                       value={formData.sku}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="Auto-generated if empty"
                     />
                   </div>
@@ -281,7 +281,7 @@ export default function CreateProductPage() {
                       value={formData.category}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     >
                       {categories.map((category) => (
                         <option key={category} value={category}>
@@ -298,7 +298,7 @@ export default function CreateProductPage() {
                       name="skinType"
                       value={formData.skinType}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     >
                       {skinTypes.map((type) => (
                         <option key={type} value={type}>
@@ -316,7 +316,7 @@ export default function CreateProductPage() {
                       value={formData.description}
                       onChange={handleInputChange}
                       rows={4}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="Enter product description"
                     />
                   </div>
@@ -341,7 +341,7 @@ export default function CreateProductPage() {
                       required
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
                   <div>
@@ -355,7 +355,7 @@ export default function CreateProductPage() {
                       onChange={handleInputChange}
                       min="0"
                       step="0.01"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
                   <div>
@@ -369,7 +369,7 @@ export default function CreateProductPage() {
                       onChange={handleInputChange}
                       required
                       min="0"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                     />
                   </div>
                 </div>
@@ -390,7 +390,7 @@ export default function CreateProductPage() {
                       name="size"
                       value={formData.size}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., 30ml, 50g"
                     />
                   </div>
@@ -403,7 +403,7 @@ export default function CreateProductPage() {
                       name="color"
                       value={formData.color}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., Rose Gold, Clear"
                     />
                   </div>
@@ -416,7 +416,7 @@ export default function CreateProductPage() {
                       name="weight"
                       value={formData.weight}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., 30ml, 50g"
                     />
                   </div>
@@ -429,7 +429,7 @@ export default function CreateProductPage() {
                       name="dimensions"
                       value={formData.dimensions}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., 15cm x 3cm"
                     />
                   </div>
@@ -442,7 +442,7 @@ export default function CreateProductPage() {
                       value={formData.application}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="How to use this product"
                     />
                   </div>
@@ -465,7 +465,7 @@ export default function CreateProductPage() {
                       onChange={(e) =>
                         handleArrayInputChange("ingredients", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., Retinol, Hyaluronic Acid, Vitamin C"
                     />
                   </div>
@@ -479,7 +479,7 @@ export default function CreateProductPage() {
                       onChange={(e) =>
                         handleArrayInputChange("benefits", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., Reduces fine lines, Hydrates skin, Brightens complexion"
                     />
                   </div>
@@ -493,7 +493,7 @@ export default function CreateProductPage() {
                       onChange={(e) =>
                         handleArrayInputChange("tags", e.target.value)
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
                       placeholder="e.g., anti-aging, luxury, natural"
                     />
                   </div>
@@ -526,8 +526,8 @@ export default function CreateProductPage() {
                     <div
                       className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
                         uploadingImages
-                          ? "border-rose-300 bg-rose-50"
-                          : "border-zinc-300 hover:border-rose-400 hover:bg-rose-50"
+                          ? "border-red-300 bg-red-50"
+                          : "border-zinc-300 hover:border-red-400 hover:bg-red-50"
                       }`}
                       onClick={() =>
                         document
@@ -551,7 +551,7 @@ export default function CreateProductPage() {
                         </svg>
 
                         <div className="text-sm text-zinc-600">
-                          <span className="font-medium text-rose-600 hover:text-rose-500">
+                          <span className="font-medium text-red-600 hover:text-red-500">
                             {formData.images.length > 0
                               ? "Add More Images"
                               : "Click to upload"}
@@ -567,7 +567,7 @@ export default function CreateProductPage() {
                       {uploadingImages && (
                         <div className="mt-4">
                           <div className="flex items-center justify-center space-x-2">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-rose-600"></div>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-red-600"></div>
                             <span className="text-sm text-zinc-600">
                               Uploading...
                             </span>
@@ -617,7 +617,7 @@ export default function CreateProductPage() {
                       name="isFeatured"
                       checked={formData.isFeatured}
                       onChange={handleInputChange}
-                      className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                     />
                     <label className="ml-2 text-sm text-gray-700">
                       Featured Product
@@ -629,7 +629,7 @@ export default function CreateProductPage() {
                       name="isOnSale"
                       checked={formData.isOnSale}
                       onChange={handleInputChange}
-                      className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
+                      className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                     />
                     <label className="ml-2 text-sm text-gray-700">
                       On Sale
@@ -644,7 +644,7 @@ export default function CreateProductPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full px-4 py-2 bg-rose-600 text-white rounded-lg hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                    className="w-full px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                   >
                     {loading ? "Creating..." : "Create Product"}
                   </button>

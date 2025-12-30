@@ -16,22 +16,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
 
   useEffect(() => {
-    // Check authentication
-    const token = localStorage.getItem("dashboard_token");
-    const userData = localStorage.getItem("dashboard_user");
-
-    if (token && userData) {
-      setUser(JSON.parse(userData));
-    } else {
-      router.push("/dashboard/login");
-    }
+    // Bypass authentication for frontend-only mode
+    // Set a mock user for display purposes
+    setUser({
+      username: "Admin",
+      role: "Administrator"
+    });
   }, [router]);
 
   const handleLogout = () => {
-    localStorage.removeItem("dashboard_token");
-    localStorage.removeItem("dashboard_user");
-    setUser(null);
-    router.push("/dashboard/login");
+    // Just redirect to home for now
+    router.push("/");
     toast.success("Logged out successfully");
   };
 
@@ -99,25 +94,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </svg>
       ),
     },
-    {
-      name: "Bookings",
-      href: "/dashboard/bookings",
-      icon: (
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-          />
-        </svg>
-      ),
-    },
+
     {
       name: "Orders",
       href: "/dashboard/orders",
@@ -158,17 +135,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     }
   ];
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading dashboard...</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Mobile sidebar backdrop */}
@@ -183,13 +149,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+          }`}
       >
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-rose-500 to-rose-700 rounded-lg flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-red-500 to-red-700 rounded-lg flex items-center justify-center">
               <svg
                 className="w-5 h-5 text-white"
                 fill="currentColor"
@@ -199,7 +164,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               </svg>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">GlowBeauty</h1>
+              <h1 className="text-lg font-bold text-gray-900">Apex Rush</h1>
               <p className="text-xs text-gray-500">Admin Panel</p>
             </div>
           </div>
@@ -231,19 +196,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-2 text-sm font-medium  transition-colors duration-200 ${
-                    isActive
-                      ? "bg-rose-100 text-rose-700 border-l-3 border-rose-600"
-                      : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                  }`}
+                  className={`group flex items-center px-3 py-2 text-sm font-medium  transition-colors duration-200 ${isActive
+                    ? "bg-red-100 text-red-700 border-l-3 border-red-600"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                    }`}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <span
-                    className={`mr-3 ${
-                      isActive
-                        ? "text-rose-600"
-                        : "text-gray-400 group-hover:text-gray-600"
-                    }`}
+                    className={`mr-3 ${isActive
+                      ? "text-red-600"
+                      : "text-gray-400 group-hover:text-gray-600"
+                      }`}
                   >
                     {item.icon}
                   </span>
@@ -257,8 +220,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* User info */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center">
-              <span className="text-sm font-medium text-rose-700">
+            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+              <span className="text-sm font-medium text-red-700">
                 {user.username?.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -319,7 +282,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               <Link
                 href="/"
                 target="_blank"
-                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500"
+                className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
               >
                 <svg
                   className="w-4 h-4 mr-2"

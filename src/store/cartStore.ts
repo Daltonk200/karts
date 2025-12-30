@@ -8,7 +8,7 @@ export interface CartItem {
   image: string;
   category: string;
   brand: string;
-  condition: string;
+  kartType: string;
   quantity: number;
   stock: number;
   model: string;

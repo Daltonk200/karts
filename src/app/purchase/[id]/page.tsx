@@ -64,12 +64,12 @@ export default function PurchasePage() {
           setProduct(data);
         } else {
           toast.error("Product not found");
-          router.push("/cosmetics");
+          router.push("/karts");
         }
       } catch (error) {
         console.error("Error fetching product:", error);
         toast.error("Failed to load product");
-        router.push("/cosmetics");
+        router.push("/karts");
       } finally {
         setLoading(false);
       }
@@ -208,7 +208,7 @@ export default function PurchasePage() {
             The product you're looking for doesn't exist.
           </p>
           <button
-            onClick={() => router.push("/cosmetics")}
+            onClick={() => router.push("/karts")}
             className="px-6 py-3 bg-zinc-900 text-white font-medium hover:bg-zinc-800 transition-colors duration-200"
           >
             Back to Products
@@ -231,7 +231,7 @@ export default function PurchasePage() {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center text-white">
             <h1 className="text-4xl font-bold mb-2">Complete Your Order</h1>
-            <p className="text-xl">Secure your cosmetics today</p>
+            <p className="text-xl">Secure your karts today</p>
           </div>
         </div>
       </div>
@@ -241,7 +241,7 @@ export default function PurchasePage() {
           <div className="bg-white p-8 border h-fit border-gray-200 rounded-2xl shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
               <svg
-                className="w-6 h-6 mr-3 text-rose-600"
+                className="w-6 h-6 mr-3 text-red-600"
                 fill="currentColor"
                 viewBox="0 0 20 20"
               >
@@ -298,10 +298,10 @@ export default function PurchasePage() {
                   </div>
                 </div>
                 <div className="mt-2">
-                  <div className="text-3xl font-bold text-rose-600">
+                  <div className="text-3xl font-bold text-red-600">
                     XAF {product.price.toLocaleString()}
                   </div>
-                  <div className="text-sm text-rose-700 mt-1">
+                  <div className="text-sm text-red-700 mt-1">
                     {product.stock > 0
                       ? `${product.stock} in stock`
                       : "Out of stock"}
@@ -315,7 +315,7 @@ export default function PurchasePage() {
           <div className="bg-white p-8 border  border-gray-200 rounded-2xl shadow-sm">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 flex items-center">
               <svg
-                className="w-6 h-6 mr-3 text-rose-600"
+                className="w-6 h-6 mr-3 text-red-600"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -346,7 +346,7 @@ export default function PurchasePage() {
                     value={formData.firstName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -363,7 +363,7 @@ export default function PurchasePage() {
                     value={formData.lastName}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -383,7 +383,7 @@ export default function PurchasePage() {
                     value={formData.email}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -400,7 +400,7 @@ export default function PurchasePage() {
                     value={formData.phone}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -439,7 +439,7 @@ export default function PurchasePage() {
                     value={formData.city}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -456,7 +456,7 @@ export default function PurchasePage() {
                     value={formData.state}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
                 <div>
@@ -473,7 +473,7 @@ export default function PurchasePage() {
                     value={formData.zipCode}
                     onChange={handleInputChange}
                     required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200"
+                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200"
                   />
                 </div>
               </div>
@@ -532,16 +532,16 @@ export default function PurchasePage() {
                   value={formData.notes}
                   onChange={handleInputChange}
                   rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-rose-500 transition-all duration-200 resize-none"
+                  className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition-all duration-200 resize-none"
                   placeholder="Any special requests or notes..."
                 />
               </div>
 
               {/* Order Summary */}
-              <div className="bg-rose-50 p-6 border border-rose-200 rounded-xl">
+              <div className="bg-red-50 p-6 border border-red-200 rounded-xl">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                   <svg
-                    className="w-5 h-5 mr-2 text-rose-600"
+                    className="w-5 h-5 mr-2 text-red-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -574,8 +574,8 @@ export default function PurchasePage() {
                       XAF {calculateShipping().toFixed(2)}
                     </span>
                   </div>
-                  <div className="border-t border-rose-300 pt-3 mt-3">
-                    <div className="flex justify-between font-bold text-lg text-rose-600">
+                  <div className="border-t border-red-300 pt-3 mt-3">
+                    <div className="flex justify-between font-bold text-lg text-red-600">
                       <span>Total:</span>
                       <span>XAF {calculateTotal().toFixed(2)}</span>
                     </div>
@@ -587,7 +587,7 @@ export default function PurchasePage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-rose-600 text-white py-4 px-6 font-semibold rounded-lg hover:bg-rose-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                className="w-full bg-red-600 text-white py-4 px-6 font-semibold rounded-lg hover:bg-red-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
               >
                 {isSubmitting ? (
                   <div className="flex items-center justify-center">

@@ -5,7 +5,7 @@ import { useCartStore } from "@/store/cartStore";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import ProductCard from "@/components/cosmetics/ProductCard";
+import ProductCard from "@/components/karts/ProductCard";
 import { Product } from "@/data/mockProducts";
 
 export default function WishlistPage() {
@@ -40,7 +40,7 @@ export default function WishlistPage() {
   });
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       {/* Hero Section */}
       <div className="relative b text-white overflow-hidden">
         {/* Background Image */}
@@ -73,7 +73,7 @@ export default function WishlistPage() {
         {wishlistItems.length > 0 ? (
           <>
             {/* Summary Card */}
-            <div className="bg-white rounded-[15px] shadow-sm p-8 border border-rose-100 mb-12">
+            <div className="bg-white rounded-[15px] shadow-sm p-8 border border-red-100 mb-12">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                 <div>
                   <h2 className="text-3xl font-caveat font-bold text-zinc-900 mb-2">
@@ -85,7 +85,7 @@ export default function WishlistPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <div className="text-3xl font-caveat font-bold text-rose-600">
+                  <div className="text-3xl font-caveat font-bold text-red-600">
                     XAF {totalValue.toLocaleString()}
                   </div>
                   <div className="text-sm text-zinc-600 font-outfit">
@@ -133,12 +133,12 @@ export default function WishlistPage() {
             {/* Actions */}
             <div className="mt-16 flex flex-col sm:flex-row gap-6 justify-center">
               <Link
-                href="/cosmetics"
-                className="px-8 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg text-center"
+                href="/karts"
+                className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-600 text-white font-semibold font-outfit rounded-[8px] hover:from-red-700 hover:to-red-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg text-center"
               >
                 Continue Shopping
               </Link>
-              <button className="px-8 py-4 border-2 border-rose-200 text-rose-600 font-semibold font-outfit rounded-[8px] hover:bg-rose-50 hover:border-rose-300 transition-all duration-300">
+              <button className="px-8 py-4 border-2 border-red-200 text-red-600 font-semibold font-outfit rounded-[8px] hover:bg-red-50 hover:border-red-300 transition-all duration-300">
                 Share Wishlist
               </button>
             </div>
@@ -154,8 +154,8 @@ export default function WishlistPage() {
               products and adding your favorites to your wishlist.
             </p>
             <Link
-              href="/cosmetics"
-              className="inline-block px-10 py-4 bg-gradient-to-r from-rose-600 to-pink-600 text-white font-semibold font-outfit rounded-[8px] hover:from-rose-700 hover:to-pink-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
+              href="/karts"
+              className="inline-block px-10 py-4 bg-gradient-to-r from-red-600 to-red-600 text-white font-semibold font-outfit rounded-[8px] hover:from-red-700 hover:to-red-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
             >
               Browse Products
             </Link>

@@ -70,7 +70,7 @@ export function DateRangePicker({
         <Button
           variant="outline"
           className={cn(
-            "w-full justify-between font-normal font-outfit  px-4 py-5 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-rose-200 focus:border-rose-300 transition-all duration-200",
+            "w-full justify-between font-normal font-outfit  px-4 py-5 border border-zinc-200 rounded-[8px] focus:outline-none focus:ring-2 focus:ring-red-200 focus:border-red-300 transition-all duration-200",
             className
           )}
           disabled={disabled}
@@ -129,7 +129,7 @@ export function DateRangePicker({
             </button>
             <button
               onClick={handleApply}
-              className="px-3 py-1 text-xs bg-rose-500 text-white rounded hover:bg-rose-600"
+              className="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600"
             >
               Apply
             </button>

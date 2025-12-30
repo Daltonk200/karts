@@ -48,7 +48,7 @@ const orderSchema = new mongoose.Schema({
     {
       productId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        ref: "ApexProduct",
         required: true,
       },
       name: {
@@ -116,5 +116,5 @@ orderSchema.pre("save", function (next) {
   next();
 });
 
-export default mongoose.models.GlowOrder ||
-  mongoose.model("GlowOrder", orderSchema);
+export default mongoose.models.ApexOrder ||
+  mongoose.model("ApexOrder", orderSchema);

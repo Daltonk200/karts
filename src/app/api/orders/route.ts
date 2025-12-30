@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowOrder from "@/models/Order";
+import ApexOrder from "@/models/Order";
 
 // GET /api/orders - Get all orders with pagination and filtering
 export async function GET(request: NextRequest) {
@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
     sort[sortBy] = sortOrder === "desc" ? -1 : 1;
 
     // Get orders with pagination
-    const orders = await GlowOrder.find(filter)
+    const orders = await ApexOrder.find(filter)
       .sort(sort)
       .skip(skip)
       .limit(limit)
@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
       .lean();
 
     // Get total count for pagination
-    const total = await GlowOrder.countDocuments(filter);
+    const total = await ApexOrder.countDocuments(filter);
 
     return NextResponse.json({
       orders,
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       orderData.invoiceNumber = `INV-${year}${month}-${randomNum}`;
     }
 
-    const order = new GlowOrder(orderData);
+    const order = new ApexOrder(orderData);
     await order.save();
 
     // Populate product details

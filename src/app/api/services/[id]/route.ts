@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowService from "@/models/Service";
+import ApexService from "@/models/Service";
 
 // GET /api/services/[id] - Get a single service
 export async function GET(
@@ -11,7 +11,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const service = await GlowService.findById(id);
+    const service = await ApexService.findById(id);
 
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
@@ -43,7 +43,7 @@ export async function PUT(
       updateData.image = updateData.images[0];
     }
 
-    const service = await GlowService.findByIdAndUpdate(id, updateData, {
+    const service = await ApexService.findByIdAndUpdate(id, updateData, {
       new: true,
       runValidators: true,
     });
@@ -74,25 +74,14 @@ export async function DELETE(
   try {
     await connectDB();
 
-    const service = await GlowService.findById(id);
+    const service = await ApexService.findById(id);
 
     if (!service) {
       return NextResponse.json({ error: "Service not found" }, { status: 404 });
     }
 
-    // Check if service has any bookings
-    const Booking = (await import("@/models/Booking")).default;
-    const hasBookings = await Booking.findOne({ "service.serviceId": id });
-
-    if (hasBookings) {
-      return NextResponse.json(
-        { error: "Cannot delete service with existing bookings" },
-        { status: 400 }
-      );
-    }
-
     // Delete the service
-    await GlowService.findByIdAndDelete(id);
+    await ApexService.findByIdAndDelete(id);
 
     return NextResponse.json({
       success: true,

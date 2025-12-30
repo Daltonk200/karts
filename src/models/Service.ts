@@ -13,14 +13,14 @@ const serviceSchema = new mongoose.Schema({
   category: {
     type: String,
     enum: [
-      "Facial Treatments",
-      "Hair Treatments",
-      "Body Treatments",
-      "Nail Services",
-      "Makeup Services",
-      "Massage Therapy",
-      "Skin Care",
-      "Hair Styling",
+
+      "Maintenance",
+      "Tuning",
+      "Track Days",
+      "Coaching",
+      "Storage",
+      "Customization",
+      "Repairs"
     ],
     required: true,
   },
@@ -112,5 +112,5 @@ serviceSchema.pre("save", async function (next) {
   next();
 });
 
-export default mongoose.models.GlowService ||
-  mongoose.model("GlowService", serviceSchema);
+export default mongoose.models.ApexService ||
+  mongoose.model("ApexService", serviceSchema);

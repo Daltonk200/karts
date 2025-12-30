@@ -190,13 +190,13 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       {/* Hero Section */}
       <section className="relative bg-black border-b border-zinc-200 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
             src="https://images.pexels.com/photos/2988232/pexels-photo-2988232.jpeg"
-            alt="Checkout GlowBeauty"
+            alt="Checkout Apex Rush Karts"
             fill
             className="object-cover opacity-60"
             priority
@@ -224,8 +224,8 @@ export default function CheckoutPage() {
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl shadow-sm p-6 border border-zinc-200 sticky top-8">
                 <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
-                    <AiOutlineShoppingCart className="w-5 h-5 text-rose-600" />
+                  <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                    <AiOutlineShoppingCart className="w-5 h-5 text-red-600" />
                   </div>
                   <h2 className="text-2xl font-caveat font-bold text-zinc-900">
                     Order Summary
@@ -258,7 +258,7 @@ export default function CheckoutPage() {
                         </p>
                       </div>
                       <div className="text-right">
-                        <p className="font-semibold text-rose-600 font-outfit">
+                        <p className="font-semibold text-red-600 font-outfit">
                           XAF {(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
@@ -287,7 +287,7 @@ export default function CheckoutPage() {
                   </div>
                   <div className="flex justify-between text-lg font-bold border-t border-zinc-200 pt-3">
                     <span className="font-outfit">Total:</span>
-                    <span className="font-outfit text-rose-600">
+                    <span className="font-outfit text-red-600">
                       XAF {calculateTotal().toFixed(2)}
                     </span>
                   </div>
@@ -302,8 +302,8 @@ export default function CheckoutPage() {
                   {/* Personal Information */}
                   <div>
                     <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
-                        <AiOutlineUser className="w-5 h-5 text-rose-600" />
+                      <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <AiOutlineUser className="w-5 h-5 text-red-600" />
                       </div>
                       <h2 className="text-2xl font-caveat font-bold text-zinc-900">
                         Personal Information
@@ -321,7 +321,7 @@ export default function CheckoutPage() {
                           value={formData.firstName}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                           placeholder="Enter your first name"
                         />
                       </div>
@@ -336,7 +336,7 @@ export default function CheckoutPage() {
                           value={formData.lastName}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                           placeholder="Enter your last name"
                         />
                       </div>
@@ -351,7 +351,7 @@ export default function CheckoutPage() {
                           value={formData.email}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                           placeholder="Enter your email address"
                         />
                       </div>
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
                           value={formData.phone}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                           placeholder="Enter your phone number"
                         />
                       </div>
@@ -376,8 +376,8 @@ export default function CheckoutPage() {
                   {/* Shipping Address */}
                   <div>
                     <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
-                        <AiOutlineEnvironment className="w-5 h-5 text-rose-600" />
+                      <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <AiOutlineEnvironment className="w-5 h-5 text-red-600" />
                       </div>
                       <h2 className="text-2xl font-caveat font-bold text-zinc-900">
                         Shipping Address
@@ -395,7 +395,7 @@ export default function CheckoutPage() {
                           value={formData.address}
                           onChange={handleInputChange}
                           required
-                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                          className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                           placeholder="Enter your street address"
                         />
                       </div>
@@ -410,7 +410,7 @@ export default function CheckoutPage() {
                             value={formData.city}
                             onChange={handleInputChange}
                             required
-                            className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                            className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                             placeholder="Enter your city"
                           />
                         </div>
@@ -424,7 +424,7 @@ export default function CheckoutPage() {
                             value={formData.state}
                             onChange={handleInputChange}
                             required
-                            className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                            className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                             placeholder="Enter your state"
                           />
                         </div>
@@ -438,7 +438,7 @@ export default function CheckoutPage() {
                             value={formData.zipCode}
                             onChange={handleInputChange}
                             required
-                            className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                            className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                             placeholder="Enter your ZIP code"
                           />
                         </div>
@@ -478,48 +478,48 @@ export default function CheckoutPage() {
                   {/* Payment Method */}
                   <div>
                     <div className="flex items-center space-x-3 mb-6">
-                      <div className="w-10 h-10 bg-rose-100 rounded-full flex items-center justify-center">
-                        <AiOutlineCreditCard className="w-5 h-5 text-rose-600" />
+                      <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <AiOutlineCreditCard className="w-5 h-5 text-red-600" />
                       </div>
                       <h2 className="text-2xl font-caveat font-bold text-zinc-900">
                         Payment Method
                       </h2>
                     </div>
                     <div className="space-y-4">
-                      <label className="flex items-center space-x-3 p-4 border border-zinc-200 rounded-lg hover:border-rose-200 transition-colors cursor-pointer">
+                      <label className="flex items-center space-x-3 p-4 border border-zinc-200 rounded-lg hover:border-red-200 transition-colors cursor-pointer">
                         <input
                           type="radio"
                           name="paymentMethod"
                           value="invoice"
                           checked={formData.paymentMethod === "invoice"}
                           onChange={handleInputChange}
-                          className="text-rose-600 focus:ring-rose-500"
+                          className="text-red-600 focus:ring-red-500"
                         />
                         <span className="text-zinc-900 font-outfit">
                           Invoice
                         </span>
                       </label>
-                      <label className="flex items-center space-x-3 p-4 border border-zinc-200 rounded-lg hover:border-rose-200 transition-colors cursor-pointer">
+                      <label className="flex items-center space-x-3 p-4 border border-zinc-200 rounded-lg hover:border-red-200 transition-colors cursor-pointer">
                         <input
                           type="radio"
                           name="paymentMethod"
                           value="bank-transfer"
                           checked={formData.paymentMethod === "bank-transfer"}
                           onChange={handleInputChange}
-                          className="text-rose-600 focus:ring-rose-500"
+                          className="text-red-600 focus:ring-red-500"
                         />
                         <span className="text-zinc-900 font-outfit">
                           Bank Transfer
                         </span>
                       </label>
-                      <label className="flex items-center space-x-3 p-4 border border-zinc-200 rounded-lg hover:border-rose-200 transition-colors cursor-pointer">
+                      <label className="flex items-center space-x-3 p-4 border border-zinc-200 rounded-lg hover:border-red-200 transition-colors cursor-pointer">
                         <input
                           type="radio"
                           name="paymentMethod"
                           value="other"
                           checked={formData.paymentMethod === "other"}
                           onChange={handleInputChange}
-                          className="text-rose-600 focus:ring-rose-500"
+                          className="text-red-600 focus:ring-red-500"
                         />
                         <span className="text-zinc-900 font-outfit">Other</span>
                       </label>
@@ -536,7 +536,7 @@ export default function CheckoutPage() {
                       value={formData.notes}
                       onChange={handleInputChange}
                       rows={4}
-                      className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit resize-none"
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit resize-none"
                       placeholder="Any special instructions or notes..."
                     />
                   </div>
@@ -554,11 +554,10 @@ export default function CheckoutPage() {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className={`px-8 py-3 rounded-lg font-semibold font-outfit text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                        !isSubmitting
-                          ? "bg-gradient-to-r from-rose-600 to-pink-600 text-white hover:from-rose-700 hover:to-pink-700 shadow-lg hover:shadow-xl"
+                      className={`px-8 py-3 rounded-lg font-semibold font-outfit text-lg transition-all duration-300 transform hover:scale-[1.02] ${!isSubmitting
+                          ? "bg-gradient-to-r from-red-600 to-red-600 text-white hover:from-red-700 hover:to-red-700 shadow-lg hover:shadow-xl"
                           : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
-                      }`}
+                        }`}
                     >
                       {isSubmitting ? (
                         <div className="flex items-center justify-center">

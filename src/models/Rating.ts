@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const ratingSchema = new mongoose.Schema({
   productId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "GlowProduct",
+    ref: "ApexProduct",
     required: true,
   },
   userId: {
@@ -54,4 +54,4 @@ ratingSchema.pre("save", function (next) {
 // Compound index to prevent duplicate ratings from same user for same product
 ratingSchema.index({ productId: 1, userId: 1 }, { unique: true });
 
-export default mongoose.models.Rating || mongoose.model("Rating", ratingSchema);
+export default mongoose.models.ApexRating || mongoose.model("ApexRating", ratingSchema);

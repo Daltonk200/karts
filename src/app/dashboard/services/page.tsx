@@ -225,7 +225,7 @@ export default function ServicesPage() {
           <div className="mt-4 sm:mt-0">
             <Link
               href="/dashboard/services/create"
-              className="inline-flex items-center px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-lg hover:bg-rose-700 transition-colors duration-200"
+              className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
             >
               <svg
                 className="w-4 h-4 mr-2"
@@ -257,7 +257,7 @@ export default function ServicesPage() {
                 placeholder="Search by name, description..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-rose-500 focus:border-rose-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
               />
             </div>
             <div>
@@ -349,7 +349,7 @@ export default function ServicesPage() {
                     />
                     <div className="absolute top-2 left-2 flex flex-col gap-1">
                       {service.isFeatured && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-rose-100 text-rose-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                           Featured
                         </span>
                       )}
@@ -417,8 +417,8 @@ export default function ServicesPage() {
                           }
                           className={`p-1 rounded ${
                             service.isFeatured
-                              ? "text-rose-600 hover:text-rose-700"
-                              : "text-gray-400 hover:text-rose-600"
+                              ? "text-red-600 hover:text-red-700"
+                              : "text-gray-400 hover:text-red-600"
                           }`}
                           title={
                             service.isFeatured
@@ -535,7 +535,7 @@ export default function ServicesPage() {
             <div className="mt-6">
               <Link
                 href="/dashboard/services/create"
-                className="inline-flex items-center px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-lg hover:bg-rose-700 transition-colors duration-200"
+                className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
               >
                 <svg
                   className="w-4 h-4 mr-2"

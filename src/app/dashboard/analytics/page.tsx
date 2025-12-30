@@ -15,7 +15,6 @@ interface AnalyticsData {
   totalOrders: number;
   totalProducts: number;
   totalServices: number;
-  totalBookings: number;
   monthlyRevenue: Array<{
     month: string;
     revenue: number;
@@ -26,11 +25,6 @@ interface AnalyticsData {
     revenue: number;
   }>;
   orderStatusDistribution: Array<{
-    status: string;
-    count: number;
-    percentage: number;
-  }>;
-  bookingStatusDistribution: Array<{
     status: string;
     count: number;
     percentage: number;
@@ -57,26 +51,23 @@ export default function AnalyticsPage() {
       }
 
       // Fetch all data
-      const [productsRes, ordersRes, servicesRes, bookingsRes] =
+      const [productsRes, ordersRes, servicesRes] =
         await Promise.all([
           fetch("/api/products?limit=1000", { headers }),
           fetch("/api/orders?limit=1000", { headers }),
           fetch("/api/services?limit=1000", { headers }),
-          fetch("/api/bookings?limit=1000", { headers }),
         ]);
 
-      const [productsData, ordersData, servicesData, bookingsData] =
+      const [productsData, ordersData, servicesData] =
         await Promise.all([
           productsRes.json(),
           ordersRes.json(),
           servicesRes.json(),
-          bookingsRes.json(),
         ]);
 
       const products = productsData.products || [];
       const orders = ordersData.orders || [];
       const services = servicesData.services || [];
-      const bookings = bookingsData.bookings || [];
 
       // Calculate analytics
       const totalRevenue = orders.reduce(
@@ -136,39 +127,14 @@ export default function AnalyticsPage() {
         };
       });
 
-      // Booking status distribution
-      const bookingStatuses = [
-        "pending",
-        "confirmed",
-        "in-progress",
-        "completed",
-        "cancelled",
-        "no-show",
-      ];
-      const bookingStatusDistribution = bookingStatuses.map((status) => {
-        const count = bookings.filter(
-          (booking: any) => booking.status === status
-        ).length;
-        return {
-          status,
-          count,
-          percentage:
-            bookings.length > 0
-              ? Math.round((count / bookings.length) * 100)
-              : 0,
-        };
-      });
-
       setAnalytics({
         totalRevenue,
         totalOrders: orders.length,
         totalProducts: products.length,
         totalServices: services.length,
-        totalBookings: bookings.length,
         monthlyRevenue,
         topProducts,
         orderStatusDistribution,
-        bookingStatusDistribution,
       });
     } catch (error) {
       console.error("Error fetching analytics:", error);
@@ -182,7 +148,7 @@ export default function AnalyticsPage() {
       <DashboardLayout>
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto"></div>
             <p className="mt-4 text-gray-600">Loading analytics...</p>
           </div>
         </div>
@@ -219,7 +185,7 @@ export default function AnalyticsPage() {
         {analytics && (
           <>
             {/* Key Metrics */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <div className="flex items-center">
                   <div className="flex-shrink-0">
@@ -339,36 +305,6 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-600">
-                      Bookings
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {analytics.totalBookings}
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Charts and Analytics */}
@@ -390,7 +326,7 @@ export default function AnalyticsPage() {
                       <div className="flex items-center space-x-2">
                         <div className="w-32 bg-gray-200 rounded-full h-2">
                           <div
-                            className="bg-rose-600 h-2 rounded-full"
+                            className="bg-red-600 h-2 rounded-full"
                             style={{
                               width: `${Math.min(
                                 100,
@@ -400,7 +336,7 @@ export default function AnalyticsPage() {
                                       (m) => m.revenue
                                     )
                                   )) *
-                                  100
+                                100
                               )}%`,
                             }}
                           ></div>
@@ -442,7 +378,7 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Order Status Distribution */}
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 lg:col-span-2">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Order Status Distribution
                 </h3>
@@ -459,36 +395,6 @@ export default function AnalyticsPage() {
                         <div className="w-24 bg-gray-200 rounded-full h-2">
                           <div
                             className="bg-blue-600 h-2 rounded-full"
-                            style={{ width: `${status.percentage}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 w-12 text-right">
-                          {status.count}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Booking Status Distribution */}
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Booking Status Distribution
-                </h3>
-                <div className="space-y-3">
-                  {analytics.bookingStatusDistribution.map((status, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-sm text-gray-600 capitalize">
-                        {status.status.replace("-", " ")}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-green-600 h-2 rounded-full"
                             style={{ width: `${status.percentage}%` }}
                           ></div>
                         </div>

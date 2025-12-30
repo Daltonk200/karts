@@ -52,22 +52,22 @@ export default function ServiceDetailPage() {
     }
   };
 
-  const handleBookAppointment = () => {
-    router.push(`/book-appointment?service=${service?._id}`);
+  const handleContact = () => {
+    router.push(`/contact?service=${service?._id}`);
   };
 
   if (loading) {
     return (
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600 mx-auto mb-4"></div>
           <p className="text-zinc-600">Loading service...</p>
         </div>
       </div>
     );
   }
   console.log(service);
-  
+
 
   if (!service) {
     return (
@@ -81,7 +81,7 @@ export default function ServiceDetailPage() {
           </p>
           <Link
             href="/services"
-            className="bg-rose-600 text-white px-6 py-3 rounded-lg hover:bg-rose-700 transition-colors"
+            className="bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
           >
             Back to Services
           </Link>
@@ -110,7 +110,7 @@ export default function ServiceDetailPage() {
         <Container className="py-16 md:py-20 lg:py-24 relative z-10">
           <div className=" mx-auto">
             <div className="flex flex-wrap gap-3 mb-6">
-              <span className="px-4 py-2 bg-rose-600 text-white text-sm font-medium rounded-full shadow-lg">
+              <span className="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-full shadow-lg">
                 {service.duration}
               </span>
               <span className="px-4 py-2 bg-white/90 backdrop-blur-sm text-zinc-800 text-sm font-medium rounded-full shadow-lg">
@@ -125,14 +125,14 @@ export default function ServiceDetailPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <button
-                onClick={handleBookAppointment}
-                className="bg-rose-600 text-white font-medium py-4 px-8 rounded-xl hover:bg-rose-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg shadow-lg"
+                onClick={handleContact}
+                className="bg-red-600 text-white font-medium py-4 px-8 rounded-xl hover:bg-red-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg shadow-lg"
               >
-                Book Appointment Now
+                Contact Us
               </button>
               <Link
                 href="/services"
-                className="border-2 border-white text-white font-medium py-4 px-8 rounded-xl hover:bg-white hover:text-rose-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg text-center"
+                className="border-2 border-white text-white font-medium py-4 px-8 rounded-xl hover:bg-white hover:text-red-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg text-center"
               >
                 Back to Services
               </Link>
@@ -145,11 +145,11 @@ export default function ServiceDetailPage() {
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Features Section */}
-          <div className="bg-gradient-to-br from-rose-50 to-pink-50 rounded-3xl p-8">
+          <div className="bg-gradient-to-br from-red-50 to-red-50 rounded-3xl p-8">
             <div className="flex items-center mb-8">
-              <div className="w-16 h-16 bg-rose-100 rounded-full flex items-center justify-center mr-6">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mr-6">
                 <svg
-                  className="w-8 h-8 text-rose-600"
+                  className="w-8 h-8 text-red-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -169,7 +169,7 @@ export default function ServiceDetailPage() {
             <ul className="space-y-6">
               {service?.features?.map((feature, index) => (
                 <li key={index} className="flex items-start group">
-                  <div className="w-8 h-8 bg-rose-500 rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
+                  <div className="w-8 h-8 bg-red-500 rounded-full flex items-center justify-center mr-4 mt-0.5 flex-shrink-0 group-hover:scale-110 transition-transform duration-200">
                     <svg
                       className="w-5 h-5 text-white"
                       fill="currentColor"
@@ -239,27 +239,25 @@ export default function ServiceDetailPage() {
       </Container>
 
       {/* Call to Action Section */}
-      <div className="bg-gradient-to-r from-rose-600 to-pink-600 py-16 md:py-20">
+      <div className="bg-gradient-to-r from-red-600 to-red-600 py-16 md:py-20">
         <Container>
           <div className="text-center text-white max-w-4xl mx-auto">
             <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 font-caveat">
-              Ready to Transform Your Beauty?
+              Ready to Upgrade Your Ride?
             </h2>
             <p className="text-lg md:text-xl mb-8 opacity-90 font-outfit">
-              Book your appointment now and experience the difference. Our
-              expert professionals are ready to provide you with the best
-              service.
+              Contact us now to schedule your service. Our expert technicians are ready to optimize your kart's performance.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={handleBookAppointment}
-                className="bg-white text-rose-600 font-medium py-4 px-8 rounded-xl hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg shadow-lg"
+                onClick={handleContact}
+                className="bg-white text-red-600 font-medium py-4 px-8 rounded-xl hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg shadow-lg"
               >
-                Book Appointment Now
+                Contact Us
               </button>
               <Link
                 href="/services"
-                className="border-2 border-white text-white font-medium py-4 px-8 rounded-xl hover:bg-white hover:text-rose-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg"
+                className="border-2 border-white text-white font-medium py-4 px-8 rounded-xl hover:bg-white hover:text-red-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-lg"
               >
                 View All Services
               </Link>

@@ -12,98 +12,50 @@ const testimonials = [
   {
     id: 1,
     name: "John Smith",
-    role: "Professional Musician",
+    role: "Professional Racer",
     rating: 5,
     comment:
-      "The quality of guitars from Guitar & Strings Co is exceptional. I've been playing for 20 years and this is by far the best purchase I've made. The craftsmanship is outstanding!",
+      "The performance of the Apex Pro Kart is unmatched. I've been racing for 10 years and this is the best chassis I've ever driven. Precision and speed at its finest!",
   },
   {
     id: 2,
     name: "Sarah Johnson",
-    role: "Music Teacher",
+    role: "Karting Enthusiast",
     rating: 5,
     comment:
-      "As a music teacher, I need reliable instruments. Guitar & Strings Co never disappoints. The sound quality and playability are perfect for my students and myself.",
+      "Found exactly what I needed at Apex Rush. Their maintenance service is top-notch, and my kart has never run better. Highly recommend for any track day regular.",
   },
   {
     id: 3,
     name: "Mike Davis",
-    role: "Studio Guitarist",
+    role: "Track Manager",
     rating: 5,
     comment:
-      "I use these guitars in my professional studio work. The tone is incredible and they record beautifully. Highly recommended for any serious musician.",
+      "We rely on Apex Rush for our fleet parts. Their reliability and expert knowledge make them the best partner for any racing facility.",
   },
   {
     id: 4,
     name: "Emily Wilson",
-    role: "Singer-Songwriter",
+    role: "Junior League Parent",
     rating: 5,
     comment:
-      "The acoustic guitars from Guitars & Strings Co are simply amazing. Perfect for songwriting and live performances. The customer service is also top-notch!",
+      "The Youth series karts are perfect for my kids. Safe, reliable, and incredibly fun. The team helped us find the perfect fit and safety gear.",
   },
   {
     id: 5,
     name: "David Brown",
-    role: "Guitar Enthusiast",
+    role: "Electric Kart Racer",
     rating: 5,
     comment:
-      "I've been collecting guitars for years, and the vintage pieces from Guitar & Strings Co are some of my favorites. Authentic sound and beautiful condition.",
+      "The instant torque on the Velocity Electric Kart is insane! Perfect for indoor tracks. Apex Rush is definitely leading the way in electric racing.",
   },
   {
     id: 6,
     name: "Lisa Garcia",
-    role: "Band Leader",
+    role: "Weekend Warrior",
     rating: 5,
     comment:
-      "Our band uses Guitar & Strings Co exclusively. The consistency in quality and tone across all our instruments is remarkable. Great investment!",
-  },
-  {
-    id: 7,
-    name: "Alex Thompson",
-    role: "Guitar Instructor",
-    rating: 5,
-    comment:
-      "I've been teaching guitar for 15 years and always recommend Guitar & Strings Co to my students. The instruments are reliable, well-crafted, and perfect for learning.",
-  },
-  {
-    id: 8,
-    name: "Maria Rodriguez",
-    role: "Jazz Guitarist",
-    rating: 5,
-    comment:
-      "The jazz guitars from this store are incredible. The warm tone and smooth playability make every performance special. I couldn't be happier with my purchase.",
-  },
-  {
-    id: 9,
-    name: "Chris Anderson",
-    role: "Rock Band Guitarist",
-    rating: 5,
-    comment:
-      "Our band upgraded all our guitars through Guitar & Strings Co. The difference in sound quality is night and day. The staff really knows their instruments!",
-  },
-  {
-    id: 10,
-    name: "Jennifer Lee",
-    role: "Classical Guitarist",
-    rating: 5,
-    comment:
-      "The classical guitars here are exceptional. Perfect for both practice and performance. The attention to detail in craftsmanship is remarkable.",
-  },
-  {
-    id: 11,
-    name: "Robert Wilson",
-    role: "Blues Musician",
-    rating: 5,
-    comment:
-      "I found my perfect blues guitar here. The vintage models have that authentic sound I've been looking for. Highly recommend for blues enthusiasts!",
-  },
-  {
-    id: 12,
-    name: "Amanda Foster",
-    role: "Folk Singer",
-    rating: 5,
-    comment:
-      "The acoustic guitars are perfect for folk music. Great projection and beautiful tone. The customer service made the whole experience wonderful.",
+      "I love my recreational kart from Apex. It's the highlight of our family weekends. Great build quality and easy to maintain.",
   },
 ];
 
@@ -129,13 +81,12 @@ export default function Testimonials() {
     <section className="py-16 bg-zinc-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-zinc-900 mb-4">
-            What Our Customers Say
+          <h2 className="text-3xl font-bold text-zinc-900 mb-4 font-caveat">
+            What Our Racers Say
           </h2>
-          <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
-            Don't just take our word for it. Here's what musicians and guitar
-            enthusiasts have to say about their experience with Guitar & Strings
-            Co.
+          <p className="text-lg text-zinc-600 max-w-2xl mx-auto font-outfit">
+            Hear from the drivers and enthusiasts who trust Apex Rush Karts
+            for their ultimate racing experience.
           </p>
           <button
             onClick={() => setShowReviewForm(true)}
@@ -203,11 +154,10 @@ export default function Testimonials() {
                         onClick={() =>
                           setFormData({ ...formData, rating: star })
                         }
-                        className={`text-2xl ${
-                          star <= formData.rating
+                        className={`text-2xl ${star <= formData.rating
                             ? "text-yellow-400"
                             : "text-zinc-300"
-                        }`}
+                          }`}
                       >
                         ★
                       </button>
@@ -275,11 +225,10 @@ export default function Testimonials() {
                     {[...Array(5)].map((_, i) => (
                       <svg
                         key={i}
-                        className={`w-4 h-4 ${
-                          i < testimonial.rating
+                        className={`w-4 h-4 ${i < testimonial.rating
                             ? "text-yellow-400"
                             : "text-zinc-300"
-                        }`}
+                          }`}
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >

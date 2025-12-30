@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Container from "@/components/Container";
 import toast from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import {
@@ -23,12 +24,15 @@ import {
 } from "@/components/ui/select";
 
 export default function ContactPage() {
+  const searchParams = useSearchParams();
+  const serviceId = searchParams.get("service");
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    subject: "",
-    message: "",
+    subject: serviceId ? "appointment" : "",
+    message: serviceId ? `I am interested in the service with ID: ${serviceId}` : "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -61,7 +65,7 @@ export default function ContactPage() {
       if (response.ok) {
         toast.success(
           data.message ||
-            "Thank you for your message! We'll get back to you soon."
+          "Thank you for your message! We'll get back to you soon."
         );
         setFormData({
           name: "",
@@ -82,13 +86,13 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
+    <div className="min-h-screen bg-gradient-to-br from-red-50 via-white to-red-50">
       {/* Hero Section */}
       <section className="relative bg-black border-b border-zinc-200 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://img.freepik.com/stylish-flat-lay-composition-lipstick-smartphone-marble-surface_955834-51848.jpg?W=2000"
-            alt="Contact GlowBeauty"
+            src="https://images.unsplash.com/photo-1516209503378-2c2ea5579295?w=2000"
+            alt="Contact Apex Rush Karts"
             fill
             className="object-cover opacity-60"
             priority
@@ -102,9 +106,9 @@ export default function ContactPage() {
               Get in Touch
             </h1>
             <p className="text-lg md:text-xl text-zinc-200 leading-relaxed font-outfit mb-8 max-w-3xl mx-auto">
-              Have questions about our beauty products or services? Want to
-              schedule a consultation? We'd love to hear from you and help you
-              discover your perfect beauty routine.
+              Have questions about our karts, parts, or services? Looking for
+              custom modifications? We'd love to hear from you and help you
+              get on the track.
             </p>
           </div>
         </Container>
@@ -117,16 +121,16 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div className="bg-white   rounded-xl shadow-sm p-6 border border-zinc-200 flex flex-col h-fit">
               <div className="flex-1">
-               <div>
+                <div>
                   <h2 className="text-3xl font-caveat font-bold text-zinc-900 mb-6">
                     Send us a Message
                   </h2>
                   <p className="text-zinc-600 font-outfit mb-6">
-                    We're here to help you with all your beauty needs. Send us a
+                    We're here to help you with all your racing needs. Send us a
                     message and we'll get back to you within 24 hours.
                   </p>
-  
-               </div>
+
+                </div>
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div>
@@ -143,7 +147,7 @@ export default function ContactPage() {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                         placeholder="Your full name"
                       />
                     </div>
@@ -161,7 +165,7 @@ export default function ContactPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                         placeholder="your.email@example.com"
                       />
                     </div>
@@ -181,7 +185,7 @@ export default function ContactPage() {
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit"
+                        className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit"
                         placeholder="+237 XXX XXX XXX"
                       />
                     </div>
@@ -209,10 +213,10 @@ export default function ContactPage() {
                             Product Information
                           </SelectItem>
                           <SelectItem value="service">
-                            Beauty Services
+                            Kart Services
                           </SelectItem>
                           <SelectItem value="appointment">
-                            Schedule Consultation
+                            Service Inquiry
                           </SelectItem>
                           <SelectItem value="order">Order Status</SelectItem>
                           <SelectItem value="feedback">Feedback</SelectItem>
@@ -235,19 +239,18 @@ export default function ContactPage() {
                       onChange={handleChange}
                       required
                       rows={4}
-                      className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-rose-300 focus:ring-2 focus:ring-rose-100 transition-all duration-200 font-outfit resize-none"
-                      placeholder="Tell us about your beauty concerns, product questions, or how we can help you..."
+                      className="w-full px-4 py-3 border border-zinc-200 rounded-[8px] focus:outline-none focus:border-red-300 focus:ring-2 focus:ring-red-100 transition-all duration-200 font-outfit resize-none"
+                      placeholder="Tell us about your kart needs, product questions, or how we can help you..."
                     />
                   </div>
 
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full py-4 px-6 rounded-[8px] font-semibold font-outfit text-lg transition-all duration-300 transform hover:scale-[1.02] ${
-                      !isSubmitting
-                        ? "bg-gradient-to-r from-rose-600 to-pink-600 text-white hover:from-rose-700 hover:to-pink-700 shadow-lg hover:shadow-xl"
-                        : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
-                    }`}
+                    className={`w-full py-4 px-6 rounded-[8px] font-semibold font-outfit text-lg transition-all duration-300 transform hover:scale-[1.02] ${!isSubmitting
+                      ? "bg-gradient-to-r from-red-600 to-red-600 text-white hover:from-red-700 hover:to-red-700 shadow-lg hover:shadow-xl"
+                      : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                      }`}
                   >
                     {isSubmitting ? (
                       <div className="flex items-center justify-center">
@@ -271,8 +274,8 @@ export default function ContactPage() {
                 <div className="space-y-6">
                   {/* Email */}
                   <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
-                      <AiOutlineMail className="w-6 h-6 text-rose-600" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                      <AiOutlineMail className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
@@ -281,7 +284,7 @@ export default function ContactPage() {
                       <p className="text-zinc-600 font-outfit">
                         <Link
                           href="mailto:contact@glowbeauty.com"
-                          className="hover:text-rose-600 transition-colors"
+                          className="hover:text-red-600 transition-colors"
                         >
                           contact@glowbeauty.com
                         </Link>
@@ -294,8 +297,8 @@ export default function ContactPage() {
 
                   {/* Phone */}
                   <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
-                      <AiOutlinePhone className="w-6 h-6 text-rose-600" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                      <AiOutlinePhone className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
@@ -304,7 +307,7 @@ export default function ContactPage() {
                       <p className="text-zinc-600 font-outfit">
                         <Link
                           href="tel:+237XXXXXXXXX"
-                          className="hover:text-rose-600 transition-colors"
+                          className="hover:text-red-600 transition-colors"
                         >
                           +237 XXX XXX XXX
                         </Link>
@@ -317,8 +320,8 @@ export default function ContactPage() {
 
                   {/* Hours */}
                   <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
-                      <AiOutlineClockCircle className="w-6 h-6 text-rose-600" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                      <AiOutlineClockCircle className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
@@ -335,15 +338,15 @@ export default function ContactPage() {
 
                   {/* Location */}
                   <div className="flex items-start space-x-4">
-                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-rose-100 flex items-center justify-center">
-                      <AiOutlineEnvironment className="w-6 h-6 text-rose-600" />
+                    <div className="flex-shrink-0 w-12 h-12 rounded-full bg-red-100 flex items-center justify-center">
+                      <AiOutlineEnvironment className="w-6 h-6 text-red-600" />
                     </div>
                     <div>
                       <h3 className="text-lg font-semibold text-zinc-900 mb-2 font-outfit">
                         Visit Us
                       </h3>
                       <p className="text-zinc-600 font-outfit">
-                        123 Beauty Street
+                        123 Racing Circuit Rd
                         <br />
                         Douala, Cameroon
                       </p>
@@ -361,15 +364,15 @@ export default function ContactPage() {
                   Follow Us
                 </h3>
                 <p className="text-zinc-600 font-outfit mb-4">
-                  Stay updated with our latest beauty tips, product launches,
-                  and special offers.
+                  Stay updated with our latest race results, product launches,
+                  and track day events.
                 </p>
                 <div className="flex space-x-3">
                   <Link
                     href="https://instagram.com/glowbeauty"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-rose-600 hover:border-rose-200 transition-all duration-200"
+                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-red-600 hover:border-red-200 transition-all duration-200"
                   >
                     <AiOutlineInstagram className="w-5 h-5" />
                   </Link>
@@ -377,7 +380,7 @@ export default function ContactPage() {
                     href="https://facebook.com/glowbeauty"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-rose-600 hover:border-rose-200 transition-all duration-200"
+                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-red-600 hover:border-red-200 transition-all duration-200"
                   >
                     <AiOutlineFacebook className="w-5 h-5" />
                   </Link>
@@ -385,7 +388,7 @@ export default function ContactPage() {
                     href="https://twitter.com/glowbeauty"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-rose-600 hover:border-rose-200 transition-all duration-200"
+                    className="w-10 h-10 bg-zinc-100 border border-zinc-200 rounded-lg flex items-center justify-center text-zinc-600 hover:text-red-600 hover:border-red-200 transition-all duration-200"
                   >
                     <AiOutlineTwitter className="w-5 h-5" />
                   </Link>
@@ -397,26 +400,25 @@ export default function ContactPage() {
       </section>
 
       {/* CTA Section */}
-      <div className="bg-gradient-to-r from-rose-600 to-pink-600 py-16 md:py-20">
+      <div className="bg-gradient-to-r from-red-600 to-red-600 py-16 md:py-20">
         <Container>
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl lg:text-5xl text-white font-bold mb-4 md:mb-6 font-caveat">
-              Ready to Transform Your Beauty?
+              Ready to Hit the Track?
             </h2>
             <p className="text-lg md:text-xl mb-8 md:mb-10 text-white opacity-90 font-outfit">
-              Book a consultation with our beauty experts and discover your
-              perfect beauty routine.
+              Contact our racing experts and get the best performance out of your kart.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/book-appointment"
-                className="bg-white text-rose-600 font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+                href="/services"
+                className="bg-white text-red-600 font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
               >
-                Book Consultation
+                View Our Services
               </Link>
               <Link
                 href="/services"
-                className="border-2 border-white text-white font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-white hover:text-rose-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+                className="border-2 border-white text-white font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-white hover:text-red-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
               >
                 View Services
               </Link>

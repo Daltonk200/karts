@@ -27,7 +27,7 @@ export default function PrivacyPage() {
       <section className="py-16">
         <Container>
           <div className="max-w-4xl mx-auto">
-            <div className="prose prose-zinc max-w-none">
+            <div className="prose pred-zinc max-w-none">
               <div className="space-y-8">
                 <div>
                   <h2 className="text-2xl font-bold text-zinc-900 mb-4">

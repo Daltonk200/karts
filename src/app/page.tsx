@@ -18,7 +18,7 @@ interface Product {
   price: number;
   image: string;
   category: string;
-  skinType: string;
+  condition: string;
   brand: string;
   size: string;
   isFeatured: boolean;
@@ -58,29 +58,29 @@ export default function Home() {
   // Mock data for categories (keeping this as is since it's static)
   const categories = [
     {
-      name: "Skin Care",
-      description: "Premium skincare products for all skin types and concerns",
+      name: "Racing Karts",
+      description: "High-performance racing go-karts for competitive racing",
       image:
-        "https://img.freepik.com/bottles-with-massage-oils-bamboo-stick-straw-mat_93675-123583.jpg?W=2000",
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
     },
     {
-      name: "Makeup",
-      description: "Professional makeup products for every occasion and style",
+      name: "Recreational Karts",
+      description: "Fun and safe go-karts perfect for leisure and family entertainment",
       image:
-        "https://img.freepik.com/high-angle-view-pen-table_1048944-18511898.jpg?W=2000",
+        "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
     },
     {
-      name: "Fragrance",
-      description: "Luxury perfumes and fragrances for men and women",
+      name: "Electric Karts",
+      description: "Eco-friendly electric go-karts with instant torque and quiet operation",
       image:
-        "https://img.freepik.com/perfume-bottles-isolated-against-white_127657-12258.jpg?W=2000",
+        "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
     },
     {
-      name: "Hair Care",
+      name: "Racing Gear",
       description:
-        "Nourishing shampoos, conditioners, oils, and treatments for healthy, beautiful hair",
+        "Professional racing helmets, suits, gloves, and safety equipment for karting",
       image:
-        "https://img.freepik.com/closeup-three-women39s-faces-with-long-wavy-hair_1353244-12770.jpg",
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
     },
   ];
 
@@ -88,121 +88,121 @@ export default function Home() {
   const mockFeaturedProducts = [
     {
       _id: "1",
-      name: "Luxury Anti-Aging Serum",
-      price: 45000,
+      name: "Apex Pro Racing Kart",
+      price: 4500000,
       image:
-        "https://img.freepik.com/premium-photo/beauty-product-bottle-serum_93675-123583.jpg?W=2000",
-      category: "Skincare",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "30ml",
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+      category: "Racing Karts",
+      condition: "Professional",
+      brand: "Apex Rush",
+      size: "Adult",
       isFeatured: true,
     },
     {
       _id: "2",
-      name: "Matte Liquid Lipstick",
-      price: 25000,
+      name: "Thunder 250cc Racing Kart",
+      price: 3800000,
       image:
-        "https://img.freepik.com/high-angle-view-pen-table_1048944-18511898.jpg?W=2000",
-      category: "Makeup",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "5ml",
+        "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+      category: "Racing Karts",
+      condition: "Professional",
+      brand: "Apex Rush",
+      size: "Adult",
       isFeatured: true,
     },
     {
       _id: "3",
-      name: "Rose Gold Perfume",
-      price: 75000,
-      image: "https://img.freepik.com/bottle-perfume_266732-14623.jpg?W=2000",
-      category: "Fragrance",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "50ml",
+      name: "Velocity Electric Kart",
+      price: 5200000,
+      image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+      category: "Electric Karts",
+      condition: "Eco-Friendly",
+      brand: "Apex Rush",
+      size: "Adult",
       isFeatured: true,
     },
     {
       _id: "4",
-      name: "Hydrating Face Mask",
-      price: 15000,
+      name: "Junior Racer Kart",
+      price: 2500000,
       image:
-        "https://img.freepik.com/premium-photo/beauty-product-bottle-serum_93675-123583.jpg?W=2000",
-      category: "Skincare",
-      skinType: "Dry Skin",
-      brand: "GlowBeauty",
-      size: "25ml",
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+      category: "Recreational Karts",
+      condition: "Youth",
+      brand: "Apex Rush",
+      size: "Junior",
       isFeatured: true,
     },
     {
       _id: "5",
-      name: "Volumizing Mascara",
-      price: 18000,
+      name: "Pro Racing Helmet",
+      price: 180000,
       image:
-        "https://img.freepik.com/premium-photo/mascara-tube-isolated-white_93675-123583.jpg?W=2000",
-      category: "Makeup",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "8ml",
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+      category: "Racing Gear",
+      condition: "Safety",
+      brand: "Apex Rush",
+      size: "M-XL",
       isFeatured: true,
     },
     {
       _id: "6",
-      name: "Vitamin C Brightening Cream",
-      price: 32000,
+      name: "Speed Master 200cc Kart",
+      price: 3200000,
       image:
-        "https://img.freepik.com/premium-photo/beauty-cream-jar-isolated_93675-123583.jpg?W=2000",
-      category: "Skincare",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "50ml",
+        "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+      category: "Racing Karts",
+      condition: "Intermediate",
+      brand: "Apex Rush",
+      size: "Adult",
       isFeatured: true,
     },
     {
       _id: "7",
-      name: "Long-lasting Foundation",
-      price: 28000,
+      name: "Racing Suit Pro Series",
+      price: 280000,
       image:
-        "https://img.freepik.com/premium-photo/foundation-bottle-isolated_93675-123583.jpg?W=2000",
-      category: "Makeup",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "30ml",
+        "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+      category: "Racing Gear",
+      condition: "Professional",
+      brand: "Apex Rush",
+      size: "S-XXL",
       isFeatured: true,
     },
     {
       _id: "8",
-      name: "Lavender Body Oil",
-      price: 22000,
+      name: "Family Fun Kart",
+      price: 2200000,
       image:
-        "https://img.freepik.com/premium-photo/essential-oil-bottle-isolated_93675-123583.jpg?W=2000",
-      category: "Skincare",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "100ml",
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
+      category: "Recreational Karts",
+      condition: "Family",
+      brand: "Apex Rush",
+      size: "Adult",
       isFeatured: true,
     },
     {
       _id: "9",
-      name: "Glitter Eye Shadow Palette",
-      price: 35000,
+      name: "Racing Gloves Premium",
+      price: 85000,
       image:
-        "https://img.freepik.com/premium-photo/eye-shadow-palette-isolated_93675-123583.jpg?W=2000",
-      category: "Makeup",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "12 shades",
+        "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
+      category: "Racing Gear",
+      condition: "Professional",
+      brand: "Apex Rush",
+      size: "S-XL",
       isFeatured: true,
     },
     {
       _id: "10",
-      name: "Vanilla Bean Body Mist",
-      price: 19000,
+      name: "Eco Racer Electric Kart",
+      price: 4900000,
       image:
-        "https://img.freepik.com/premium-photo/perfume-spray-bottle-isolated_93675-123583.jpg?W=2000",
-      category: "Fragrance",
-      skinType: "All Types",
-      brand: "GlowBeauty",
-      size: "150ml",
+        "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
+      category: "Electric Karts",
+      condition: "Eco-Friendly",
+      brand: "Apex Rush",
+      size: "Adult",
       isFeatured: true,
     },
   ];
@@ -220,7 +220,7 @@ export default function Home() {
         image: product.image,
         category: product.category,
         brand: product.brand,
-        condition: product.skinType,
+        condition: product.condition,
         stock: 1, // Default stock
         model: product.size || "",
       });
@@ -251,7 +251,7 @@ export default function Home() {
         image: product.image,
         category: product.category,
         brand: product.brand,
-        skinType: product.skinType,
+        condition: product.condition,
         size: product.size,
         isFeatured: product.isFeatured,
       });
@@ -366,31 +366,31 @@ export default function Home() {
     <>
       <Hero />
 
-      {/* Beauty Consultation Alert */}
-      <section className="bg-gradient-to-r from-rose-50 to-pink-50 border-b border-rose-200">
+      {/* Test Drive Alert */}
+      <section className="bg-gradient-to-r from-red-50 to-orange-50 border-b border-red-200">
         <Container className="py-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex md:items-center gap-4">
               <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-rose-100 rounded-full flex items-center justify-center">
+                <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                   <AiOutlineSchedule size={24} />
                 </div>
               </div>
               <div>
-                <h3 className="text-2xl font-semibold text-rose-900 mb-1">
-                  Book Beauty Consultation
+                <h3 className="text-2xl font-semibold text-red-900 mb-1">
+                  Book Test Drive
                 </h3>
-                <p className="text-rose-800">
-                  Schedule a personalized appointment with our beauty experts
-                  for professional consultation.
+                <p className="text-red-800">
+                  Schedule a test drive with our racing experts and experience
+                  the thrill of our premium go-karts.
                 </p>
               </div>
             </div>
             <Link
-              href="/book-appointment"
-              className="inline-flex items-center px-6 py-3 bg-rose-600 text-white font-medium  hover:bg-rose-700 rounded-sm w-fit transition-colors duration-200 whitespace-nowrap"
+              href="/contact"
+              className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium  hover:bg-red-700 rounded-sm w-fit transition-colors duration-200 whitespace-nowrap"
             >
-              Book Appointment
+              Contact for Test Drive
               <svg
                 className="w-4 h-4 ml-2"
                 fill="none"
@@ -414,11 +414,11 @@ export default function Home() {
         <Container>
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-zinc-900 mb-4 font-caveat">
-              Featured Products
+              Featured Go-Karts
             </h2>
             <p className="text-lg text-zinc-600 max-w-2xl mx-auto font-outfit">
-              Handpicked beauty products from our finest collection. Each
-              product is carefully selected for quality and effectiveness.
+              Premium go-karts from our elite collection. Each kart is
+              engineered for performance, safety, and the ultimate racing experience.
             </p>
           </div>
 
@@ -444,7 +444,7 @@ export default function Home() {
               {featuredProducts.map((product) => (
                 <div
                   key={product._id}
-                  className="bg-white snap-start border min-w-[230px]  md:min-w-[300px] border-zinc-200 hover:border-rose-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-sm transform hover:-translate-y-1 group"
+                  className="bg-white snap-start border min-w-[230px]  md:min-w-[300px] border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-sm transform hover:-translate-y-1 group"
                 >
                   <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px]">
                     <Image
@@ -457,14 +457,14 @@ export default function Home() {
                       className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="px-3 py-1.5 bg-rose-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg transform -translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
-                        {product.skinType}
+                      <span className="px-3 py-1.5 bg-red-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg transform -translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                        {product.condition}
                       </span>
                     </div>
                     {/* Floating Add to Cart Button */}
                     <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                       {addingToCart.has(product._id) ? (
-                        <div className="bg-rose-500 text-white px-3 py-2 rounded-full shadow-lg flex items-center justify-center">
+                        <div className="bg-red-500 text-white px-3 py-2 rounded-full shadow-lg flex items-center justify-center">
                           <div className="flex space-x-1">
                             <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
                             <div
@@ -503,7 +503,7 @@ export default function Home() {
                                   `${product.name} removed from cart`
                                 );
                               }}
-                              className="whitespace-nowrap text-xs text-rose-600 hover:text-rose-700 font-medium underline decoration-rose-300 hover:decoration-rose-500 transition-all duration-200 font-outfit bg-white px-2 py-1 rounded shadow-lg"
+                              className="whitespace-nowrap text-xs text-red-600 hover:text-red-700 font-medium underline decoration-red-300 hover:decoration-red-500 transition-all duration-200 font-outfit bg-white px-2 py-1 rounded shadow-lg"
                             >
                               Remove from Cart
                             </button>
@@ -516,7 +516,7 @@ export default function Home() {
                             e.stopPropagation();
                             handleAddToCart(product);
                           }}
-                          className="bg-rose-500 hover:bg-rose-600 text-white px-3 py-2 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium hover:scale-110"
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium hover:scale-110"
                           title="Add to Cart"
                         >
                           <svg
@@ -540,10 +540,10 @@ export default function Home() {
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
                   </div>
                   <div className="p-4 md:p-6 flex flex-col flex-grow">
-                    <div className="text-sm text-rose-600 uppercase tracking-wide mb-2 font-outfit font-medium">
+                    <div className="text-sm text-red-600 uppercase tracking-wide mb-2 font-outfit font-medium">
                       {product.category}
                     </div>
-                    <h3 className="text-base md:text-xl font-semibold text-zinc-900 mb-2 line-clamp-2  group-hover:text-rose-700 transition-colors duration-300">
+                    <h3 className="text-base md:text-xl font-semibold text-zinc-900 mb-2 line-clamp-2  group-hover:text-red-700 transition-colors duration-300">
                       {product.name}
                     </h3>
                     <div className="text-lg md:text-xl font-bold text-zinc-900 mb-4 ">
@@ -556,7 +556,7 @@ export default function Home() {
                             removeFromCart(product._id);
                             toast.success(`${product.name} removed from cart`);
                           }}
-                          className="text-center hidden md:block text-xs text-rose-600 hover:text-rose-700 font-medium hover:underline decoration-rose-300 hover:decoration-rose-500 transition-all  mb-1 cursor-pointer duration-200 font-outfit"
+                          className="text-center hidden md:block text-xs text-red-600 hover:text-red-700 font-medium hover:underline decoration-red-300 hover:decoration-red-500 transition-all  mb-1 cursor-pointer duration-200 font-outfit"
                         >
                           Remove from Cart
                         </button>
@@ -575,7 +575,7 @@ export default function Home() {
                                   `${product.name} removed from cart`
                                 );
                               }}
-                              className="text-left text-xs text-rose-600 hover:text-rose-700 font-medium hover:underline decoration-rose-300 hover:decoration-rose-500 transition-all duration-200 font-outfit"
+                              className="text-left text-xs text-red-600 hover:text-red-700 font-medium hover:underline decoration-red-300 hover:decoration-red-500 transition-all duration-200 font-outfit"
                             >
                               Remove from Cart
                             </button>
@@ -586,11 +586,10 @@ export default function Home() {
                             {/* Wishlist Button */}
                             <button
                               onClick={() => handleWishlistToggle(product)}
-                              className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${
-                                isInWishlist(product._id)
-                                  ? "border-rose-300 text-rose-600 bg-rose-50 shadow-sm"
-                                  : "border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50 hover:scale-105"
-                              }`}
+                              className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                                ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
+                                : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                                }`}
                               title={
                                 isInWishlist(product._id)
                                   ? "Remove from Wishlist"
@@ -599,11 +598,10 @@ export default function Home() {
                             >
                               <div className="relative">
                                 <svg
-                                  className={`w-4 h-4 transition-all duration-300 ${
-                                    wishlistAnimation.has(product._id)
-                                      ? "animate-wishlist-pop"
-                                      : ""
-                                  }`}
+                                  className={`w-4 h-4 transition-all duration-300 ${wishlistAnimation.has(product._id)
+                                    ? "animate-wishlist-pop"
+                                    : ""
+                                    }`}
                                   fill={
                                     isInWishlist(product._id)
                                       ? "currentColor"
@@ -623,13 +621,13 @@ export default function Home() {
                                 {/* TikTok-style popping animation - only around the heart */}
                                 {wishlistAnimation.has(product._id) && (
                                   <div className="absolute -inset-2 pointer-events-none">
-                                    <div className="absolute inset-0 bg-rose-500 rounded-full animate-wishlist-ripple opacity-75"></div>
+                                    <div className="absolute inset-0 bg-red-500 rounded-full animate-wishlist-ripple opacity-75"></div>
                                     <div
-                                      className="absolute inset-0 bg-rose-400 rounded-full animate-wishlist-ripple"
+                                      className="absolute inset-0 bg-red-400 rounded-full animate-wishlist-ripple"
                                       style={{ animationDelay: "0.1s" }}
                                     ></div>
                                     <div
-                                      className="absolute inset-0 bg-rose-300 rounded-full animate-wishlist-ripple"
+                                      className="absolute inset-0 bg-red-300 rounded-full animate-wishlist-ripple"
                                       style={{ animationDelay: "0.2s" }}
                                     ></div>
                                   </div>
@@ -638,8 +636,8 @@ export default function Home() {
                             </button>
 
                             <Link
-                              href={`/cosmetics/${product._id}`}
-                              className="inline-flex items-center justify-center px-3 py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-rose-300 hover:text-rose-700 hover:bg-rose-50 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2"
+                              href={`/karts/${product._id}`}
+                              className="inline-flex items-center justify-center px-3 py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-red-300 hover:text-red-700 hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2"
                             >
                               <svg
                                 className="w-4 h-4"
@@ -670,7 +668,7 @@ export default function Home() {
                           {addingToCart.has(product._id) ? (
                             <button
                               disabled
-                              className="w-full sm:flex-1 text-center px-4 py-2 bg-rose-500 text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
+                              className="w-full sm:flex-1 text-center px-4 py-2 bg-red-500 text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
                             >
                               <div className="flex space-x-1">
                                 <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
@@ -688,7 +686,7 @@ export default function Home() {
                           ) : items.some((item) => item.id === product._id) ? (
                             <button
                               disabled
-                              className="w-full sm:flex-1 text-center px-4 py-2 bg-rose-300 cursor-not-allowed text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
+                              className="w-full sm:flex-1 text-center px-4 py-2 bg-red-300 cursor-not-allowed text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
                             >
                               <svg
                                 className="w-4 h-4"
@@ -708,7 +706,7 @@ export default function Home() {
                           ) : (
                             <button
                               onClick={() => handleAddToCart(product)}
-                              className="w-full sm:flex-1 text-center px-4 py-2 bg-rose-600 text-white font-medium cursor-pointer hover:bg-rose-700 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105"
+                              className="w-full sm:flex-1 text-center px-4 py-2 bg-red-600 text-white font-medium cursor-pointer hover:bg-red-700 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105"
                             >
                               Add to Cart
                             </button>
@@ -719,11 +717,10 @@ export default function Home() {
                             {/* Wishlist Button */}
                             <button
                               onClick={() => handleWishlistToggle(product)}
-                              className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${
-                                isInWishlist(product._id)
-                                  ? "border-rose-300 text-rose-600 bg-rose-50 shadow-sm"
-                                  : "border-zinc-300 text-zinc-700 hover:border-rose-300 hover:text-rose-600 hover:bg-rose-50 hover:scale-105"
-                              }`}
+                              className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                                ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
+                                : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                                }`}
                               title={
                                 isInWishlist(product._id)
                                   ? "Remove from Wishlist"
@@ -732,11 +729,10 @@ export default function Home() {
                             >
                               <div className="relative">
                                 <svg
-                                  className={`w-4 h-4 transition-all duration-300 ${
-                                    wishlistAnimation.has(product._id)
-                                      ? "animate-wishlist-pop"
-                                      : ""
-                                  }`}
+                                  className={`w-4 h-4 transition-all duration-300 ${wishlistAnimation.has(product._id)
+                                    ? "animate-wishlist-pop"
+                                    : ""
+                                    }`}
                                   fill={
                                     isInWishlist(product._id)
                                       ? "currentColor"
@@ -756,13 +752,13 @@ export default function Home() {
                                 {/* TikTok-style popping animation - only around the heart */}
                                 {wishlistAnimation.has(product._id) && (
                                   <div className="absolute -inset-2 pointer-events-none">
-                                    <div className="absolute inset-0 bg-rose-500 rounded-full animate-wishlist-ripple opacity-75"></div>
+                                    <div className="absolute inset-0 bg-red-500 rounded-full animate-wishlist-ripple opacity-75"></div>
                                     <div
-                                      className="absolute inset-0 bg-rose-400 rounded-full animate-wishlist-ripple"
+                                      className="absolute inset-0 bg-red-400 rounded-full animate-wishlist-ripple"
                                       style={{ animationDelay: "0.1s" }}
                                     ></div>
                                     <div
-                                      className="absolute inset-0 bg-rose-300 rounded-full animate-wishlist-ripple"
+                                      className="absolute inset-0 bg-red-300 rounded-full animate-wishlist-ripple"
                                       style={{ animationDelay: "0.2s" }}
                                     ></div>
                                   </div>
@@ -771,8 +767,8 @@ export default function Home() {
                             </button>
 
                             <Link
-                              href={`/cosmetics/${product._id}`}
-                              className="inline-flex items-center justify-center px-3 py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-rose-300 hover:text-rose-700 hover:bg-rose-50 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2"
+                              href={`/karts/${product._id}`}
+                              className="inline-flex items-center justify-center px-3 py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-red-300 hover:text-red-700 hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2"
                             >
                               <svg
                                 className="w-4 h-4"
@@ -804,7 +800,7 @@ export default function Home() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <div className="text-6xl mb-4">💄</div>
+              <div className="text-6xl mb-4">🏎️</div>
               <h3 className="text-xl font-semibold text-zinc-900 mb-2 font-caveat">
                 No featured products available
               </h3>
@@ -816,8 +812,8 @@ export default function Home() {
 
           <div className="text-center mt-12">
             <Link
-              href="/cosmetics"
-              className="inline-flex items-center px-8 py-3 bg-rose-600 text-white font-medium tracking-wide uppercase hover:bg-rose-700 transition-all duration-300 border border-rose-600 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-lg"
+              href="/karts"
+              className="inline-flex items-center px-8 py-3 bg-red-600 text-white font-medium tracking-wide uppercase hover:bg-red-700 transition-all duration-300 border border-red-600 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-lg"
             >
               View All Products
             </Link>
@@ -833,14 +829,14 @@ export default function Home() {
               Featured Services
             </h2>
             <p className="text-lg text-zinc-600 max-w-2xl mx-auto font-outfit">
-              Experience our premium beauty services designed to enhance your
-              natural beauty and boost your confidence.
+              Experience our professional racing services designed to keep your
+              machine in peak performance and dominate the track.
             </p>
           </div>
 
           {servicesLoading ? (
             <div className="flex justify-center items-center py-16">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
             </div>
           ) : featuredServices.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -854,14 +850,14 @@ export default function Home() {
                     <Image
                       src={
                         service.image ||
-                        "https://img.freepik.com/diverse-group-women-preparing-using-makeups_53876-29637.jpg?W=2000"
+                        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
                       }
                       alt={service.name}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-4 right-4">
-                      <span className="bg-rose-600 text-white px-3 py-1 rounded-full text-sm font-medium font-outfit">
+                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium font-outfit">
                         {service.category}
                       </span>
                     </div>
@@ -884,7 +880,7 @@ export default function Home() {
                           {service.duration} min
                         </span>
                       </div>
-                      <div className="text-lg font-bold text-rose-600 font-outfit">
+                      <div className="text-lg font-bold text-red-600 font-outfit">
                         XAF {service.price.toLocaleString()}
                       </div>
                     </div>
@@ -900,10 +896,10 @@ export default function Home() {
                       <button
                         onClick={() =>
                           router.push(
-                            `/book-appointment?service=${service._id}`
+                            `/contact?service=${service._id}`
                           )
                         }
-                        className="flex-[2] bg-rose-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-rose-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
+                        className="flex-[2] bg-red-600 text-white font-medium py-2.5 px-4 rounded-lg hover:bg-red-700 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
                       >
                         Book Now
                       </button>
@@ -926,7 +922,7 @@ export default function Home() {
           <div className="text-center mt-12">
             <Link
               href="/services"
-              className="inline-flex items-center px-8 py-3 bg-rose-600 border-none text-white font-medium tracking-wide uppercase hover:bg-zinc-800 transition-all duration-300 border border-zinc-900 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-lg"
+              className="inline-flex items-center px-8 py-3 bg-red-600 border-none text-white font-medium tracking-wide uppercase hover:bg-zinc-800 transition-all duration-300 border border-zinc-900 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-lg"
             >
               View All Services
             </Link>
@@ -942,8 +938,7 @@ export default function Home() {
               Explore Our Collection
             </h2>
             <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
-              From skincare essentials to luxury makeup, find the perfect
-              instrument for your musical journey.
+              From professional racing karts to high-speed e-bikes and premium parts, find everything you need for your racing journey.
             </p>
           </div>
 
@@ -951,7 +946,7 @@ export default function Home() {
             {categories.map((category, index) => (
               <Link
                 key={index}
-                href={`/cosmetics?category=${encodeURIComponent(
+                href={`/karts?category=${encodeURIComponent(
                   category.name
                 )}`}
                 className="group block"
@@ -990,7 +985,7 @@ export default function Home() {
 
                   {/* Enhanced Text Content */}
                   <div className="absolute bottom-6 left-6 right-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500">
-                    <h3 className="font-bold text-white mb-2 group-hover:text-rose-400 transition-colors duration-300 text-2xl font-caveat">
+                    <h3 className="font-bold text-white mb-2 group-hover:text-red-400 transition-colors duration-300 text-2xl font-caveat">
                       {category.name}
                     </h3>
                     <p className="text-zinc-200 text-sm group-hover:text-zinc-100 transition-colors duration-300 font-outfit">
@@ -999,7 +994,7 @@ export default function Home() {
                   </div>
 
                   {/* Hover Border Effect */}
-                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-rose-200 rounded-[5px] transition-colors duration-500 pointer-events-none"></div>
+                  <div className="absolute inset-0 border-2 border-transparent group-hover:border-red-200 rounded-[5px] transition-colors duration-500 pointer-events-none"></div>
                 </div>
               </Link>
             ))}
@@ -1013,8 +1008,8 @@ export default function Home() {
           {/* Background Image */}
           <div className="aspect-[1.4] sm:aspect-[4/1] md:aspect-[4/1] lg:aspect-[4/1] bg-zinc-100 relative">
             <Image
-              src="https://img.freepik.com/variety-different-cosmetics-display_1161356-153701.jpg?W=2000"
-              alt="Special Beauty Offers"
+              src="https://ebikesbyrevolve.com/wp-content/uploads/2020/08/The-Rocket-in-LI-1.png"
+              alt="Special Racing Offers"
               fill
               className="object-cover object-right group-hover:scale-102 transition-transform duration-300 ease-out"
             />
@@ -1028,13 +1023,13 @@ export default function Home() {
                 <div className="max-w-[1500px] mx-auto">
                   {/* Badge with Timer */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 mb-3">
-                    <div className="inline-block bg-rose-500 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium w-fit font-outfit">
+                    <div className="inline-block bg-red-500 text-white px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium w-fit font-outfit">
                       ⏰ LIMITED TIME OFFER
                     </div>
                     {/* Live Countdown Timer */}
                     <div className="flex items-center gap-2 text-white">
                       <div className="text-center">
-                        {/* <div className="text-xs text-rose-200 font-outfit mb-2">
+                        {/* <div className="text-xs text-red-200 font-outfit mb-2">
                           Time Left
                         </div> */}
                         <div className="flex items-center gap-1">
@@ -1075,12 +1070,12 @@ export default function Home() {
 
                   {/* Main Heading */}
                   <h2 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3 font-caveat">
-                    MEGA BEAUTY SALE
+                    MEGA RACING SALE
                   </h2>
 
                   {/* Subheading */}
-                  <p className="text-xs sm:text-sm md:text-base text-rose-100 mb-3 sm:mb-4 font-outfit">
-                    Up to 70% OFF on Premium Skincare, Makeup & Fragrances
+                  <p className="text-xs sm:text-sm md:text-base text-red-100 mb-3 sm:mb-4 font-outfit">
+                    Up to 70% OFF on Premium Karts, E-Bikes & Parts
                   </p>
 
                   {/* Offer Details */}
@@ -1099,8 +1094,8 @@ export default function Home() {
                   {/* CTA Buttons */}
                   <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                     <Link
-                      href="/cosmetics?sale=mega"
-                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-rose-600 text-white font-bold text-sm sm:text-base rounded-[3px] hover:bg-rose-700 transition-all duration-300 font-outfit transform hover:scale-105 hover:shadow-xl w-fit"
+                      href="/karts?sale=mega"
+                      className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white font-bold text-sm sm:text-base rounded-[3px] hover:bg-red-700 transition-all duration-300 font-outfit transform hover:scale-105 hover:shadow-xl w-fit"
                     >
                       Shop Now
                       <svg
@@ -1124,8 +1119,8 @@ export default function Home() {
 
             {/* Floating Elements */}
             <div className="absolute top-2 sm:top-4 right-2 sm:right-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-              <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5 sm:p-2 border border-rose-500/30">
-                <div className="text-rose-600 text-center">
+              <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5 sm:p-2 border border-red-500/30">
+                <div className="text-red-600 text-center">
                   <div className="text-base sm:text-lg font-bold font-caveat">
                     70%
                   </div>
@@ -1140,19 +1135,19 @@ export default function Home() {
       {/* <Testimonials /> */}
 
       {/* Call to Action */}
-      {/* <section className="py-16 bg-zinc-900">
+      <section className="py-16 bg-zinc-900">
         <Container>
           <div className="text-center">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Ready to Find Your Perfect Beauty Products?
+              Ready to Find Your Perfect Racing Machine?
             </h2>
             <p className="text-xl text-zinc-300 mb-8 max-w-2xl mx-auto">
-              browse our online collection. Our experts are here to help you
-              find the beauty products of your dreams.
+              Browse our elite collection. Our racing experts are here to help you
+              find the high-performance machine of your dreams.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/cosmetics"
+                href="/karts"
                 className="inline-flex items-center justify-center px-8 py-3 bg-white text-zinc-900 font-medium tracking-wide uppercase hover:bg-zinc-100 transition-colors duration-200 border border-white"
               >
                 Shop Online
@@ -1166,7 +1161,7 @@ export default function Home() {
             </div>
           </div>
         </Container>
-      </section> */}
+      </section>
     </>
   );
 }

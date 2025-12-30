@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
-import GlowProduct from "@/models/Product";
-import Rating from "@/models/Rating";
+import ApexProduct from "@/models/Product";
+import ApexRating from "@/models/Rating";
 
 // GET /api/products/[id]/ratings - Get all ratings for a product
 export async function GET(
@@ -12,7 +12,7 @@ export async function GET(
   try {
     await connectDB();
 
-    const ratings = await Rating.find({ productId: id })
+    const ratings = await ApexRating.find({ productId: id })
       .sort({ createdAt: -1 })
       .limit(50); // Limit to 50 most recent ratings
 
@@ -55,13 +55,13 @@ export async function POST(
     }
 
     // Check if product exists
-    const product = await GlowProduct.findById(id);
+    const product = await ApexProduct.findById(id);
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
 
     // Check if user already rated this product
-    const existingRating = await Rating.findOne({
+    const existingRating = await ApexRating.findOne({
       productId: id,
       userId: userId,
     });
@@ -74,7 +74,7 @@ export async function POST(
     }
 
     // Create new rating
-    const newRating = new Rating({
+    const newRating = new ApexRating({
       productId: id,
       userId,
       userName,
@@ -86,11 +86,11 @@ export async function POST(
     await newRating.save();
 
     // Update product's average rating and review count
-    const allRatings = await Rating.find({ productId: id });
+    const allRatings = await ApexRating.find({ productId: id });
     const totalRating = allRatings.reduce((sum, r) => sum + r.rating, 0);
     const averageRating = totalRating / allRatings.length;
 
-    await GlowProduct.findByIdAndUpdate(id, {
+    await ApexProduct.findByIdAndUpdate(id, {
       rating: Math.round(averageRating * 10) / 10, // Round to 1 decimal place
       reviews: allRatings.length,
     });
