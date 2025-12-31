@@ -108,7 +108,7 @@ export default function ServicesPage() {
                       {service.name}
                     </h3>
                     <p className="text-white/90 text-sm md:text-base font-medium">
-                      XAF {service.price.toLocaleString()}
+                      ${service.price.toLocaleString()}
                     </p>
                   </div>
                 </div>

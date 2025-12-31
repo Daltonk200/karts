@@ -36,8 +36,9 @@ const categories = [
   "Racing Karts",
   "Recreational Karts",
   "Electric Karts",
-  "Racing Gear",
+  "Scooters",
   "Parts & Accessories",
+  "Racing Gear",
   "Safety Equipment",
 ];
 
@@ -53,11 +54,11 @@ const kartTypes = [
 
 const priceRanges = [
   "All",
-  "Under XAF 500,000",
-  "XAF 500,000 - XAF 2,000,000",
-  "XAF 2,000,000 - XAF 4,000,000",
-  "XAF 4,000,000 - XAF 6,000,000",
-  "Over XAF 6,000,000",
+  "Under $500",
+  "$500 - $2,000",
+  "$2,000 - $4,000",
+  "$4,000 - $6,000",
+  "Over $6,000",
 ];
 
 export default function KartsFilters({

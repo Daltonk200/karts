@@ -204,7 +204,7 @@ export default function DashboardPage() {
                   Total Revenue
                 </p>
                 <p className="text-2xl font-bold text-gray-900">
-                  XAF {stats.totalRevenue.toLocaleString()}
+                  ${stats.totalRevenue.toLocaleString()}
                 </p>
               </div>
             </div>
@@ -309,7 +309,7 @@ export default function DashboardPage() {
                         {product.name}
                       </p>
                       <p className="text-xs text-gray-500">
-                        {product.brand} • XAF {product.price.toLocaleString()}
+                        {product.brand} • ${product.price.toLocaleString()}
                       </p>
                     </div>
                     <div className="flex-shrink-0">

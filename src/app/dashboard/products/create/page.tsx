@@ -331,7 +331,7 @@ export default function CreateProductPage() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Price (XAF) *
+                      Price ($) *
                     </label>
                     <input
                       type="number"
@@ -346,7 +346,7 @@ export default function CreateProductPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Original Price (XAF)
+                      Original Price ($)
                     </label>
                     <input
                       type="number"

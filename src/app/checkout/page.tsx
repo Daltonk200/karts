@@ -259,7 +259,7 @@ export default function CheckoutPage() {
                       </div>
                       <div className="text-right">
                         <p className="font-semibold text-red-600 font-outfit">
-                          XAF {(item.price * item.quantity).toFixed(2)}
+                          ${(item.price * item.quantity).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -270,25 +270,25 @@ export default function CheckoutPage() {
                   <div className="flex justify-between">
                     <span className="text-zinc-600 font-outfit">Subtotal:</span>
                     <span className="font-semibold font-outfit">
-                      XAF {getTotalPrice().toFixed(2)}
+                      ${getTotalPrice().toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-600 font-outfit">Tax (8%):</span>
                     <span className="font-semibold font-outfit">
-                      XAF {calculateTax().toFixed(2)}
+                      ${calculateTax().toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-600 font-outfit">Shipping:</span>
                     <span className="font-semibold font-outfit">
-                      XAF {calculateShipping().toFixed(2)}
+                      ${calculateShipping().toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between text-lg font-bold border-t border-zinc-200 pt-3">
                     <span className="font-outfit">Total:</span>
                     <span className="font-outfit text-red-600">
-                      XAF {calculateTotal().toFixed(2)}
+                      ${calculateTotal().toFixed(2)}
                     </span>
                   </div>
                 </div>

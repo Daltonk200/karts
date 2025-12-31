@@ -42,9 +42,6 @@ interface Order {
 }
 
 export default function OrderDetailPage() {
-  // Set this to true to bypass authentication
-  const BYPASS_AUTH = false;
-
   const params = useParams();
   const router = useRouter();
   const [order, setOrder] = useState<Order | null>(null);
@@ -52,31 +49,42 @@ export default function OrderDetailPage() {
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("dashboard_token");
-    if (!BYPASS_AUTH) {
-      // Check authentication
-      if (!token) {
-        router.push("/dashboard/login");
-        return;
-      }
-    }
-
-    // Fetch order data
+    // Use mock data for frontend-only mode
     const fetchOrder = async () => {
       try {
-        const response = await fetch(`/api/orders/${params.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
+        // Mock order data
+        const mockOrder: Order = {
+          _id: params.id as string,
+          orderNumber: `ORD-${params.id}`,
+          customerName: "John Doe",
+          customerEmail: "john@example.com",
+          customerPhone: "+1234567890",
+          items: [
+            {
+              productId: "1",
+              name: "Apex Pro Racing Kart",
+              price: 4500,
+              quantity: 1,
+              image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500"
+            }
+          ],
+          total: 4500,
+          status: "pending",
+          shippingAddress: {
+            street: "123 Main St",
+            city: "New York",
+            state: "NY",
+            zipCode: "10001",
+            country: "USA"
           },
-        });
-
-        if (response.ok) {
-          const orderData = await response.json();
-          setOrder(orderData);
-        } else {
-          toast.error("Failed to load order");
-          router.push("/dashboard/orders");
-        }
+          paymentMethod: "credit_card",
+          paymentStatus: "pending",
+          notes: "Handle with care",
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        };
+        
+        setOrder(mockOrder);
       } catch (error) {
         toast.error("An error occurred while loading the order");
         router.push("/dashboard/orders");
@@ -95,22 +103,12 @@ export default function OrderDetailPage() {
 
     setUpdating(true);
     try {
-      const token = localStorage.getItem("dashboard_token");
-      const response = await fetch(`/api/orders/${params.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      if (response.ok) {
-        setOrder((prev) => (prev ? { ...prev, status: newStatus } : null));
-        toast.success("Order status updated successfully!");
-      } else {
-        toast.error("Failed to update order status");
-      }
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Update order status locally (frontend-only mode)
+      setOrder((prev) => (prev ? { ...prev, status: newStatus, updatedAt: new Date().toISOString() } : null));
+      toast.success("Order status updated successfully!");
     } catch (error) {
       toast.error("An error occurred while updating the order status");
     } finally {

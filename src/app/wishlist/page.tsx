@@ -86,7 +86,7 @@ export default function WishlistPage() {
                 </div>
                 <div className="text-right">
                   <div className="text-3xl font-caveat font-bold text-red-600">
-                    XAF {totalValue.toLocaleString()}
+                    ${totalValue.toLocaleString()}
                   </div>
                   <div className="text-sm text-zinc-600 font-outfit">
                     Total Value
@@ -133,7 +133,7 @@ export default function WishlistPage() {
             {/* Actions */}
             <div className="mt-16 flex flex-col sm:flex-row gap-6 justify-center">
               <Link
-                href="/karts"
+                href="/products"
                 className="px-8 py-4 bg-gradient-to-r from-red-600 to-red-600 text-white font-semibold font-outfit rounded-[8px] hover:from-red-700 hover:to-red-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg text-center"
               >
                 Continue Shopping
@@ -154,7 +154,7 @@ export default function WishlistPage() {
               products and adding your favorites to your wishlist.
             </p>
             <Link
-              href="/karts"
+              href="/products"
               className="inline-block px-10 py-4 bg-gradient-to-r from-red-600 to-red-600 text-white font-semibold font-outfit rounded-[8px] hover:from-red-700 hover:to-red-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg"
             >
               Browse Products

@@ -64,7 +64,7 @@ export default function PurchasePage() {
           setProduct(data);
         } else {
           toast.error("Product not found");
-          router.push("/karts");
+          router.push("/products");
         }
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -299,7 +299,7 @@ export default function PurchasePage() {
                 </div>
                 <div className="mt-2">
                   <div className="text-3xl font-bold text-red-600">
-                    XAF {product.price.toLocaleString()}
+                    ${product.price.toLocaleString()}
                   </div>
                   <div className="text-sm text-red-700 mt-1">
                     {product.stock > 0
@@ -559,25 +559,25 @@ export default function PurchasePage() {
                   <div className="flex justify-between">
                     <span className="text-gray-600">Subtotal:</span>
                     <span className="font-medium">
-                      XAF {product.price.toLocaleString()}
+                      ${product.price.toLocaleString()}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Tax (8%):</span>
                     <span className="font-medium">
-                      XAF {calculateTax().toFixed(2)}
+                      ${calculateTax().toFixed(2)}
                     </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">Shipping:</span>
                     <span className="font-medium">
-                      XAF {calculateShipping().toFixed(2)}
+                      ${calculateShipping().toFixed(2)}
                     </span>
                   </div>
                   <div className="border-t border-red-300 pt-3 mt-3">
                     <div className="flex justify-between font-bold text-lg text-red-600">
                       <span>Total:</span>
-                      <span>XAF {calculateTotal().toFixed(2)}</span>
+                      <span>${calculateTotal().toFixed(2)}</span>
                     </div>
                   </div>
                 </div>

@@ -158,8 +158,8 @@ export default function CartPage() {
   // Calculate shipping based on total
   const getShippingCost = () => {
     const total = getTotalPrice();
-    if (total >= 50000) return 0; // Free shipping over XAF 50K
-    if (total >= 25000) return 2500; // Reduced shipping over XAF 25K
+    if (total >= 50) return 0; // Free shipping over $50
+    if (total >= 25) return 2.50; // Reduced shipping over $25
     return 5000; // Standard shipping
   };
 
@@ -206,7 +206,7 @@ export default function CartPage() {
                 yet. Browse our collection and find your perfect karts.
               </p>
               <Link
-                href="/karts"
+                href="/products"
                 className="inline-flex items-center px-8 py-3 bg-red-600 text-white font-medium tracking-wide uppercase hover:bg-red-700 transition-all duration-300 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
               >
                 Browse Cosmetics
@@ -295,7 +295,7 @@ export default function CartPage() {
                                 {item.condition}
                               </p>
                               <p className="text-lg font-bold text-red-600 font-caveat">
-                                XAF {item.price.toLocaleString()}
+                                ${item.price.toLocaleString()}
                               </p>
                             </div>
 
@@ -373,7 +373,7 @@ export default function CartPage() {
 
                             <div className="text-right">
                               <p className="text-lg font-bold text-red-600 font-caveat">
-                                XAF{" "}
+                                ${" "}
                                 {(item.price * item.quantity).toLocaleString()}
                               </p>
                             </div>
@@ -429,7 +429,7 @@ export default function CartPage() {
                                   {item.skinType}
                                 </p>
                                 <p className="text-lg font-bold text-red-600 font-caveat mb-3">
-                                  XAF {item.price.toLocaleString()}
+                                  ${item.price.toLocaleString()}
                                 </p>
                                 <p className="text-xs text-zinc-500 font-outfit">
                                   Saved on{" "}
@@ -548,7 +548,7 @@ export default function CartPage() {
                               {product.name}
                             </h4>
                             <p className="text-lg text-red-600 font-bold font-caveat mb-3">
-                              XAF {product.price.toLocaleString()}
+                              ${product.price.toLocaleString()}
                             </p>
                             <button
                               onClick={() => handleAddToWishlist(product)}
@@ -584,7 +584,7 @@ export default function CartPage() {
                       Subtotal ({getTotalItems()} items)
                     </span>
                     <span className="font-medium">
-                      XAF {getTotalPrice().toLocaleString()}
+                      ${getTotalPrice().toLocaleString()}
                     </span>
                   </div>
 
@@ -597,7 +597,7 @@ export default function CartPage() {
                       {shippingCost === 0 ? (
                         <span className="text-green-600">FREE</span>
                       ) : (
-                        `XAF ${shippingCost.toLocaleString()}`
+                        `$${shippingCost.toLocaleString()}`
                       )}
                     </span>
                   </div>
@@ -606,7 +606,7 @@ export default function CartPage() {
                     <div className="flex justify-between text-xl font-bold font-caveat">
                       <span>Total</span>
                       <span className="text-red-600">
-                        XAF {total.toFixed(0)}
+                        ${total.toFixed(0)}
                       </span>
                     </div>
                   </div>
@@ -617,7 +617,7 @@ export default function CartPage() {
                   <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-[2px] ">
                     <div className="flex items-center gap-2 text-green-700 text-sm font-outfit">
                       <AiOutlineGift className="w-5 h-5" />
-                      <span>Free shipping on orders over XAF 50K!</span>
+                      <span>Free shipping on orders over $50!</span>
                     </div>
                   </div>
                 )}
@@ -649,7 +649,7 @@ export default function CartPage() {
 
                 <div className="mt-4 text-center">
                   <Link
-                    href="/karts"
+                    href="/products"
                     className="text-sm text-zinc-600 hover:text-red-600 font-medium font-outfit transition-colors duration-200"
                   >
                     Continue Shopping

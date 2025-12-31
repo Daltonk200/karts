@@ -72,7 +72,7 @@ export default function Hero() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/karts"
+                href="/products"
                 className="group rounded-sm relative inline-flex items-center justify-center px-8 py-4 bg-red-600 text-white font-medium tracking-wide uppercase border border-red-600 overflow-hidden transition-all duration-300 shadow-lg hover:shadow-xl"
               >
                 <span className="relative z-10 transition-colors duration-300 group-hover:text-white">

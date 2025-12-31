@@ -18,13 +18,12 @@ export default function KartsHero() {
 
       <Container className="py-12 relative z-10">
         <div className="text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Our Go-Kart Collection
+          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-caveat">
+            Our Products
           </h1>
-          <p className="text-lg text-white max-w-2xl mx-auto">
-            Discover premium go-karts and racing equipment from the world's finest
-            manufacturers. From professional racing karts to family recreational
-            models, find your perfect ride.
+          <p className="text-lg text-white max-w-2xl mx-auto font-outfit">
+            Discover premium go-karts, scooters, parts, and racing equipment from the world's finest
+            manufacturers. From professional racing karts to accessories and safety gear, find everything you need.
           </p>
         </div>
       </Container>

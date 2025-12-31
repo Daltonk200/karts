@@ -47,7 +47,7 @@ export default function NotFound() {
           </Link>
 
           <Link
-            href="/karts"
+            href="/products"
             className="group bg-white rounded-2xl shadow-sm p-6 border border-zinc-200 hover:border-red-200 transition-all duration-300 transform hover:scale-[1.02]"
           >
             <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-red-200 transition-colors duration-300">
@@ -87,28 +87,28 @@ export default function NotFound() {
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
-              href="/karts?category=Skincare"
+              href="/products?category=Racing Karts"
               className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-outfit hover:bg-red-200 transition-colors duration-300"
             >
-              Skincare
+              Racing Karts
             </Link>
             <Link
-              href="/karts?category=Makeup"
+              href="/products?category=Scooters"
               className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-outfit hover:bg-red-200 transition-colors duration-300"
             >
-              Makeup
+              Scooters
             </Link>
             <Link
-              href="/karts?category=Hair Care"
+              href="/products?category=Parts & Accessories"
               className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-outfit hover:bg-red-200 transition-colors duration-300"
             >
-              Hair Care
+              Parts & Accessories
             </Link>
             <Link
-              href="/karts?category=Fragrances"
+              href="/products?category=Safety Equipment"
               className="px-4 py-2 bg-red-100 text-red-700 rounded-full text-sm font-outfit hover:bg-red-200 transition-colors duration-300"
             >
-              Fragrances
+              Safety Equipment
             </Link>
             <Link
               href="/contact"

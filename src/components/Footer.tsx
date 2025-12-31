@@ -59,7 +59,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link
-                  href="/karts"
+                  href="/products"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
                   Shop Karts

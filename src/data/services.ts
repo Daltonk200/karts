@@ -17,7 +17,7 @@ export const services: Service[] = [
       "Professional facial treatments tailored to your skin type and concerns",
     image:
       "https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?w=400&h=300&fit=crop",
-    price: "25,000 - 45,000 XAF",
+    price: "$25 - $45",
     duration: "60-90 minutes",
     features: [
       "Deep cleansing and exfoliation",
@@ -42,7 +42,7 @@ export const services: Service[] = [
       "Professional makeup application for special occasions and everyday glamour",
     image:
       "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=400&h=300&fit=crop",
-    price: "15,000 - 35,000 XAF",
+    price: "$15 - $35",
     duration: "45-90 minutes",
     features: [
       "Bridal makeup",
@@ -66,7 +66,7 @@ export const services: Service[] = [
     description: "Personalized skincare advice and product recommendations",
     image:
       "https://images.unsplash.com/photo-1556228720-195a672e8a03?w=400&h=300&fit=crop",
-    price: "10,000 - 20,000 XAF",
+    price: "$10 - $20",
     duration: "30-45 minutes",
     features: [
       "Skin analysis and assessment",
@@ -91,7 +91,7 @@ export const services: Service[] = [
       "Relaxing and rejuvenating body treatments for total wellness",
     image:
       "https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=400&h=300&fit=crop",
-    price: "30,000 - 60,000 XAF",
+    price: "$30 - $60",
     duration: "90-120 minutes",
     features: [
       "Body scrubs and exfoliation",
@@ -115,7 +115,7 @@ export const services: Service[] = [
     description: "Professional nail care and beautiful nail art designs",
     image:
       "https://images.unsplash.com/photo-1604654894610-df63bc536371?w=400&h=300&fit=crop",
-    price: "8,000 - 25,000 XAF",
+    price: "$8 - $25",
     duration: "45-90 minutes",
     features: [
       "Manicure and pedicure",
@@ -139,7 +139,7 @@ export const services: Service[] = [
     description: "Nourishing hair treatments for healthy, beautiful hair",
     image:
       "https://images.unsplash.com/photo-1562322140-8baeececf3df?w=400&h=300&fit=crop",
-    price: "20,000 - 40,000 XAF",
+    price: "$20 - $40",
     duration: "60-120 minutes",
     features: [
       "Hair conditioning treatments",

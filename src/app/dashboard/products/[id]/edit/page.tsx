@@ -291,7 +291,7 @@ export default function EditProductPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Price (XAF) *
+                    Price ($) *
                   </label>
                   <input
                     type="number"
@@ -306,7 +306,7 @@ export default function EditProductPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700">
-                    Original Price (XAF)
+                    Original Price ($)
                   </label>
                   <input
                     type="number"

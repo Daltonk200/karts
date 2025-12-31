@@ -6,6 +6,7 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
 import toast from "react-hot-toast";
 import { Product } from "@/data/mockProducts";
+import { FaStar } from "react-icons/fa";
 
 interface ProductCardProps {
   product: Product;
@@ -56,7 +57,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
     return (
       <div className="bg-white border border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-lg transform hover:-translate-y-1 group h-fit">
         {/* Image Container */}
-        <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px]">
+        <Link href={`/products/${product._id}`} className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px] block cursor-pointer">
           <Image
             src={product.image}
             alt={product.name}
@@ -115,7 +116,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
 
           {/* Hover Overlay */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300"></div>
-        </div>
+        </Link>
         <div className="p-3 sm:p-4 md:p-6 flex flex-col flex-grow h-full">
           <div className="text-xs sm:text-sm text-red-600 uppercase tracking-wide mb-1 sm:mb-2 font-outfit font-medium">
             {product.category}
@@ -125,8 +126,35 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
               ? `${product.name.slice(0, 25)}...`
               : product.name}
           </h3>
+          {/* Rating Stars and Review Count */}
+          {(product.rating || product.reviews) && (
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    className={`w-4 h-4 ${
+                      star <= Math.round(product.rating || 0)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              {product.rating && (
+                <span className="text-sm font-medium text-zinc-700">
+                  {product.rating.toFixed(1)}
+                </span>
+              )}
+              {product.reviews !== undefined && product.reviews > 0 && (
+                <span className="text-sm text-zinc-500">
+                  ({product.reviews} {product.reviews === 1 ? "review" : "reviews"})
+                </span>
+              )}
+            </div>
+          )}
           <div className="text-base sm:text-lg md:text-xl font-bold text-zinc-900 mb-2 sm:mb-4">
-            XAF {product.price.toFixed(0).toLocaleString()}
+            ${product.price.toFixed(0).toLocaleString()}
           </div>
 
           {/* Desktop Remove from Cart - positioned after price with minimal spacing */}
@@ -147,7 +175,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
           <div className="mt-auto flex flex-col">
             {/* Mobile: Stacked layout, Desktop: Horizontal layout */}
             <div className="flex flex-col gap-2 sm:gap-2">
-              {/* Top row: Remove from Cart (left) + View & Heart (right) - Mobile only */}
+              {/* Top row: Remove from Cart (left) + Heart (right) - Mobile only */}
               <div className="flex items-end justify-between sm:hidden">
                 {/* Remove from Cart - only show when in cart */}
                 {isInCart(product._id) && (
@@ -162,7 +190,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                   </button>
                 )}
 
-                {/* Right side: View and Heart buttons */}
+                {/* Right side: Heart button */}
                 <div className="flex gap-1 sm:gap-2 ml-auto">
                   {/* Wishlist Button */}
                   <button
@@ -195,31 +223,6 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                       </svg>
                     </div>
                   </button>
-
-                  <Link
-                    href={`/karts/${product._id}`}
-                    className="inline-flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-red-300 hover:text-red-700 hover:bg-red-50 transition-all duration-300 text-xs sm:text-sm rounded-[5px] font-outfit gap-1 sm:gap-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </Link>
                 </div>
               </div>
 
@@ -255,7 +258,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                   </button>
                 )}
 
-                {/* Desktop: Wishlist and View buttons on same line */}
+                {/* Desktop: Wishlist button */}
                 <div className="hidden sm:flex gap-2">
                   {/* Wishlist Button */}
                   <button
@@ -288,31 +291,6 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                       </svg>
                     </div>
                   </button>
-
-                  <Link
-                    href={`/karts/${product._id}`}
-                    className="inline-flex items-center justify-center px-3 py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-red-300 hover:text-red-700 hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2"
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                      />
-                    </svg>
-                  </Link>
                 </div>
               </div>
             </div>
@@ -327,7 +305,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
     <div className="bg-white border border-zinc-200 hover:border-red-300 transition-all duration-300 rounded-[5px] shadow-sm hover:shadow-lg group">
       <div className="flex flex-row">
         {/* Image Container */}
-        <div className="w-32 sm:w-40 md:w-48 h-auto bg-zinc-100 relative overflow-hidden group rounded-l-[5px]">
+        <Link href={`/products/${product._id}`} className="w-32 sm:w-40 md:w-48 h-auto bg-zinc-100 relative overflow-hidden group rounded-l-[5px] block cursor-pointer">
           <Image
             src={product.image}
             alt={product.name}
@@ -339,7 +317,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
               {product.kartType}
             </span>
           </div>
-        </div>
+        </Link>
 
         {/* Content */}
         <div className="flex-1 p-3 sm:p-4 md:p-6 flex flex-col">
@@ -354,8 +332,35 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
           <p className="text-xs sm:text-sm text-zinc-600 mb-2 sm:mb-4 line-clamp-2">
             {product.description}
           </p>
+          {/* Rating Stars and Review Count */}
+          {(product.rating || product.reviews) && (
+            <div className="flex items-center gap-2 mb-2">
+              <div className="flex items-center gap-0.5">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <FaStar
+                    key={star}
+                    className={`w-4 h-4 ${
+                      star <= Math.round(product.rating || 0)
+                        ? "text-yellow-400 fill-yellow-400"
+                        : "text-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+              {product.rating && (
+                <span className="text-sm font-medium text-zinc-700">
+                  {product.rating.toFixed(1)}
+                </span>
+              )}
+              {product.reviews !== undefined && product.reviews > 0 && (
+                <span className="text-sm text-zinc-500">
+                  ({product.reviews} {product.reviews === 1 ? "review" : "reviews"})
+                </span>
+              )}
+            </div>
+          )}
           <div className="text-base sm:text-lg md:text-xl font-bold text-zinc-900 mb-2 sm:mb-4">
-            XAF {product.price.toFixed(0).toLocaleString()}
+            ${product.price.toFixed(0).toLocaleString()}
           </div>
 
           {/* Remove from Cart - Desktop */}
@@ -405,7 +410,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
               </button>
             )}
 
-            {/* Wishlist and View buttons */}
+            {/* Wishlist button */}
             <div className="flex gap-2">
               {/* Wishlist Button */}
               <button
@@ -436,31 +441,6 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                   </svg>
                 </div>
               </button>
-
-              <Link
-                href={`/karts/${product._id}`}
-                className="flex-1 inline-flex items-center justify-center px-3 py-2 border border-zinc-300 text-zinc-700 font-medium hover:border-red-300 hover:text-red-700 hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit gap-2"
-              >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                  />
-                </svg>
-              </Link>
             </div>
           </div>
 

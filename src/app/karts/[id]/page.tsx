@@ -311,7 +311,7 @@ export default function CosmeticsDetailPage() {
 
             {/* Price */}
             <div className="text-3xl font-bold text-zinc-900">
-              XAF {product.price.toLocaleString()}
+              ${product.price.toLocaleString()}
             </div>
 
             {/* Description */}
@@ -500,7 +500,7 @@ export default function CosmeticsDetailPage() {
                         {relatedProduct.name}
                       </h3>
                       <div className="text-lg font-bold text-zinc-900 mt-auto">
-                        XAF {relatedProduct.price.toFixed(0).toLocaleString()}
+                        ${relatedProduct.price.toFixed(0).toLocaleString()}
                       </div>
                     </div>
                   </div>

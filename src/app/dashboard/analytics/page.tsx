@@ -210,7 +210,7 @@ export default function AnalyticsPage() {
                       Total Revenue
                     </p>
                     <p className="text-2xl font-bold text-gray-900">
-                      XAF {analytics.totalRevenue.toLocaleString()}
+                      ${analytics.totalRevenue.toLocaleString()}
                     </p>
                   </div>
                 </div>
@@ -342,7 +342,7 @@ export default function AnalyticsPage() {
                           ></div>
                         </div>
                         <span className="text-sm font-medium text-gray-900 w-20 text-right">
-                          XAF {month.revenue.toLocaleString()}
+                          ${month.revenue.toLocaleString()}
                         </span>
                       </div>
                     </div>
@@ -370,7 +370,7 @@ export default function AnalyticsPage() {
                         </p>
                       </div>
                       <span className="text-sm font-medium text-gray-900">
-                        XAF {product.revenue.toLocaleString()}
+                        ${product.revenue.toLocaleString()}
                       </span>
                     </div>
                   ))}

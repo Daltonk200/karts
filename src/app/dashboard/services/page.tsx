@@ -379,7 +379,7 @@ export default function ServicesPage() {
                     </p>
                     <div className="flex items-center justify-between mb-3">
                       <span className="text-lg font-bold text-gray-900">
-                        XAF {service.price.toLocaleString()}
+                        ${service.price.toLocaleString()}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">

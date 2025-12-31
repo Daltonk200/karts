@@ -68,37 +68,108 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("dashboard_token");
-      const headers: HeadersInit = {};
+      
+      // Mock products data for frontend-only mode
+      const mockProducts: Product[] = [
+        {
+          _id: "1",
+          name: "Apex Pro Racing Kart",
+          price: 4500,
+          originalPrice: 5000,
+          brand: "Apex Rush",
+          category: "Racing Karts",
+          skinType: "Professional",
+          stock: 5,
+          isFeatured: true,
+          isOnSale: true,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          sku: "APX-PRO-001",
+          rating: 4.8,
+          reviews: 24,
+          createdAt: new Date().toISOString(),
+        },
+        {
+          _id: "2",
+          name: "Thunder 250cc Racing Kart",
+          price: 3800,
+          originalPrice: 4200,
+          brand: "Apex Rush",
+          category: "Racing Karts",
+          skinType: "Professional",
+          stock: 8,
+          isFeatured: true,
+          isOnSale: false,
+          image: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
+          sku: "APX-THUNDER-002",
+          rating: 4.6,
+          reviews: 18,
+          createdAt: new Date(Date.now() - 86400000).toISOString(),
+        },
+        {
+          _id: "3",
+          name: "Pro Racing Helmet",
+          price: 180,
+          brand: "Apex Rush",
+          category: "Racing Gear",
+          skinType: "Safety",
+          stock: 15,
+          isFeatured: false,
+          isOnSale: false,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          sku: "APX-HELMET-003",
+          rating: 4.5,
+          reviews: 28,
+          createdAt: new Date(Date.now() - 172800000).toISOString(),
+        },
+        {
+          _id: "4",
+          name: "Velocity Electric Kart",
+          price: 5200,
+          brand: "Apex Rush",
+          category: "Electric Karts",
+          skinType: "Eco-Friendly",
+          stock: 3,
+          isFeatured: true,
+          isOnSale: true,
+          image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500",
+          sku: "APX-ELECTRIC-004",
+          rating: 4.9,
+          reviews: 32,
+          createdAt: new Date(Date.now() - 259200000).toISOString(),
+        },
+      ];
 
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
+      // Filter by category
+      let filteredProducts = mockProducts;
+      if (selectedCategory !== "All") {
+        filteredProducts = mockProducts.filter(p => p.category === selectedCategory);
       }
 
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: "12",
-        sortBy,
-        sortOrder: "desc",
+      // Filter by search
+      if (searchQuery) {
+        filteredProducts = filteredProducts.filter(p =>
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          p.sku.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      }
+
+      // Sort
+      filteredProducts.sort((a, b) => {
+        const aValue = a[sortBy as keyof Product];
+        const bValue = b[sortBy as keyof Product];
+        if (sortBy === "price" || sortBy === "stock" || sortBy === "rating" || sortBy === "reviews") {
+          return (bValue as number) - (aValue as number);
+        }
+        return String(aValue) > String(bValue) ? 1 : -1;
       });
 
-      if (searchQuery) {
-        params.append("search", searchQuery);
-      }
+      // Paginate
+      const startIndex = (currentPage - 1) * 12;
+      const paginatedProducts = filteredProducts.slice(startIndex, startIndex + 12);
 
-      if (selectedCategory !== "All") {
-        params.append("category", selectedCategory);
-      }
-
-      const response = await fetch(`/api/products?${params}`, { headers });
-      const data = await response.json();
-
-      if (response.ok) {
-        setProducts(data.products || []);
-        setTotalPages(data.pagination?.pages || 1);
-      } else {
-        toast.error("Failed to fetch products");
-      }
+      setProducts(paginatedProducts);
+      setTotalPages(Math.ceil(filteredProducts.length / 12));
     } catch (error) {
       console.error("Error fetching products:", error);
       toast.error("Failed to fetch products");
@@ -120,25 +191,17 @@ export default function ProductsPage() {
 
     try {
       setDeletingId(deleteModal.productId);
-      const token = localStorage.getItem("dashboard_token");
-      const headers: HeadersInit = {};
-
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`/api/products/${deleteModal.productId}`, {
-        method: "DELETE",
-        headers,
-      });
-
-      if (response.ok) {
-        toast.success("Product deleted successfully");
-        fetchProducts();
-        setDeleteModal({ isOpen: false, productId: null, productName: "" });
-      } else {
-        toast.error("Failed to delete product");
-      }
+      
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Delete product locally (frontend-only mode)
+      setProducts(prevProducts =>
+        prevProducts.filter(p => p._id !== deleteModal.productId)
+      );
+      toast.success("Product deleted successfully");
+      fetchProducts();
+      setDeleteModal({ isOpen: false, productId: null, productName: "" });
     } catch (error) {
       console.error("Error deleting product:", error);
       toast.error("Failed to delete product");
@@ -153,29 +216,18 @@ export default function ProductsPage() {
 
   const toggleFeatured = async (productId: string, currentStatus: boolean) => {
     try {
-      const token = localStorage.getItem("dashboard_token");
-      const headers: HeadersInit = {
-        "Content-Type": "application/json",
-      };
-
-      if (token) {
-        headers.Authorization = `Bearer ${token}`;
-      }
-
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "PUT",
-        headers,
-        body: JSON.stringify({ isFeatured: !currentStatus }),
-      });
-
-      if (response.ok) {
-        toast.success(
-          `Product ${!currentStatus ? "featured" : "unfeatured"} successfully`
-        );
-        fetchProducts();
-      } else {
-        toast.error("Failed to update product");
-      }
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Update product locally (frontend-only mode)
+      setProducts(prevProducts =>
+        prevProducts.map(p =>
+          p._id === productId ? { ...p, isFeatured: !currentStatus } : p
+        )
+      );
+      toast.success(
+        `Product ${!currentStatus ? "featured" : "unfeatured"} successfully`
+      );
     } catch (error) {
       console.error("Error updating product:", error);
       toast.error("Failed to update product");
@@ -350,12 +402,12 @@ export default function ProductsPage() {
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex items-center space-x-2">
                         <span className="text-lg font-bold text-gray-900">
-                          XAF {product.price.toLocaleString()}
+                          ${product.price.toLocaleString()}
                         </span>
                         {product.originalPrice &&
                           product.originalPrice > product.price && (
                             <span className="text-sm text-gray-500 line-through">
-                              XAF {product.originalPrice.toLocaleString()}
+                              ${product.originalPrice.toLocaleString()}
                             </span>
                           )}
                       </div>
