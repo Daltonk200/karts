@@ -14,12 +14,13 @@ export default function LayoutWrapper({ children }: LayoutWrapperProps) {
   // Check if current path is dashboard-related or auth-related
   const isDashboardPage = pathname?.startsWith("/dashboard");
   const isAuthPage = pathname?.startsWith("/auth");
+  const isAccountPage = pathname?.startsWith("/account");
 
   return (
     <>
-      {!isDashboardPage && !isAuthPage && <Navbar />}
+      {!isDashboardPage && !isAuthPage && !isAccountPage && <Navbar />}
       <main>{children}</main>
-      {!isDashboardPage && !isAuthPage && <Footer />}
+      {!isDashboardPage && !isAuthPage && !isAccountPage && <Footer />}
     </>
   );
 }

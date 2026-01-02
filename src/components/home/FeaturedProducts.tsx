@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Container from "@/components/Container";
@@ -9,6 +9,7 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import toast from "react-hot-toast";
 import { FaShoppingCart } from "react-icons/fa";
 import { FaStar } from "react-icons/fa";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 interface Product {
   _id: string;
@@ -31,6 +32,9 @@ export default function FeaturedProducts() {
   const [wishlistAnimation, setWishlistAnimation] = useState<Set<string>>(
     new Set()
   );
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { addToCart, removeFromCart, items } = useCartStore();
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
@@ -154,6 +158,50 @@ export default function FeaturedProducts() {
     fetchFeaturedProducts();
   }, []);
 
+  // Check scroll position to show/hide arrows
+  const checkScrollPosition = () => {
+    if (scrollContainerRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
+      setCanScrollLeft(scrollLeft > 0);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (container) {
+      checkScrollPosition();
+      container.addEventListener("scroll", checkScrollPosition);
+      window.addEventListener("resize", checkScrollPosition);
+      return () => {
+        container.removeEventListener("scroll", checkScrollPosition);
+        window.removeEventListener("resize", checkScrollPosition);
+      };
+    }
+  }, [featuredProducts]);
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = container.clientWidth * 0.8; // Scroll 80% of visible width
+      container.scrollBy({
+        left: -scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      const scrollAmount = container.clientWidth * 0.8; // Scroll 80% of visible width
+      container.scrollBy({
+        left: scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const fetchFeaturedProducts = async () => {
     try {
       setLoading(true);
@@ -253,11 +301,11 @@ export default function FeaturedProducts() {
         </div>
 
         {loading ? (
-          <div className=" gap-4 md:gap-8 flex overflow-x-scroll snap-x snap-proximity">
+          <div className="flex gap-4 md:gap-8 overflow-x-auto scrollbar-hide">
             {[...Array(5)].map((_, index) => (
               <div
                 key={index}
-                className="bg-white border min-w-[230px]  md:min-w-[300px] border-zinc-200 animate-pulse rounded-[5px] shadow-sm"
+                className="bg-white border min-w-[230px] md:min-w-[300px] border-zinc-200 animate-pulse rounded-[5px] shadow-sm flex-shrink-0"
               >
                 <div className="aspect-[4/3] bg-zinc-200 rounded-t-[5px]"></div>
                 <div className="p-4 md:p-6">
@@ -270,12 +318,44 @@ export default function FeaturedProducts() {
             ))}
           </div>
         ) : featuredProducts.length > 0 ? (
-          <div className="flex overflow-x-scroll snap-x snap-proximity grid-cols-2 md:grid-cols-2 lg:grid-cols-5 gap-1 md:gap-2">
-            {featuredProducts.map((product) => (
-              <div
-                key={product._id}
-                className="bg-white snap-start border min-w-[230px]  md:min-w-[300px] border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-sm transform hover:-translate-y-1 group"
+          <div className="relative group/carousel px-12 md:px-14">
+            {/* Left Arrow */}
+            {canScrollLeft && (
+              <button
+                onClick={scrollLeft}
+                className="absolute left-0 md:left-2 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-red-50 border-2 border-zinc-300 hover:border-red-500 shadow-lg rounded-full p-2.5 md:p-3 transition-all duration-300 hover:scale-110 active:scale-95"
+                aria-label="Scroll left"
               >
+                <IoIosArrowBack className="w-5 h-5 md:w-6 md:h-6 text-zinc-700 hover:text-red-600 transition-colors" />
+              </button>
+            )}
+
+            {/* Right Arrow */}
+            {canScrollRight && (
+              <button
+                onClick={scrollRight}
+                className="absolute right-0 md:right-2 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-red-50 border-2 border-zinc-300 hover:border-red-500 shadow-lg rounded-full p-2.5 md:p-3 transition-all duration-300 hover:scale-110 active:scale-95"
+                aria-label="Scroll right"
+              >
+                <IoIosArrowForward className="w-5 h-5 md:w-6 md:h-6 text-zinc-700 hover:text-red-600 transition-colors" />
+              </button>
+            )}
+
+            {/* Scrollable Container */}
+            <div
+              ref={scrollContainerRef}
+              className="flex overflow-x-auto scrollbar-hide gap-4 md:gap-8 scroll-smooth snap-x snap-mandatory pb-4"
+              style={{
+                scrollbarWidth: "none",
+                msOverflowStyle: "none",
+              }}
+            >
+              {featuredProducts.map((product) => (
+                <div
+                  key={product._id}
+                  data-product-card
+                  className="bg-white snap-start border min-w-[230px] md:min-w-[300px] border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-lg transform hover:-translate-y-1 group flex-shrink-0"
+                >
                 <Link href={`/products/${product._id}`} className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px] block cursor-pointer">
                   <Image
                     src={
@@ -443,9 +523,9 @@ export default function FeaturedProducts() {
                           {/* Wishlist Button */}
                           <button
                             onClick={() => handleWishlistToggle(product)}
-                            className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
-                              ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
-                              : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                            className={`inline-flex items-center justify-center px-3 py-2 border-2 text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                              ? "border-red-600 text-red-600 bg-white shadow-sm"
+                              : "border-zinc-300 text-zinc-700 hover:border-red-600 hover:text-red-600 hover:bg-white hover:scale-105"
                               }`}
                             title={
                               isInWishlist(product._id)
@@ -518,7 +598,7 @@ export default function FeaturedProducts() {
                         ) : items.some((item) => item.id === product._id) ? (
                           <button
                             disabled
-                            className="w-full sm:flex-1 text-center px-4 py-2 bg-red-300 cursor-not-allowed text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
+                            className="w-full sm:flex-1 text-center px-4 py-2 bg-white text-red-400 border-2 border-red-300 cursor-not-allowed font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
                           >
                             <svg
                               className="w-4 h-4"
@@ -538,7 +618,7 @@ export default function FeaturedProducts() {
                         ) : (
                           <button
                             onClick={() => handleAddToCart(product)}
-                            className="w-full sm:flex-1 text-center px-4 py-2 bg-red-600 text-white font-medium cursor-pointer hover:bg-red-700 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105 flex items-center justify-center gap-2"
+                            className="w-full sm:flex-1 text-center px-4 py-2 bg-white text-red-600 border-2 border-red-600 font-medium cursor-pointer hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105 flex items-center justify-center gap-2"
                           >
                             <FaShoppingCart className="w-4 h-4" />
                             Add to Cart
@@ -550,9 +630,9 @@ export default function FeaturedProducts() {
                           {/* Wishlist Button */}
                           <button
                             onClick={() => handleWishlistToggle(product)}
-                            className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
-                              ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
-                              : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                            className={`inline-flex items-center justify-center px-3 py-2 border-2 text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                              ? "border-red-600 text-red-600 bg-white shadow-sm"
+                              : "border-zinc-300 text-zinc-700 hover:border-red-600 hover:text-red-600 hover:bg-white hover:scale-105"
                               }`}
                             title={
                               isInWishlist(product._id)
@@ -605,6 +685,7 @@ export default function FeaturedProducts() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
         ) : (
           <div className="text-center py-12">

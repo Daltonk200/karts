@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DeleteConfirmationModal from "@/components/ui/delete-confirmation-modal";
+import SlideableDeleteModal from "@/components/ui/SlideableDeleteModal";
 
 interface Service {
   _id: string;
@@ -558,7 +558,7 @@ export default function ServicesPage() {
       </div>
 
       {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
+      <SlideableDeleteModal
         isOpen={deleteModal.isOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}

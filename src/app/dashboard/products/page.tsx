@@ -3,7 +3,31 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/admin/DashboardLayout";
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "react-hot-toast";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Chip,
+  Box,
+  Typography,
+  TextField,
+  Pagination,
+  CircularProgress,
+  Tooltip,
+} from "@mui/material";
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Star as StarIcon,
+  StarBorder as StarBorderIcon,
+} from "@mui/icons-material";
 import {
   Select,
   SelectContent,
@@ -11,7 +35,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import DeleteConfirmationModal from "@/components/ui/delete-confirmation-modal";
+import SlideableDeleteModal from "@/components/ui/SlideableDeleteModal";
+import SlideableDrawer from "@/components/ui/SlideableDrawer";
+import EnhancedProductForm from "@/components/admin/EnhancedProductForm";
 
 interface Product {
   _id: string;
@@ -33,6 +59,7 @@ interface Product {
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -40,6 +67,7 @@ export default function ProductsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [showAddProductModal, setShowAddProductModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     productId: string | null;
@@ -50,20 +78,25 @@ export default function ProductsPage() {
     productName: "",
   });
 
+  const itemsPerPage = 10;
+
   const categories = [
     "All",
-    "Skincare",
-    "Makeup",
-    "Fragrances",
-    "Hair Care",
-    "Body Care",
-    "Men's Grooming",
-    "Tools & Accessories",
+    "Racing Karts",
+    "Recreational Karts",
+    "Electric Karts",
+    "Racing Gear",
+    "Safety Equipment",
+    "Parts & Accessories",
   ];
 
   useEffect(() => {
     fetchProducts();
-  }, [currentPage, searchQuery, selectedCategory, sortBy]);
+  }, []);
+
+  useEffect(() => {
+    filterAndPaginateProducts();
+  }, [allProducts, currentPage, searchQuery, selectedCategory, sortBy]);
 
   const fetchProducts = async () => {
     try {
@@ -74,8 +107,8 @@ export default function ProductsPage() {
         {
           _id: "1",
           name: "Apex Pro Racing Kart",
-          price: 4500,
-          originalPrice: 5000,
+          price: 4500000,
+          originalPrice: 5000000,
           brand: "Apex Rush",
           category: "Racing Karts",
           skinType: "Professional",
@@ -91,8 +124,8 @@ export default function ProductsPage() {
         {
           _id: "2",
           name: "Thunder 250cc Racing Kart",
-          price: 3800,
-          originalPrice: 4200,
+          price: 3800000,
+          originalPrice: 4200000,
           brand: "Apex Rush",
           category: "Racing Karts",
           skinType: "Professional",
@@ -108,7 +141,7 @@ export default function ProductsPage() {
         {
           _id: "3",
           name: "Pro Racing Helmet",
-          price: 180,
+          price: 180000,
           brand: "Apex Rush",
           category: "Racing Gear",
           skinType: "Safety",
@@ -124,7 +157,7 @@ export default function ProductsPage() {
         {
           _id: "4",
           name: "Velocity Electric Kart",
-          price: 5200,
+          price: 5200000,
           brand: "Apex Rush",
           category: "Electric Karts",
           skinType: "Eco-Friendly",
@@ -137,45 +170,117 @@ export default function ProductsPage() {
           reviews: 32,
           createdAt: new Date(Date.now() - 259200000).toISOString(),
         },
+        {
+          _id: "5",
+          name: "Junior Racer Kart",
+          price: 2500000,
+          brand: "Apex Rush",
+          category: "Recreational Karts",
+          skinType: "Youth",
+          stock: 12,
+          isFeatured: true,
+          isOnSale: false,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          sku: "APX-JR-005",
+          rating: 4.7,
+          reviews: 15,
+          createdAt: new Date(Date.now() - 345600000).toISOString(),
+        },
+        {
+          _id: "6",
+          name: "Racing Suit Pro Series",
+          price: 280000,
+          originalPrice: 320000,
+          brand: "Apex Rush",
+          category: "Racing Gear",
+          skinType: "Professional",
+          stock: 15,
+          isFeatured: true,
+          isOnSale: true,
+          image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500",
+          sku: "APX-SUIT-006",
+          rating: 4.8,
+          reviews: 65,
+          createdAt: new Date(Date.now() - 432000000).toISOString(),
+        },
+        {
+          _id: "7",
+          name: "Performance Kart Tires (Set)",
+          price: 120000,
+          brand: "GripMaster",
+          category: "Parts & Accessories",
+          skinType: "Professional",
+          stock: 50,
+          isFeatured: false,
+          isOnSale: false,
+          image: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
+          sku: "PT-TIRE-001",
+          rating: 4.7,
+          reviews: 89,
+          createdAt: new Date(Date.now() - 518400000).toISOString(),
+        },
+        {
+          _id: "8",
+          name: "Family Fun Kart",
+          price: 2200000,
+          brand: "Apex Rush",
+          category: "Recreational Karts",
+          skinType: "Family",
+          stock: 4,
+          isFeatured: true,
+          isOnSale: false,
+          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          sku: "APX-FAM-001",
+          rating: 4.5,
+          reviews: 12,
+          createdAt: new Date(Date.now() - 604800000).toISOString(),
+        },
       ];
 
-      // Filter by category
-      let filteredProducts = mockProducts;
-      if (selectedCategory !== "All") {
-        filteredProducts = mockProducts.filter(p => p.category === selectedCategory);
-      }
-
-      // Filter by search
-      if (searchQuery) {
-        filteredProducts = filteredProducts.filter(p =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.sku.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-
-      // Sort
-      filteredProducts.sort((a, b) => {
-        const aValue = a[sortBy as keyof Product];
-        const bValue = b[sortBy as keyof Product];
-        if (sortBy === "price" || sortBy === "stock" || sortBy === "rating" || sortBy === "reviews") {
-          return (bValue as number) - (aValue as number);
-        }
-        return String(aValue) > String(bValue) ? 1 : -1;
-      });
-
-      // Paginate
-      const startIndex = (currentPage - 1) * 12;
-      const paginatedProducts = filteredProducts.slice(startIndex, startIndex + 12);
-
-      setProducts(paginatedProducts);
-      setTotalPages(Math.ceil(filteredProducts.length / 12));
+      setAllProducts(mockProducts);
     } catch (error) {
       console.error("Error fetching products:", error);
       toast.error("Failed to fetch products");
     } finally {
       setLoading(false);
     }
+  };
+
+  const filterAndPaginateProducts = () => {
+    // Filter by category
+    let filteredProducts = [...allProducts];
+    if (selectedCategory !== "All") {
+      filteredProducts = filteredProducts.filter(p => p.category === selectedCategory);
+    }
+
+    // Filter by search
+    if (searchQuery) {
+      filteredProducts = filteredProducts.filter(p =>
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.sku.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+
+    // Sort
+    filteredProducts.sort((a, b) => {
+      const aValue = a[sortBy as keyof Product];
+      const bValue = b[sortBy as keyof Product];
+      if (sortBy === "price" || sortBy === "stock" || sortBy === "rating" || sortBy === "reviews") {
+        return (bValue as number) - (aValue as number);
+      }
+      return String(aValue) > String(bValue) ? 1 : -1;
+    });
+
+    // Calculate pagination
+    const total = filteredProducts.length;
+    setTotalPages(Math.ceil(total / itemsPerPage));
+
+    // Paginate
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+    setProducts(paginatedProducts);
   };
 
   const handleDeleteClick = (productId: string, productName: string) => {
@@ -196,11 +301,10 @@ export default function ProductsPage() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Delete product locally (frontend-only mode)
-      setProducts(prevProducts =>
+      setAllProducts(prevProducts =>
         prevProducts.filter(p => p._id !== deleteModal.productId)
       );
       toast.success("Product deleted successfully");
-      fetchProducts();
       setDeleteModal({ isOpen: false, productId: null, productName: "" });
     } catch (error) {
       console.error("Error deleting product:", error);
@@ -220,7 +324,7 @@ export default function ProductsPage() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       // Update product locally (frontend-only mode)
-      setProducts(prevProducts =>
+      setAllProducts(prevProducts =>
         prevProducts.map(p =>
           p._id === productId ? { ...p, isFeatured: !currentStatus } : p
         )
@@ -234,6 +338,11 @@ export default function ProductsPage() {
     }
   };
 
+  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    setCurrentPage(value);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
@@ -244,9 +353,9 @@ export default function ProductsPage() {
             <p className="text-gray-600">Manage your karts inventory</p>
           </div>
           <div className="mt-4 sm:mt-0">
-            <Link
-              href="/dashboard/products/create"
-              className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
+            <button
+              onClick={() => setShowAddProductModal(true)}
+              className="inline-flex items-center px-4 py-2 bg-white text-red-600 border-2 border-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors duration-200"
             >
               <svg
                 className="w-4 h-4 mr-2"
@@ -262,23 +371,31 @@ export default function ProductsPage() {
                 />
               </svg>
               Add Product
-            </Link>
+            </button>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <Box sx={{ bgcolor: "white", p: 3, borderRadius: 2, boxShadow: 1, border: "1px solid #e5e7eb" }}>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Search Products
               </label>
-              <input
-                type="text"
+              <TextField
+                fullWidth
+                size="small"
                 placeholder="Search by name, brand, or SKU..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "8px",
+                  },
+                }}
               />
             </div>
             <div>
@@ -287,7 +404,10 @@ export default function ProductsPage() {
               </label>
               <Select
                 value={selectedCategory}
-                onValueChange={setSelectedCategory}
+                onValueChange={(value) => {
+                  setSelectedCategory(value);
+                  setCurrentPage(1);
+                }}
               >
                 <SelectTrigger className="w-full !shadow-none py-5">
                   <SelectValue placeholder="All Categories" />
@@ -333,253 +453,323 @@ export default function ProductsPage() {
               </button>
             </div>
           </div>
-        </div>
+        </Box>
 
-        {/* Products Grid */}
+        {/* Products Table */}
         {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 animate-pulse"
-              >
-                <div className="aspect-square bg-gray-200 rounded-t-lg"></div>
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-gray-200 rounded"></div>
-                  <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                </div>
-              </div>
-            ))}
-          </div>
+          <Box sx={{ display: "flex", justifyContent: "center", py: 8 }}>
+            <CircularProgress />
+          </Box>
         ) : products.length > 0 ? (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <div
-                  key={product._id}
-                  className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow duration-200"
-                >
-                  <div className="aspect-square relative">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute top-2 left-2 flex flex-col gap-1">
-                      {product.isFeatured && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                          Featured
-                        </span>
-                      )}
-                      {product.isOnSale && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                          On Sale
-                        </span>
-                      )}
-                    </div>
-                    <div className="absolute top-2 right-2">
-                      <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          product.stock <= 5
-                            ? "bg-red-100 text-red-800"
-                            : "bg-green-100 text-green-800"
-                        }`}
-                      >
-                        {product.stock} in stock
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-sm font-medium text-gray-900 line-clamp-2">
-                        {product.name}
-                      </h3>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">
-                      {product.brand}
-                    </p>
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-lg font-bold text-gray-900">
-                          ${product.price.toLocaleString()}
-                        </span>
-                        {product.originalPrice &&
-                          product.originalPrice > product.price && (
-                            <span className="text-sm text-gray-500 line-through">
-                              ${product.originalPrice.toLocaleString()}
-                            </span>
-                          )}
-                      </div>
-                      <div className="flex items-center space-x-1">
-                        <svg
-                          className="w-4 h-4 text-yellow-400"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
+            <TableContainer
+              component={Paper}
+              sx={{
+                boxShadow: 1,
+                borderRadius: 2,
+                border: "1px solid #e5e7eb",
+                overflow: "hidden",
+              }}
+            >
+              <Table sx={{ minWidth: 650 }}>
+                <TableHead>
+                  <TableRow sx={{ bgcolor: "#f9fafb" }}>
+                    <TableCell sx={{ fontWeight: 600 }}>Image</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Product Name</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Brand</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Category</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Price</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Stock</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>SKU</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Rating</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }}>Status</TableCell>
+                    <TableCell sx={{ fontWeight: 600 }} align="center">Actions</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {products.map((product) => (
+                    <TableRow
+                      key={product._id}
+                      sx={{
+                        "&:hover": { bgcolor: "#f9fafb" },
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                    >
+                      <TableCell>
+                        <Box
+                          sx={{
+                            width: 60,
+                            height: 60,
+                            position: "relative",
+                            borderRadius: 1,
+                            overflow: "hidden",
+                            bgcolor: "#f3f4f6",
+                          }}
                         >
-                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                        </svg>
-                        <span className="text-sm text-gray-600">
-                          {product.rating}
-                        </span>
-                        <span className="text-xs text-gray-400">
-                          ({product.reviews})
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs text-gray-500">
-                        SKU: {product.sku}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <button
-                          onClick={() =>
-                            toggleFeatured(product._id, product.isFeatured)
-                          }
-                          className={`p-1 rounded ${
-                            product.isFeatured
-                              ? "text-red-600 hover:text-red-700"
-                              : "text-gray-400 hover:text-red-600"
-                          }`}
-                          title={
-                            product.isFeatured
-                              ? "Remove from featured"
-                              : "Add to featured"
-                          }
-                        >
-                          <svg
-                            className="w-4 h-4"
-                            fill="currentColor"
-                            viewBox="0 0 20 20"
+                          <Image
+                            src={product.image}
+                            alt={product.name}
+                            fill
+                            style={{ objectFit: "cover" }}
+                            sizes="60px"
+                          />
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                          {product.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant="body2" color="text.secondary">
+                          {product.brand}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={product.category}
+                          size="small"
+                          sx={{
+                            bgcolor: "#ffffff",
+                            color: "#dc2626",
+                            fontSize: "0.75rem",
+                            border: "1px solid #dc2626",
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Box>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: 600, color: "#dc2626" }}
                           >
-                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                          </svg>
-                        </button>
-                        <Link
-                          href={`/dashboard/products/${product._id}/edit`}
-                          className="p-1 text-gray-400 hover:text-blue-600 rounded"
-                          title="Edit product"
+                            ${product.price.toLocaleString()}
+                          </Typography>
+                          {product.originalPrice &&
+                            product.originalPrice > product.price && (
+                              <Typography
+                                variant="caption"
+                                sx={{
+                                  color: "text.secondary",
+                                  textDecoration: "line-through",
+                                  display: "block",
+                                }}
+                              >
+                                ${product.originalPrice.toLocaleString()}
+                              </Typography>
+                            )}
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Chip
+                          label={product.stock}
+                          size="small"
+                          sx={{
+                            bgcolor:
+                              product.stock <= 5
+                                ? "#fee2e2"
+                                : "#dcfce7",
+                            color:
+                              product.stock <= 5
+                                ? "#991b1b"
+                                : "#166534",
+                            fontWeight: 600,
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        <Typography
+                          variant="body2"
+                          sx={{ fontFamily: "monospace", fontSize: "0.75rem" }}
                         >
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                          {product.sku}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                          <StarIcon
+                            sx={{ fontSize: 16, color: "#fbbf24" }}
+                          />
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                            {product.rating}
+                          </Typography>
+                          <Typography
+                            variant="caption"
+                            sx={{ color: "text.secondary" }}
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            ({product.reviews})
+                          </Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+                          {product.isFeatured && (
+                            <Chip
+                              label="Featured"
+                              size="small"
+                              sx={{
+                                bgcolor: "#ffffff",
+                                color: "#dc2626",
+                                fontSize: "0.7rem",
+                                height: 20,
+                                border: "1px solid #dc2626",
+                              }}
                             />
-                          </svg>
-                        </Link>
-                        <button
-                          onClick={() =>
-                            handleDeleteClick(product._id, product.name)
-                          }
-                          disabled={deletingId === product._id}
-                          className="p-1 text-gray-400 hover:text-red-600 rounded disabled:opacity-50"
-                          title="Delete product"
-                        >
-                          {deletingId === product._id ? (
-                            <div className="w-4 h-4 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></div>
-                          ) : (
-                            <svg
-                              className="w-4 h-4"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                              />
-                            </svg>
                           )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                          {product.isOnSale && (
+                            <Chip
+                              label="On Sale"
+                              size="small"
+                              sx={{
+                                bgcolor: "#ffffff",
+                                color: "#16a34a",
+                                fontSize: "0.7rem",
+                                height: 20,
+                                border: "1px solid #16a34a",
+                              }}
+                            />
+                          )}
+                        </Box>
+                      </TableCell>
+                      <TableCell align="center">
+                        <Box sx={{ display: "flex", gap: 1, justifyContent: "center" }}>
+                          <Tooltip title={product.isFeatured ? "Remove from featured" : "Add to featured"}>
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                toggleFeatured(product._id, product.isFeatured)
+                              }
+                              sx={{
+                                color: product.isFeatured ? "#dc2626" : "#9ca3af",
+                                "&:hover": {
+                                  color: "#dc2626",
+                                  bgcolor: "#fee2e2",
+                                },
+                              }}
+                            >
+                              {product.isFeatured ? (
+                                <StarIcon fontSize="small" />
+                              ) : (
+                                <StarBorderIcon fontSize="small" />
+                              )}
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Edit product">
+                            <IconButton
+                              size="small"
+                              component={Link}
+                              href={`/dashboard/products/${product._id}/edit`}
+                              sx={{
+                                color: "#6b7280",
+                                "&:hover": {
+                                  color: "#2563eb",
+                                  bgcolor: "#eff6ff",
+                                },
+                              }}
+                            >
+                              <EditIcon fontSize="small" />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Delete product">
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleDeleteClick(product._id, product.name)
+                              }
+                              disabled={deletingId === product._id}
+                              sx={{
+                                color: "#6b7280",
+                                "&:hover": {
+                                  color: "#dc2626",
+                                  bgcolor: "#fee2e2",
+                                },
+                                "&.Mui-disabled": {
+                                  opacity: 0.5,
+                                },
+                              }}
+                            >
+                              {deletingId === product._id ? (
+                                <CircularProgress size={16} />
+                              ) : (
+                                <DeleteIcon fontSize="small" />
+                              )}
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center space-x-2">
-                <button
-                  onClick={() => setCurrentPage(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Previous
-                </button>
-                <span className="px-4 py-2 text-sm text-gray-600">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={() => setCurrentPage(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next
-                </button>
-              </div>
+              <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handlePageChange}
+                  color="primary"
+                  sx={{
+                    "& .MuiPaginationItem-root": {
+                      "&.Mui-selected": {
+                        bgcolor: "#dc2626",
+                        color: "white",
+                        "&:hover": {
+                          bgcolor: "#b91c1c",
+                        },
+                      },
+                    },
+                  }}
+                />
+              </Box>
             )}
           </>
         ) : (
-          <div className="text-center py-12">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-              />
-            </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
+          <Box
+            sx={{
+              textAlign: "center",
+              py: 8,
+              bgcolor: "white",
+              borderRadius: 2,
+              boxShadow: 1,
+              border: "1px solid #e5e7eb",
+            }}
+          >
+            <Typography variant="h6" sx={{ mb: 1, color: "text.primary" }}>
               No products found
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 3, color: "text.secondary" }}>
               {searchQuery || selectedCategory !== "All"
                 ? "Try adjusting your search or filter criteria."
                 : "Get started by creating a new product."}
-            </p>
-            <div className="mt-6">
-              <Link
-                href="/dashboard/products/create"
-                className="inline-flex items-center px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
+            </Typography>
+            <button
+              onClick={() => setShowAddProductModal(true)}
+              className="inline-flex items-center px-4 py-2 bg-white text-red-600 border-2 border-red-600 text-sm font-medium rounded-lg hover:bg-red-50 transition-colors duration-200"
+            >
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <svg
-                  className="w-4 h-4 mr-2"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 4v16m8-8H4"
-                  />
-                </svg>
-                Add Product
-              </Link>
-            </div>
-          </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 4v16m8-8H4"
+                />
+              </svg>
+              Add Product
+            </button>
+          </Box>
         )}
       </div>
 
       {/* Delete Confirmation Modal */}
-      <DeleteConfirmationModal
+      <SlideableDeleteModal
         isOpen={deleteModal.isOpen}
         onClose={handleDeleteCancel}
         onConfirm={handleDeleteConfirm}
@@ -588,6 +778,22 @@ export default function ProductsPage() {
         itemName={deleteModal.productName}
         isLoading={deletingId === deleteModal.productId}
       />
+
+      {/* Add Product Modal */}
+      <SlideableDrawer
+        open={showAddProductModal}
+        onClose={() => setShowAddProductModal(false)}
+        title="Add New Product"
+        width="700px"
+      >
+        <EnhancedProductForm
+          onSuccess={() => {
+            setShowAddProductModal(false);
+            fetchProducts();
+          }}
+          onCancel={() => setShowAddProductModal(false)}
+        />
+      </SlideableDrawer>
     </DashboardLayout>
   );
 }

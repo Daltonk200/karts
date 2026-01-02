@@ -207,9 +207,9 @@ export default function CartPage() {
               </p>
               <Link
                 href="/products"
-                className="inline-flex items-center px-8 py-3 bg-red-600 text-white font-medium tracking-wide uppercase hover:bg-red-700 transition-all duration-300 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
+                className="inline-flex items-center px-8 py-3 bg-white text-red-600 border-2 border-red-600 font-medium tracking-wide uppercase hover:bg-red-50 transition-all duration-300 rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
               >
-                Browse Cosmetics
+                Browse Products
               </Link>
             </div>
           </Container>
@@ -625,7 +625,7 @@ export default function CartPage() {
                 <button
                   onClick={handleCheckout}
                   disabled={isCheckingOut}
-                  className="w-full px-6 py-3 bg-red-600 text-white font-medium hover:bg-red-700 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-[5px] font-outfit transform hover:scale-[1.0FV1] hover:shadow-sm"
+                  className="w-full px-6 py-3 bg-white text-green-600 border-2 border-green-600 font-medium hover:bg-green-50 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed rounded-[5px] font-outfit transform hover:scale-105 hover:shadow-sm"
                 >
                   {isCheckingOut ? (
                     <div className="flex items-center justify-center gap-2">

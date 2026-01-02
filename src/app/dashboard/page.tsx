@@ -119,13 +119,13 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-gray-200 hover:border-red-300 transition-all duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center border border-red-200">
                   <svg
-                    className="w-5 h-5 text-gray-600"
+                    className="w-6 h-6 text-red-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -139,7 +139,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-3">
+              <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Total Products
                 </p>
@@ -150,12 +150,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-gray-200 hover:border-blue-300 transition-all duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center border border-blue-200">
                   <svg
-                    className="w-5 h-5 text-gray-600"
+                    className="w-6 h-6 text-blue-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -169,7 +169,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-3">
+              <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Total Orders
                 </p>
@@ -180,12 +180,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-gray-200 hover:border-green-300 transition-all duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center border border-green-200">
                   <svg
-                    className="w-5 h-5 text-gray-600"
+                    className="w-6 h-6 text-green-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -199,7 +199,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-3">
+              <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">
                   Total Revenue
                 </p>
@@ -210,12 +210,12 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-gray-200 hover:border-purple-300 transition-all duration-200">
             <div className="flex items-center">
               <div className="flex-shrink-0">
-                <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
+                <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center border border-purple-200">
                   <svg
-                    className="w-5 h-5 text-gray-600"
+                    className="w-6 h-6 text-purple-600"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                   </svg>
                 </div>
               </div>
-              <div className="ml-3">
+              <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Services</p>
                 <p className="text-2xl font-bold text-gray-900">
                   {stats.totalServices}
@@ -250,10 +250,10 @@ export default function DashboardPage() {
             </h3>
             <div className="space-y-3">
               <Link
-                href="/dashboard/products/create"
-                className="block w-full px-4 py-3 bg-red-600 text-white text-center rounded-lg hover:bg-red-700 transition-colors duration-200 font-medium"
+                href="/dashboard/products"
+                className="block w-full px-4 py-3 bg-white text-red-600 border-2 border-red-600 text-center rounded-lg hover:bg-red-50 transition-colors duration-200 font-medium"
               >
-                Add New Product
+                ➕ Add New Product
               </Link>
               <Link
                 href="/dashboard/orders"
@@ -314,9 +314,9 @@ export default function DashboardPage() {
                     </div>
                     <div className="flex-shrink-0">
                       <span
-                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${product.stock <= 5
-                          ? "bg-red-100 text-red-800"
-                          : "bg-green-100 text-green-800"
+                        className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium border ${product.stock <= 5
+                          ? "bg-white text-red-600 border-red-600"
+                          : "bg-white text-green-600 border-green-600"
                           }`}
                       >
                         {product.stock} in stock

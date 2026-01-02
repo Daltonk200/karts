@@ -145,21 +145,6 @@ export default function Navbar() {
                 }`}
             ></span>
           </Link>
-          <Link
-            href="/services"
-            className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 relative group ${isActive("/services")
-              ? " text-red-700"
-              : isScrolled || !isHomePage
-                ? "text-zinc-700 hover:text-red-600 "
-                : "text-white hover:text-red-600 "
-              }`}
-          >
-            Services
-            <span
-              className={`absolute -bottom-1 left-0 h-0.5 bg-red-600 transition-all duration-200 ${isActive("/services") ? "w-full" : "w-0 group-hover:w-full"
-                }`}
-            ></span>
-          </Link>
 
           <Link
             href="/contact"
@@ -331,7 +316,8 @@ export default function Navbar() {
                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
-            {getCartItems() > 0 && (
+            {/* Hydration-fix: only show cart badge after hydration */}
+            {typeof window !== 'undefined' && getCartItems() > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg">
                 {getCartItems()}
               </span>
@@ -577,16 +563,6 @@ export default function Navbar() {
             >
               Our Shop
             </Link>
-            <Link
-              href="/services"
-              onClick={() => setIsOpen(false)}
-              className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${isActive("/services")
-                ? "bg-red-100 text-red-700 border-l-4 border-red-600"
-                : "text-zinc-700 hover:text-red-600 hover:bg-red-50"
-                }`}
-            >
-              Services
-            </Link>
 
             <Link
               href="/contact"
@@ -598,6 +574,7 @@ export default function Navbar() {
             >
               Contact
             </Link>
+
             <Link
               href="/about"
               onClick={() => setIsOpen(false)}

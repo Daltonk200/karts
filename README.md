@@ -29,28 +29,9 @@ To learn more about Next.js, take a look at the following resources:
 
 You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Environment Variables
+## Frontend Only
 
-Create a `.env.local` file in the root directory with the following variables:
-
-```bash
-# Cloudinary Configuration
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
-
-# MongoDB Configuration
-MONGODB_URI=your_mongodb_connection_string
-
-# JWT Secret
-JWT_SECRET=your_jwt_secret_key
-```
-
-### Cloudinary Setup
-
-1. Sign up for a free account at [Cloudinary](https://cloudinary.com/)
-2. Get your Cloud Name, API Key, and API Secret from your dashboard
-3. Add them to your `.env.local` file
+This is currently a frontend-only application. Backend functionality will be added later.
 
 ## Deploy on Vercel
 

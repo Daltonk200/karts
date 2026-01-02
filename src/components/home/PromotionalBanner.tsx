@@ -130,7 +130,7 @@ export default function PromotionalBanner() {
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                   <Link
                     href="/products?sale=mega"
-                    className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-red-600 text-white font-bold text-sm sm:text-base rounded-[3px] hover:bg-red-700 transition-all duration-300 font-outfit transform hover:scale-105 hover:shadow-xl w-fit"
+                    className="inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-white text-green-600 border-2 border-green-600 font-bold text-sm sm:text-base rounded-[3px] hover:bg-green-50 transition-all duration-300 font-outfit transform hover:scale-105 hover:shadow-xl w-fit"
                   >
                     Shop Now
                     <svg
@@ -154,8 +154,8 @@ export default function PromotionalBanner() {
 
           {/* Floating Elements */}
           <div className="absolute top-2 sm:top-4 right-2 sm:right-4 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
-            <div className="bg-white/20 backdrop-blur-sm rounded-full p-1.5 sm:p-2 border border-red-500/30">
-              <div className="text-red-600 text-center">
+            <div className="bg-white rounded-full p-1.5 sm:p-2 border-2 border-green-600">
+              <div className="text-green-600 text-center">
                 <div className="text-base sm:text-lg font-bold font-caveat">
                   70%
                 </div>

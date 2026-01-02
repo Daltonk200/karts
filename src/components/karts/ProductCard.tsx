@@ -65,7 +65,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
           />
           <div className="absolute top-3 left-3">
-            <span className="px-3 py-1.5 bg-red-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg transform -translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+            <span className="px-3 py-1.5 bg-white text-red-600 border-2 border-red-600 text-xs font-medium uppercase tracking-wide rounded-full shadow-lg transform -translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
               {product.kartType}
             </span>
           </div>
@@ -94,7 +94,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                   e.stopPropagation();
                   handleAddToCart(product);
                 }}
-                className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium hover:scale-110"
+                className="bg-white text-red-600 border-2 border-red-600 hover:bg-red-50 px-3 py-2 rounded-full shadow-lg transition-all duration-300 flex items-center gap-2 text-sm font-medium hover:scale-110"
                 title="Add to Cart"
               >
                 <svg
@@ -195,9 +195,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                   {/* Wishlist Button */}
                   <button
                     onClick={() => handleWishlistToggle(product)}
-                    className={`inline-flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 border text-xs sm:text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
-                        ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
-                        : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                    className={`inline-flex items-center justify-center px-2 sm:px-3 py-1.5 sm:py-2 border-2 text-xs sm:text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                        ? "border-red-600 text-red-600 bg-white shadow-sm"
+                        : "border-zinc-300 text-zinc-700 hover:border-red-600 hover:text-red-600 hover:bg-white hover:scale-105"
                       }`}
                     title={
                       isInWishlist(product._id)
@@ -232,7 +232,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                 {isInCart(product._id) ? (
                   <button
                     disabled
-                    className="w-full sm:flex-1 text-center px-4 py-2 bg-red-300 cursor-not-allowed text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
+                    className="w-full sm:flex-1 text-center px-4 py-2 bg-white text-red-400 border-2 border-red-300 cursor-not-allowed font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
                   >
                     <svg
                       className="w-4 h-4"
@@ -252,7 +252,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                 ) : (
                   <button
                     onClick={() => handleAddToCart(product)}
-                    className="w-full sm:flex-1 text-center px-4 py-2 bg-red-600 text-white font-medium cursor-pointer hover:bg-red-700 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105"
+                    className="w-full sm:flex-1 text-center px-4 py-2 bg-white text-red-600 border-2 border-red-600 font-medium cursor-pointer hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105"
                   >
                     Add to Cart
                   </button>
@@ -263,9 +263,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
                   {/* Wishlist Button */}
                   <button
                     onClick={() => handleWishlistToggle(product)}
-                    className={`inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
-                        ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
-                        : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                    className={`inline-flex items-center justify-center px-3 py-2 border-2 text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                        ? "border-red-600 text-red-600 bg-white shadow-sm"
+                        : "border-zinc-300 text-zinc-700 hover:border-red-600 hover:text-red-600 hover:bg-white hover:scale-105"
                       }`}
                     title={
                       isInWishlist(product._id)
@@ -313,7 +313,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
           />
           <div className="absolute top-3 left-3">
-            <span className="px-3 py-1.5 bg-red-600 text-white text-xs font-medium uppercase tracking-wide rounded-full shadow-lg">
+            <span className="px-3 py-1.5 bg-white text-red-600 border-2 border-red-600 text-xs font-medium uppercase tracking-wide rounded-full shadow-lg">
               {product.kartType}
             </span>
           </div>
@@ -384,7 +384,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             {isInCart(product._id) ? (
               <button
                 disabled
-                className="w-full sm:flex-1 text-center px-4 py-2 bg-red-300 cursor-not-allowed text-white font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
+                className="w-full sm:flex-1 text-center px-4 py-2 bg-white text-red-400 border-2 border-red-300 cursor-not-allowed font-medium text-sm rounded-[5px] font-outfit flex items-center justify-center gap-2"
               >
                 <svg
                   className="w-4 h-4"
@@ -404,7 +404,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             ) : (
               <button
                 onClick={() => handleAddToCart(product)}
-                className="w-full sm:flex-1 text-center px-4 py-2 bg-red-600 text-white font-medium cursor-pointer hover:bg-red-700 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105"
+                className="w-full sm:flex-1 text-center px-4 py-2 bg-white text-red-600 border-2 border-red-600 font-medium cursor-pointer hover:bg-red-50 transition-all duration-300 text-sm rounded-[5px] font-outfit transform hover:scale-105"
               >
                 Add to Cart
               </button>
@@ -415,9 +415,9 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
               {/* Wishlist Button */}
               <button
                 onClick={() => handleWishlistToggle(product)}
-                className={`flex-1 inline-flex items-center justify-center px-3 py-2 border text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
-                    ? "border-red-300 text-red-600 bg-red-50 shadow-sm"
-                    : "border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50 hover:scale-105"
+                className={`flex-1 inline-flex items-center justify-center px-3 py-2 border-2 text-sm rounded-[5px] font-outfit transition-all duration-300 relative ${isInWishlist(product._id)
+                    ? "border-red-600 text-red-600 bg-white shadow-sm"
+                    : "border-zinc-300 text-zinc-700 hover:border-red-600 hover:text-red-600 hover:bg-white hover:scale-105"
                   }`}
                 title={
                   isInWishlist(product._id)

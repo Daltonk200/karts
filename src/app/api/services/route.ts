@@ -1,128 +1,47 @@
-import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import ApexService from "@/models/Service";
+import { NextResponse } from "next/server";
 
-// GET /api/services - Get all services with filtering, pagination, and sorting
-export async function GET(request: NextRequest) {
-  try {
-    await connectDB();
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  // Only support isFeatured and isActive for now
+  const isFeatured = searchParams.get("isFeatured") === "true";
+  const isActive = searchParams.get("isActive") !== "false"; // default true
+  const limit = Number(searchParams.get("limit")) || 3;
 
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-    const search = searchParams.get("search") || "";
-    const category = searchParams.get("category") || "";
-    const isActive = searchParams.get("isActive");
-    const isFeatured = searchParams.get("isFeatured");
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
-
-    const skip = (page - 1) * limit;
-
-    // Build filter object
-    const filter: any = {};
-
-    if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { features: { $in: [new RegExp(search, "i")] } },
-        { benefits: { $in: [new RegExp(search, "i")] } },
-        { tags: { $in: [new RegExp(search, "i")] } },
-      ];
+  // Dummy featured services
+  const services = [
+    {
+      _id: "1",
+      name: "Kart Maintenance",
+      description: "Expert kart maintenance to keep you on the track.",
+      price: 15000,
+      isFeatured: true,
+      isActive: true,
+      image: "/banner_image.jpg",
+    },
+    {
+      _id: "2",
+      name: "Performance Tuning",
+      description: "Get the most out of your kart with our performance tuning.",
+      price: 30000,
+      isFeatured: true,
+      isActive: true,
+      image: "/banner_image.jpg",
+    },
+    {
+      _id: "3",
+      name: "Custom Paint Job",
+      description: "Stand out with a custom paint job for your kart.",
+      price: 10000,
+      isFeatured: true,
+      isActive: true,
+      image: "/banner_image.jpg",
     }
+    // ...more if needed...
+  ];
 
-    if (category) {
-      filter.category = category;
-    }
+  // Filter by featured/active and limit results
+  const filtered = services.filter(s => (!isFeatured || s.isFeatured) && (isActive ? s.isActive : true)).slice(0, limit);
 
-    if (isActive !== null && isActive !== undefined) {
-      filter.isActive = isActive === "true";
-    }
-
-    if (isFeatured !== null && isFeatured !== undefined) {
-      filter.isFeatured = isFeatured === "true";
-    }
-
-    // Build sort object
-    const sort: any = {};
-    sort[sortBy] = sortOrder === "desc" ? -1 : 1;
-
-    // Get services with pagination
-    const services = await ApexService.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .lean();
-
-    // Get total count for pagination
-    const total = await ApexService.countDocuments(filter);
-
-    return NextResponse.json({
-      services,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
-    });
-  } catch (error) {
-    console.error("Get services error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({ services: filtered });
 }
 
-// POST /api/services - Create a new service
-export async function POST(request: NextRequest) {
-  try {
-    await connectDB();
-
-    const serviceData = await request.json();
-
-    // Validate required fields
-    if (!serviceData.image) {
-      return NextResponse.json(
-        { error: "Cover image is required" },
-        { status: 400 }
-      );
-    }
-
-    // If images array is provided and main image is not set, use first image
-    if (
-      serviceData.images &&
-      serviceData.images.length > 0 &&
-      !serviceData.image
-    ) {
-      serviceData.image = serviceData.images[0];
-    }
-
-    const service = new ApexService(serviceData);
-    await service.save();
-
-    return NextResponse.json(
-      {
-        success: true,
-        service,
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Create service error:", error);
-
-    if (error instanceof Error && error.message.includes("duplicate key")) {
-      return NextResponse.json(
-        { error: "Service with this name already exists" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}

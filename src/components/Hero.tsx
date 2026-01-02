@@ -28,8 +28,8 @@ export default function Hero() {
       <div className="absolute inset-0 z-0">
         {/* Banner Image (shown first) */}
         <Image
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2000&q=80"
-          alt="High-speed go-kart racing action"
+          src="/banner_image.jpg"
+          alt="Go-Kart banner at Apex Rush"
           fill
           className={`object-cover transition-opacity duration-1000 ${showVideo ? "opacity-0" : "opacity-100"
             }`}

@@ -555,8 +555,8 @@ export default function CheckoutPage() {
                       type="submit"
                       disabled={isSubmitting}
                       className={`px-8 py-3 rounded-lg font-semibold font-outfit text-lg transition-all duration-300 transform hover:scale-[1.02] ${!isSubmitting
-                          ? "bg-gradient-to-r from-red-600 to-red-600 text-white hover:from-red-700 hover:to-red-700 shadow-lg hover:shadow-xl"
-                          : "bg-zinc-300 text-zinc-500 cursor-not-allowed"
+                          ? "bg-white text-green-600 border-2 border-green-600 hover:bg-green-50 shadow-lg hover:shadow-xl"
+                          : "bg-white text-gray-400 border-2 border-gray-300 cursor-not-allowed"
                         }`}
                     >
                       {isSubmitting ? (

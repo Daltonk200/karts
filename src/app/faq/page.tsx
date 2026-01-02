@@ -216,10 +216,10 @@ export default function FAQPage() {
                 <button
                   key={category.id}
                   onClick={() => setOpenCategory(category.id)}
-                  className={`px-2 py-3 whitespace-nowrap border overflow-hidden transition-colors duration-200 ${
+                  className={`px-2 py-3 whitespace-nowrap border-2 overflow-hidden transition-colors duration-200 ${
                     openCategory === category.id
-                      ? "bg-zinc-900 text-white border-zinc-900"
-                      : "bg-white text-zinc-700 border-zinc-200 hover:bg-zinc-50"
+                      ? "bg-white text-red-600 border-red-600"
+                      : "bg-white text-zinc-700 border-zinc-200 hover:border-red-300"
                   }`}
                 >
                   <span className="mr-2">{category.icon}</span>

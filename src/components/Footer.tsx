@@ -67,14 +67,6 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/services"
-                  className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
-                >
-                  Our Services
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/about"
                   className="text-zinc-600 hover:text-zinc-900 transition-colors duration-200 text-sm"
                 >
@@ -89,7 +81,6 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
-
             </ul>
           </div>
 

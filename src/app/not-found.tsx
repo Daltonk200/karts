@@ -62,17 +62,17 @@ export default function NotFound() {
           </Link>
 
           <Link
-            href="/services"
+            href="/contact"
             className="group bg-white rounded-2xl shadow-sm p-6 border border-zinc-200 hover:border-red-200 transition-all duration-300 transform hover:scale-[1.02]"
           >
             <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-red-200 transition-colors duration-300">
               <AiOutlineUser className="w-6 h-6 text-red-600" />
             </div>
             <h3 className="text-xl font-caveat font-bold text-zinc-900 mb-2">
-              Our Services
+              Contact
             </h3>
             <p className="text-zinc-600 font-outfit text-sm">
-              Book a consultation with our beauty experts
+              Reach out to our team for assistance
             </p>
           </Link>
         </div>

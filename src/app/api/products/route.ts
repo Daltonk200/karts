@@ -1,179 +1,51 @@
-import { NextRequest, NextResponse } from "next/server";
-import connectDB from "@/lib/mongodb";
-import ApexProduct from "@/models/Product";
+import { NextResponse } from "next/server";
 
-// GET /api/products - Get all products with pagination and filtering
-export async function GET(request: NextRequest) {
-  try {
-    await connectDB();
+export async function GET(request: Request) {
+  // Parse params (only isFeatured/limit supported for now)
+  const { searchParams } = new URL(request.url);
+  const isFeatured = searchParams.get("isFeatured") === "true";
+  const limit = Number(searchParams.get("limit")) || 8;
 
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get("page") || "1");
-    const limit = parseInt(searchParams.get("limit") || "10");
-    const search = searchParams.get("search") || "";
-    const category = searchParams.get("category") || "";
-    const brand = searchParams.get("brand") || "";
-    const kartType = searchParams.get("kartType") || "";
-    const featured = searchParams.get("featured") || "";
-    const onSale = searchParams.get("onSale") || "";
-    const minPrice = searchParams.get("minPrice") || "";
-    const maxPrice = searchParams.get("maxPrice") || "";
-    const sortBy = searchParams.get("sortBy") || "createdAt";
-    const sortOrder = searchParams.get("sortOrder") || "desc";
+  // Dummy products
+  const products = [
+    {
+      _id: "1",
+      name: "Apex Pro Racing Kart",
+      price: 4500000,
+      brand: "Apex Rush",
+      isFeatured: true,
+      isOnSale: true,
+      category: "Racing Karts",
+      image: "/banner_image.jpg",
+      rating: 4.8,
+      reviews: 24,
+      inStock: 5,
+      description: "Premium racing kart for professionals.",
+      sku: "APX-001",
+    },
+    {
+      _id: "2",
+      name: "Thunder 250cc Racing Kart",
+      price: 3800000,
+      brand: "Apex Rush",
+      isFeatured: true,
+      isOnSale: false,
+      category: "Racing Karts",
+      image: "/banner_image.jpg",
+      rating: 4.6,
+      reviews: 18,
+      inStock: 8,
+      description: "High-speed kart for adrenaline lovers.",
+      sku: "THND-250",
+    },
+    // ... add more as needed ...
+  ];
 
-    console.log("API received search parameter:", search);
+  // Filter by isFeatured and limit results
+  const filtered = isFeatured
+    ? products.filter((p) => p.isFeatured).slice(0, limit)
+    : products.slice(0, limit);
 
-    const skip = (page - 1) * limit;
-
-    // Build filter object
-    const filter: any = {};
-
-    if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { brand: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
-        { ingredients: { $in: [new RegExp(search, "i")] } },
-        { benefits: { $in: [new RegExp(search, "i")] } },
-        { tags: { $in: [new RegExp(search, "i")] } },
-      ];
-    }
-
-    if (category) {
-      filter.category = category;
-    }
-
-    if (brand) {
-      filter.brand = { $regex: brand, $options: "i" };
-    }
-
-    if (kartType) {
-      filter.kartType = kartType;
-    }
-
-    if (featured === "true") {
-      filter.isFeatured = true;
-    }
-
-    if (onSale === "true") {
-      filter.isOnSale = true;
-    }
-
-    // Price range filter
-    if (minPrice || maxPrice) {
-      filter.price = {};
-      if (minPrice) {
-        filter.price.$gte = parseFloat(minPrice);
-      }
-      if (maxPrice) {
-        filter.price.$lte = parseFloat(maxPrice);
-      }
-    }
-
-    // Build sort object
-    const sort: any = {};
-    switch (sortBy) {
-      case "price-low":
-        sort.price = 1;
-        break;
-      case "price-high":
-        sort.price = -1;
-        break;
-      case "rating":
-        sort.rating = -1;
-        break;
-      case "name":
-        sort.name = 1;
-        break;
-      case "featured":
-        sort.isFeatured = -1;
-        sort.createdAt = -1;
-        break;
-      default:
-        sort[sortBy] = sortOrder === "desc" ? -1 : 1;
-    }
-
-    // Get products with pagination
-    const products = await ApexProduct.find(filter)
-      .sort(sort)
-      .skip(skip)
-      .limit(limit)
-      .lean();
-
-    // Get total count for pagination
-    const total = await ApexProduct.countDocuments(filter);
-
-    return NextResponse.json({
-      products,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
-    });
-  } catch (error) {
-    console.error("Get products error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({ products: filtered });
 }
 
-// POST /api/products - Create a new product
-export async function POST(request: NextRequest) {
-  try {
-    await connectDB();
-
-    const productData = await request.json();
-
-    // Generate SKU if not provided
-    if (!productData.sku) {
-      const brandCode = productData.brand.substring(0, 3).toUpperCase();
-      const nameCode = productData.name.substring(0, 3).toUpperCase();
-      const randomNum = Math.floor(Math.random() * 1000)
-        .toString()
-        .padStart(3, "0");
-      productData.sku = `${brandCode}${nameCode}${randomNum}`;
-    }
-
-    // Set main image as first image in the array
-    if (productData.images && productData.images.length > 0) {
-      productData.image = productData.images[0];
-    }
-
-    // Calculate if product is on sale
-    if (
-      productData.originalPrice &&
-      productData.originalPrice > productData.price
-    ) {
-      productData.isOnSale = true;
-    }
-
-    const product = new ApexProduct(productData);
-    await product.save();
-
-    return NextResponse.json(
-      {
-        success: true,
-        product,
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error("Create product error:", error);
-
-    if (error instanceof Error && error.message.includes("duplicate key")) {
-      return NextResponse.json(
-        { error: "Product with this SKU already exists" },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
-  }
-}

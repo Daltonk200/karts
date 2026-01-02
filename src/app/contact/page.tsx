@@ -411,16 +411,16 @@ export default function ContactPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
-                href="/services"
+                href="/"
                 className="bg-white text-red-600 font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-zinc-100 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
               >
-                View Our Services
+                Contact Us
               </Link>
               <Link
-                href="/services"
+                href="/"
                 className="border-2 border-white text-white font-medium py-3 px-6 md:px-8 rounded-lg hover:bg-white hover:text-red-600 transition-all duration-300 transform hover:scale-[1.02] font-outfit text-sm md:text-base"
               >
-                View Services
+                Home
               </Link>
             </div>
           </div>
