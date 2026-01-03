@@ -4,7 +4,7 @@ import Image from "next/image";
 
 export default function CallToAction() {
   return (
-    <section className="py-16 bg-zinc-900 relative overflow-hidden">
+    <section className="py-16 relative overflow-hidden">
       {/* BG Image */}
       <div className="absolute inset-0 -z-10">
         <Image
@@ -17,7 +17,7 @@ export default function CallToAction() {
         {/* Gradient Overlay for better image visibility */}
         <div className="absolute inset-0 bg-gradient-to-r from-zinc-900/80 via-zinc-900/40 to-transparent"></div>
       </div>
-      <Container>
+      <Container className="relative z-10">
         <div className="text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Ready to Find Your Perfect Racing Machine?
@@ -37,7 +37,7 @@ export default function CallToAction() {
               href="/contact"
               className="inline-flex items-center justify-center px-8 py-3 border border-white text-white font-medium tracking-wide uppercase hover:bg-white hover:text-zinc-900 transition-colors duration-200"
             >
-              Visit Store
+              Contact Us
             </Link>
           </div>
         </div>

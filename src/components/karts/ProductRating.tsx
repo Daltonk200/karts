@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Star, StarIcon } from "lucide-react";
+import { GrStar } from "react-icons/gr";
+import { MdOutlineModeEditOutline } from "react-icons/md";
+import { AiTwotoneDelete } from "react-icons/ai";
 import toast from "react-hot-toast";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
@@ -25,17 +27,20 @@ interface ProductRatingProps {
   productId: string;
   currentRating: number;
   reviewCount: number;
+  isAdmin?: boolean;
 }
 
 export default function ProductRating({
   productId,
   currentRating,
   reviewCount,
+  isAdmin = false,
 }: ProductRatingProps) {
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [editingRating, setEditingRating] = useState<Rating | null>(null);
   const [formData, setFormData] = useState({
     userName: "",
     userEmail: "",
@@ -106,6 +111,98 @@ export default function ProductRating({
     }
   };
 
+  const handleEditRating = (rating: Rating) => {
+    setEditingRating(rating);
+    setFormData({
+      userName: rating.userName,
+      userEmail: rating.userEmail,
+      rating: rating.rating,
+      review: rating.review,
+    });
+    setShowForm(true);
+  };
+
+  const handleUpdateRating = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!editingRating) return;
+
+    if (formData.rating === 0) {
+      toast.error("Please select a rating");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const response = await fetch(
+        `/api/products/${productId}/ratings/${editingRating._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            rating: formData.rating,
+            review: formData.review,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        const updatedRatings = ratings.map((r) =>
+          r._id === editingRating._id
+            ? { ...r, rating: formData.rating, review: formData.review }
+            : r
+        );
+        setRatings(updatedRatings);
+        setFormData({ userName: "", userEmail: "", rating: 0, review: "" });
+        setEditingRating(null);
+        setShowForm(false);
+        toast.success("Rating updated successfully!");
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to update rating");
+      }
+    } catch (error) {
+      console.error("Error updating rating:", error);
+      toast.error("Failed to update rating");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleDeleteRating = async (ratingId: string) => {
+    if (!confirm("Are you sure you want to delete this review?")) return;
+
+    try {
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const response = await fetch(
+        `/api/products/${productId}/ratings/${ratingId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setRatings(ratings.filter((r) => r._id !== ratingId));
+        toast.success("Review deleted successfully!");
+        window.location.reload();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to delete review");
+      }
+    } catch (error) {
+      console.error("Error deleting review:", error);
+      toast.error("Failed to delete review");
+    }
+  };
+
   const renderStars = (
     rating: number,
     interactive = false,
@@ -125,7 +222,7 @@ export default function ProductRating({
             }`}
             disabled={!interactive}
           >
-            <Star
+            <GrStar
               className={`${interactive ? "w-8 h-8" : "w-5 h-5"} ${
                 star <= rating
                   ? "text-yellow-400 fill-yellow-400 drop-shadow-sm"
@@ -191,7 +288,7 @@ export default function ProductRating({
                   return (
                     <div key={star} className="flex items-center space-x-2">
                       <span className="text-xs text-gray-500 w-3">{star}</span>
-                      <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
+                      <GrStar className="w-3 h-3 text-yellow-400 fill-yellow-400" />
                       <div className="w-20 bg-gray-200 rounded-full h-2">
                         <div
                           className="bg-yellow-400 h-2 rounded-full transition-all duration-500"
@@ -249,11 +346,12 @@ export default function ProductRating({
               </svg>
             </div>
             <h4 className="text-xl font-bold text-gray-900">
-              Share Your Experience
+              {editingRating ? "Edit Review" : "Share Your Experience"}
             </h4>
           </div>
 
-          <form onSubmit={handleRatingSubmit} className="space-y-6">
+          <form onSubmit={editingRating ? handleUpdateRating : handleRatingSubmit} className="space-y-6">
+            {!editingRating && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -286,6 +384,7 @@ export default function ProductRating({
                 />
               </div>
             </div>
+            )}
 
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-3">
@@ -338,13 +437,19 @@ export default function ProductRating({
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
                     Submitting...
                   </div>
+                ) : editingRating ? (
+                  "Update Review"
                 ) : (
                   "Submit Review"
                 )}
               </button>
               <button
                 type="button"
-                onClick={() => setShowForm(false)}
+                onClick={() => {
+                  setShowForm(false);
+                  setEditingRating(null);
+                  setFormData({ userName: "", userEmail: "", rating: 0, review: "" });
+                }}
                 className="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 hover:border-gray-400 transition-all duration-300 font-semibold"
               >
                 Cancel
@@ -481,38 +586,24 @@ export default function ProductRating({
                           Verified Review
                         </div>
                       </div>
+                      {isAdmin && (
                       <div className="flex items-center space-x-2">
-                        <button className="text-gray-400 hover:text-red-600 transition-colors">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                          <button
+                            onClick={() => handleEditRating(rating)}
+                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            title="Edit review"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"
-                            />
-                          </svg>
+                            <MdOutlineModeEditOutline className="w-5 h-5" />
                         </button>
-                        <button className="text-gray-400 hover:text-red-600 transition-colors">
-                          <svg
-                            className="w-4 h-4"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
+                          <button
+                            onClick={() => handleDeleteRating(rating._id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete review"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                            />
-                          </svg>
+                            <AiTwotoneDelete className="w-5 h-5" />
                         </button>
                       </div>
+                      )}
                     </div>
                   </div>
                 </SwiperSlide>

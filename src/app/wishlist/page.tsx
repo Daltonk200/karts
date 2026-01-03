@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import ProductCard from "@/components/karts/ProductCard";
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 
 export default function WishlistPage() {
   const { items: wishlistItems, removeFromWishlist } = useWishlistStore();
@@ -30,11 +30,11 @@ export default function WishlistPage() {
     image: wishlistItem.image,
     category: wishlistItem.category,
     brand: wishlistItem.brand,
-    skinType: wishlistItem.skinType,
+    kartType: wishlistItem.skinType || wishlistItem.kartType || "All Types",
     isFeatured: wishlistItem.isFeatured || false,
     stock: 1, // Default stock for wishlist items
-    sku: wishlistItem.size || "",
-    description: `Beautiful ${wishlistItem.category.toLowerCase()} product from ${
+    sku: wishlistItem.size || wishlistItem.sku || "",
+    description: `Premium ${wishlistItem.category.toLowerCase()} from ${
       wishlistItem.brand
     }`,
   });
@@ -46,7 +46,7 @@ export default function WishlistPage() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="https://img.freepik.com/free-photo/young-woman-enjoys-beauty-spa-home-siting-bathrobe_273609-37081.jpg?t=st=1755708749~exp=1755712349~hmac=84a2126f99762e8aaa35963ed72a9cb90459f6e11da4d8e4913a84a840d507fb&w=2000"
+            src="https://ebikesbyrevolve.com/wp-content/uploads/2020/08/The-Rocket-in-LI-1.png"
             alt="Wishlist background"
             fill
             className="object-cover object-[50%_40%]"
@@ -61,7 +61,7 @@ export default function WishlistPage() {
               My Wishlist
             </h1>
             <p className="text-xl md:text-2xl font-outfit text-white max-w-3xl mx-auto">
-              Your saved beauty treasures. Keep track of the products you love
+              Your saved racing favorites. Keep track of the go-karts, scooters, and parts you love
               and want to add to your collection.
             </p>
           </div>
@@ -150,8 +150,8 @@ export default function WishlistPage() {
               Your wishlist is empty
             </h2>
             <p className="text-xl text-zinc-600 mb-10 max-w-2xl mx-auto font-outfit">
-              Start building your beauty collection by browsing our premium
-              products and adding your favorites to your wishlist.
+              Start building your racing collection by browsing our premium
+              go-karts, scooters, and parts. Add your favorites to your wishlist.
             </p>
             <Link
               href="/products"

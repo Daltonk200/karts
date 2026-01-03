@@ -3,13 +3,22 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/admin/DashboardLayout";
 import Link from "next/link";
+import {
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 interface DashboardStats {
   totalProducts: number;
   totalOrders: number;
   totalRevenue: number;
-  totalServices: number;
-
 }
 
 export default function DashboardPage() {
@@ -17,11 +26,13 @@ export default function DashboardPage() {
     totalProducts: 0,
     totalOrders: 0,
     totalRevenue: 0,
-    totalServices: 0,
-
   });
   const [loading, setLoading] = useState(true);
   const [recentProducts, setRecentProducts] = useState<any[]>([]);
+  const [chartData, setChartData] = useState<ChartData>({
+    monthlyRevenue: [],
+    orderStatus: [],
+  });
 
   useEffect(() => {
     fetchDashboardData();
@@ -29,64 +40,85 @@ export default function DashboardPage() {
 
   const fetchDashboardData = async () => {
     try {
-      // Use mock data for frontend-only mode
-      const mockProducts = [
-        {
-          _id: "1",
-          name: "Apex Pro Racing Kart",
-          price: 4500000,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          brand: "Apex Rush",
-          stock: 5,
-          createdAt: new Date().toISOString()
-        },
-        {
-          _id: "2",
-          name: "Thunder 250cc Racing Kart",
-          price: 3800000,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          brand: "Apex Rush",
-          stock: 8,
-          createdAt: new Date().toISOString()
-        },
-        {
-          _id: "3",
-          name: "Pro Racing Helmet",
-          price: 180000,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          brand: "Apex Rush",
-          stock: 15,
-          createdAt: new Date().toISOString()
-        }
-      ];
+      setLoading(true);
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
 
-      const mockOrders = [
-        { _id: "1", total: 4500000 },
-        { _id: "2", total: 3800000 },
-        { _id: "3", total: 180000 }
-      ];
+      // Fetch data from API
+      const [productsRes, ordersRes] = await Promise.all([
+        fetch("/api/products?limit=1000", { headers }),
+        fetch("/api/orders?limit=1000", { headers }),
+      ]);
 
-      const mockServices = [
-        { _id: "1", name: "Kart Maintenance" },
-        { _id: "2", name: "Performance Tuning" },
-        { _id: "3", name: "Custom Paint Job" }
-      ];
+      const [productsData, ordersData] = await Promise.all([
+        productsRes.json(),
+        ordersRes.json(),
+      ]);
 
+      const products = productsData.products || [];
+      const orders = ordersData.orders || [];
 
-      const totalRevenue = mockOrders.reduce((sum: number, order: any) => {
+      const totalRevenue = orders.reduce((sum: number, order: any) => {
         return sum + (order.total || 0);
       }, 0);
 
       setStats({
-        totalProducts: mockProducts.length,
-        totalOrders: mockOrders.length,
+        totalProducts: products.length,
+        totalOrders: orders.length,
         totalRevenue,
-        totalServices: mockServices.length,
       });
 
-      setRecentProducts(mockProducts);
+      // Set recent products (last 5)
+      setRecentProducts(products.slice(0, 5));
+
+      // Generate chart data from real orders
+      const monthlyRevenue = [];
+      for (let i = 5; i >= 0; i--) {
+        const date = new Date();
+        date.setMonth(date.getMonth() - i);
+        const month = date.toLocaleDateString("en-US", { month: "short" });
+        
+        const monthOrders = orders.filter((order: any) => {
+          const orderDate = new Date(order.createdAt);
+          return (
+            orderDate.getMonth() === date.getMonth() &&
+            orderDate.getFullYear() === date.getFullYear()
+          );
+        });
+        
+        const revenue = monthOrders.reduce(
+          (sum: number, order: any) => sum + (order.total || 0),
+          0
+        );
+        
+        monthlyRevenue.push({
+          month,
+          revenue,
+        });
+      }
+
+      // Order status distribution from real orders
+      const orderStatusCounts: { [key: string]: number } = {};
+      orders.forEach((order: any) => {
+        orderStatusCounts[order.status] = (orderStatusCounts[order.status] || 0) + 1;
+      });
+      const orderStatus = Object.entries(orderStatusCounts).map(([status, count]) => ({
+        status,
+        count,
+      }));
+
+      setChartData({
+        monthlyRevenue,
+        orderStatus,
+      });
     } catch (error) {
-      console.error("Error loading mock data:", error);
+      console.error("Error loading dashboard data:", error);
     } finally {
       setLoading(false);
     }
@@ -209,36 +241,87 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="bg-white p-6 rounded-lg shadow-sm border-2 border-gray-200 hover:border-purple-300 transition-all duration-200">
-            <div className="flex items-center">
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center border border-purple-200">
-                  <svg
-                    className="w-6 h-6 text-purple-600"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                    />
-                  </svg>
-                </div>
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">Services</p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {stats.totalServices}
-                </p>
-              </div>
-            </div>
+        {/* Mini Charts */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Revenue Trend */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Revenue Trend (Last 6 Months)
+            </h3>
+            <ResponsiveContainer width="100%" height={200}>
+              <LineChart data={chartData.monthlyRevenue}>
+                <XAxis 
+                  dataKey="month" 
+                  stroke="#6b7280"
+                  style={{ fontSize: '11px' }}
+                />
+                <YAxis 
+                  stroke="#6b7280"
+                  style={{ fontSize: '11px' }}
+                  tickFormatter={(value) => `$${value / 1000}k`}
+                />
+                <Tooltip 
+                  formatter={(value: number) => `$${value.toLocaleString()}`}
+                  contentStyle={{ 
+                    backgroundColor: '#fff',
+                    border: '1px solid #e5e7eb',
+                    borderRadius: '8px',
+                    fontSize: '12px'
+                  }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="revenue" 
+                  stroke="#dc2626" 
+                  strokeWidth={2}
+                  dot={{ fill: '#dc2626', r: 3 }}
+                  activeDot={{ r: 5 }}
+                />
+              </LineChart>
+            </ResponsiveContainer>
           </div>
 
-
+          {/* Order Status Distribution */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Order Status Overview
+            </h3>
+            {chartData.orderStatus.length > 0 ? (
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={chartData.orderStatus}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ status, count }) => `${status}: ${count}`}
+                    outerRadius={70}
+                    fill="#8884d8"
+                    dataKey="count"
+                  >
+                    {chartData.orderStatus.map((entry, index) => {
+                      const colors = ['#dc2626', '#2563eb', '#16a34a', '#ca8a04', '#9333ea'];
+                      return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                    })}
+                  </Pie>
+                  <Tooltip 
+                    contentStyle={{ 
+                      backgroundColor: '#fff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '8px',
+                      fontSize: '12px'
+                    }}
+                  />
+                </PieChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-[200px] text-gray-500">
+                No order data available
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Quick Actions and Recent Products */}
@@ -267,13 +350,6 @@ export default function DashboardPage() {
               >
                 Manage Products
               </Link>
-              <Link
-                href="/dashboard/services"
-                className="block w-full px-4 py-3 border border-gray-300 text-gray-700 text-center rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium"
-              >
-                Manage Services
-              </Link>
-
             </div>
           </div>
 

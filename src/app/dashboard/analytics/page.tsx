@@ -9,12 +9,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  LineChart,
+  Line,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 interface AnalyticsData {
   totalRevenue: number;
   totalOrders: number;
   totalProducts: number;
-  totalServices: number;
   monthlyRevenue: Array<{
     month: string;
     revenue: number;
@@ -43,7 +57,7 @@ export default function AnalyticsPage() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem("dashboard_token");
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
       const headers: HeadersInit = {};
 
       if (token) {
@@ -51,23 +65,20 @@ export default function AnalyticsPage() {
       }
 
       // Fetch all data
-      const [productsRes, ordersRes, servicesRes] =
+      const [productsRes, ordersRes] =
         await Promise.all([
           fetch("/api/products?limit=1000", { headers }),
           fetch("/api/orders?limit=1000", { headers }),
-          fetch("/api/services?limit=1000", { headers }),
         ]);
 
-      const [productsData, ordersData, servicesData] =
+      const [productsData, ordersData] =
         await Promise.all([
           productsRes.json(),
           ordersRes.json(),
-          servicesRes.json(),
         ]);
 
       const products = productsData.products || [];
       const orders = ordersData.orders || [];
-      const services = servicesData.services || [];
 
       // Calculate analytics
       const totalRevenue = orders.reduce(
@@ -131,7 +142,6 @@ export default function AnalyticsPage() {
         totalRevenue,
         totalOrders: orders.length,
         totalProducts: products.length,
-        totalServices: services.length,
         monthlyRevenue,
         topProducts,
         orderStatusDistribution,
@@ -275,36 +285,6 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
               </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                <div className="flex items-center">
-                  <div className="flex-shrink-0">
-                    <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                      <svg
-                        className="w-5 h-5 text-gray-600"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                  <div className="ml-3">
-                    <p className="text-sm font-medium text-gray-600">
-                      Services
-                    </p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {analytics.totalServices}
-                    </p>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Charts and Analytics */}
@@ -314,67 +294,80 @@ export default function AnalyticsPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Monthly Revenue
                 </h3>
-                <div className="space-y-3">
-                  {analytics.monthlyRevenue.map((month, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-sm text-gray-600">
-                        {month.month}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-32 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-red-600 h-2 rounded-full"
-                            style={{
-                              width: `${Math.min(
-                                100,
-                                (month.revenue /
-                                  Math.max(
-                                    ...analytics.monthlyRevenue.map(
-                                      (m) => m.revenue
-                                    )
-                                  )) *
-                                100
-                              )}%`,
-                            }}
-                          ></div>
-                        </div>
-                        <span className="text-sm font-medium text-gray-900 w-20 text-right">
-                          ${month.revenue.toLocaleString()}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={analytics.monthlyRevenue}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis 
+                      dataKey="month" 
+                      stroke="#6b7280"
+                      style={{ fontSize: '12px' }}
+                    />
+                    <YAxis 
+                      stroke="#6b7280"
+                      style={{ fontSize: '12px' }}
+                      tickFormatter={(value) => `$${value / 1000}k`}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => `$${value.toLocaleString()}`}
+                      contentStyle={{ 
+                        backgroundColor: '#fff',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Legend />
+                    <Line 
+                      type="monotone" 
+                      dataKey="revenue" 
+                      stroke="#dc2626" 
+                      strokeWidth={2}
+                      name="Revenue"
+                      dot={{ fill: '#dc2626', r: 4 }}
+                      activeDot={{ r: 6 }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
 
               {/* Top Products */}
               <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                  Top Products
+                  Top Products by Revenue
                 </h3>
-                <div className="space-y-3">
-                  {analytics.topProducts.map((product, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {product.sales} sales
-                        </p>
-                      </div>
-                      <span className="text-sm font-medium text-gray-900">
-                        ${product.revenue.toLocaleString()}
-                      </span>
-                    </div>
-                  ))}
-                </div>
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart 
+                    data={analytics.topProducts}
+                    layout="vertical"
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                    <XAxis 
+                      type="number"
+                      stroke="#6b7280"
+                      style={{ fontSize: '12px' }}
+                      tickFormatter={(value) => `$${value / 1000}k`}
+                    />
+                    <YAxis 
+                      type="category"
+                      dataKey="name"
+                      stroke="#6b7280"
+                      style={{ fontSize: '12px' }}
+                      width={120}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => `$${value.toLocaleString()}`}
+                      contentStyle={{ 
+                        backgroundColor: '#fff',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '8px'
+                      }}
+                    />
+                    <Bar 
+                      dataKey="revenue" 
+                      fill="#dc2626"
+                      radius={[0, 4, 4, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
 
               {/* Order Status Distribution */}
@@ -382,28 +375,68 @@ export default function AnalyticsPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">
                   Order Status Distribution
                 </h3>
-                <div className="space-y-3">
-                  {analytics.orderStatusDistribution.map((status, index) => (
-                    <div
-                      key={index}
-                      className="flex items-center justify-between"
-                    >
-                      <span className="text-sm text-gray-600 capitalize">
-                        {status.status}
-                      </span>
-                      <div className="flex items-center space-x-2">
-                        <div className="w-24 bg-gray-200 rounded-full h-2">
-                          <div
-                            className="bg-blue-600 h-2 rounded-full"
-                            style={{ width: `${status.percentage}%` }}
-                          ></div>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={analytics.orderStatusDistribution}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={({ status, percentage }) => `${status}: ${percentage}%`}
+                        outerRadius={100}
+                        fill="#8884d8"
+                        dataKey="count"
+                      >
+                        {analytics.orderStatusDistribution.map((entry, index) => {
+                          const colors = ['#dc2626', '#2563eb', '#16a34a', '#ca8a04', '#9333ea'];
+                          return <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />;
+                        })}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value: number, name: string, props: any) => [
+                          `${value} (${props.payload.percentage}%)`,
+                          'Orders'
+                        ]}
+                        contentStyle={{ 
+                          backgroundColor: '#fff',
+                          border: '1px solid #e5e7eb',
+                          borderRadius: '8px'
+                        }}
+                      />
+                      <Legend 
+                        formatter={(value, entry: any) => (
+                          <span className="capitalize">{entry.payload.status}</span>
+                        )}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex flex-col justify-center space-y-4">
+                    {analytics.orderStatusDistribution.map((status, index) => {
+                      const colors = ['#dc2626', '#2563eb', '#16a34a', '#ca8a04', '#9333ea'];
+                      return (
+                        <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className="w-4 h-4 rounded-full" 
+                              style={{ backgroundColor: colors[index % colors.length] }}
+                            ></div>
+                            <span className="text-sm font-medium text-gray-700 capitalize">
+                              {status.status}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm text-gray-600">
+                              {status.percentage}%
+                            </span>
+                            <span className="text-sm font-semibold text-gray-900">
+                              {status.count}
+                            </span>
+                          </div>
                         </div>
-                        <span className="text-sm font-medium text-gray-900 w-12 text-right">
-                          {status.count}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             </div>

@@ -26,7 +26,12 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   };
 
   const handleLogout = () => {
-    // Just redirect to home for now
+    // Clear any stored auth data
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("dashboard_token");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("user_data");
+    }
     router.push("/");
     toast.success("Logged out successfully");
   };
@@ -77,8 +82,8 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       ),
     },
     {
-      name: "Services",
-      href: "/dashboard/services",
+      name: "Categories",
+      href: "/dashboard/categories",
       icon: (
         <svg
           className="w-5 h-5"
@@ -90,12 +95,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth={2}
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
           />
         </svg>
       ),
     },
-
     {
       name: "Orders",
       href: "/dashboard/orders",
@@ -248,25 +252,26 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         {/* User info */}
         <div className={`absolute bottom-0 left-0 right-0 border-t border-gray-200 ${sidebarCollapsed ? "lg:p-2 p-4" : "p-4"}`}>
           {!sidebarCollapsed ? (
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-red-700">
-                  {user?.username?.charAt(0).toUpperCase() || "A"}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.username || "Admin"}
-                </p>
-                <p className="text-xs text-gray-500 truncate">{user?.role || "Administrator"}</p>
+            <>
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-red-700">
+                    {user?.username?.charAt(0).toUpperCase() || "A"}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user?.username || "Admin"}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">{user?.role || "Administrator"}</p>
+                </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-                title="Logout"
+                className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 font-medium text-sm"
               >
                 <svg
-                  className="w-5 h-5"
+                  className="w-4 h-4"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -278,18 +283,21 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
+                <span>Logout</span>
               </button>
-            </div>
+            </>
           ) : (
-            <div className="lg:flex lg:flex-col lg:items-center space-y-2">
-              <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-sm font-medium text-red-700">
-                  {user?.username?.charAt(0).toUpperCase() || "A"}
-                </span>
+            <>
+              <div className="lg:flex lg:flex-col lg:items-center mb-3">
+                <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-sm font-medium text-red-700">
+                    {user?.username?.charAt(0).toUpperCase() || "A"}
+                  </span>
+                </div>
               </div>
               <button
                 onClick={handleLogout}
-                className="p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 mx-auto"
+                className="w-full lg:w-auto lg:mx-auto flex items-center justify-center p-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200"
                 title="Logout"
               >
                 <svg
@@ -306,7 +314,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   />
                 </svg>
               </button>
-            </div>
+            </>
           )}
         </div>
       </div>

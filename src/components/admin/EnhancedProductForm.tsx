@@ -14,11 +14,13 @@ import SlideableDrawer from "@/components/ui/SlideableDrawer";
 interface EnhancedProductFormProps {
   onSuccess: () => void;
   onCancel: () => void;
+  product?: any; // Existing product data for editing
 }
 
 export default function EnhancedProductForm({
   onSuccess,
   onCancel,
+  product,
 }: EnhancedProductFormProps) {
   const [loading, setLoading] = useState(false);
   const [uploadingImages, setUploadingImages] = useState(false);
@@ -50,82 +52,81 @@ export default function EnhancedProductForm({
       isFeatured: false,
       isOnSale: false,
       tags: [],
+      rating: 0,
+      reviews: 0,
       specifications: {},
     },
   });
 
   const productType = watch("productType");
 
-  // Mock categories
-  const mockCategories: Category[] = [
-    {
-      id: "1",
-      name: "Electric Go-Karts",
-      productType: "go-karts",
-      slug: "electric-go-karts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      name: "Gas-Powered Go-Karts",
-      productType: "go-karts",
-      slug: "gas-powered-go-karts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "3",
-      name: "Racing Go-Karts",
-      productType: "go-karts",
-      slug: "racing-go-karts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "4",
-      name: "Electric Scooters",
-      productType: "scooters",
-      slug: "electric-scooters",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "5",
-      name: "Gas Scooters",
-      productType: "scooters",
-      slug: "gas-scooters",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "6",
-      name: "Engine Parts",
-      productType: "spare-parts",
-      slug: "engine-parts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "7",
-      name: "Body Parts",
-      productType: "spare-parts",
-      slug: "body-parts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ];
-
   useEffect(() => {
-    setCategories(mockCategories);
+    fetchCategories();
   }, []);
+
+  // Pre-populate form with existing product data
+  useEffect(() => {
+    if (product) {
+      setValue("name", product.name || "");
+      setValue("description", product.description || "");
+      setValue("productType", product.productType || "");
+      setValue("category", product.category?._id || product.category || "");
+      setValue("price", product.price || 0);
+      setValue("originalPrice", product.originalPrice || 0);
+      setValue("brand", product.brand || "");
+      setValue("sku", product.sku || "");
+      setValue("stock", product.stock || 1);
+      setValue("isFeatured", product.isFeatured || false);
+      setValue("isOnSale", product.isOnSale || false);
+      setValue("tags", product.tags || []);
+      setValue("rating", product.rating || 0);
+      setValue("reviews", product.reviews || 0);
+      setValue("specifications", product.specifications || {});
+      setValue("imagePublicIds", product.imagePublicIds || []);
+      
+      if (product.images && product.images.length > 0) {
+        setImages(product.images);
+        setValue("images", product.images);
+      }
+      
+      setSelectedProductType(product.productType || "");
+    }
+  }, [product, setValue]);
+
+  const fetchCategories = async () => {
+    try {
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch("/api/categories?limit=1000", { headers });
+      const data = await response.json();
+
+      if (response.ok) {
+        const fetchedCategories = (data.categories || []).map((cat: any) => ({
+          id: cat._id,
+          name: cat.name,
+          productType: cat.productType,
+          slug: cat.slug,
+          isActive: cat.isActive,
+          createdAt: cat.createdAt,
+          updatedAt: cat.updatedAt,
+        }));
+        setCategories(fetchedCategories);
+      } else {
+        console.error("Failed to fetch categories:", data);
+        toast.error("Failed to load categories");
+      }
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      toast.error("Failed to load categories");
+    }
+  };
 
   useEffect(() => {
     if (productType) {
@@ -153,18 +154,60 @@ export default function EnhancedProductForm({
 
     setUploadingImages(true);
     try {
-      // For demo purposes, create mock image URLs
-      const mockImages = Array.from(files).map((file) =>
-        URL.createObjectURL(file)
-      );
+      // Try dashboard_token first, then auth_token as fallback
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      
+      if (!token) {
+        toast.error("Please log in to the dashboard to upload images");
+        setUploadingImages(false);
+        return;
+      }
 
-      setImages([...images, ...mockImages]);
-      setValue("images", [...images, ...mockImages]);
+      const uploadPromises = Array.from(files).map(async (file) => {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("folder", "apexrush_karts/products");
+
+        const response = await fetch("/api/upload", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: formData,
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          if (response.status === 401) {
+            throw new Error("Unauthorized. Please log in to the dashboard at /dashboard/login");
+          }
+          throw new Error(errorData.error || `Upload failed: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return { url: data.url, publicId: data.publicId };
+      });
+
+      const uploadResults = await Promise.all(uploadPromises);
+      const newImageUrls = uploadResults.map((result) => result.url);
+      const newPublicIds = uploadResults.map((result) => result.publicId);
+
+      const updatedImages = [...images, ...newImageUrls];
+      const currentPublicIds = watch("imagePublicIds") || [];
+      const updatedPublicIds = [...currentPublicIds, ...newPublicIds];
+
+      setImages(updatedImages);
+      setValue("images", updatedImages);
+      setValue("imagePublicIds", updatedPublicIds);
 
       toast.success(`${files.length} image(s) uploaded successfully`);
     } catch (error) {
       console.error("Error uploading images:", error);
-      toast.error("Failed to upload images");
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to upload images. Please check your Cloudinary configuration."
+      );
     } finally {
       setUploadingImages(false);
     }
@@ -172,8 +215,11 @@ export default function EnhancedProductForm({
 
   const removeImage = (index: number) => {
     const newImages = images.filter((_, i) => i !== index);
+    const currentPublicIds = watch("imagePublicIds") || [];
+    const newPublicIds = currentPublicIds.filter((_, i) => i !== index);
     setImages(newImages);
     setValue("images", newImages);
+    setValue("imagePublicIds", newPublicIds);
   };
 
   const onSubmit = async (data: ProductFormData) => {
@@ -194,12 +240,66 @@ export default function EnhancedProductForm({
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Try dashboard_token first, then auth_token as fallback
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      
+      if (!token) {
+        toast.error("Please log in to create products");
+        setLoading(false);
+        return;
+      }
 
-      console.log("Product data:", data);
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Prepare product data for API
+      const productData = {
+        name: data.name,
+        description: data.description,
+        productType: data.productType,
+        category: data.category,
+        price: data.price,
+        originalPrice: data.originalPrice || undefined,
+        brand: data.brand,
+        sku: data.sku || undefined,
+        stock: data.stock || 0,
+        images: images,
+        imagePublicIds: data.imagePublicIds || [],
+        isFeatured: data.isFeatured || false,
+        isOnSale: data.isOnSale || false,
+        tags: data.tags || [],
+        rating: data.rating || undefined,
+        reviews: data.reviews || undefined,
+        specifications: data.specifications || {},
+      };
+
+      console.log("Product data:", productData);
+      console.log("Token exists:", token ? "Yes" : "No");
+      console.log("Token preview:", token ? `${token.substring(0, 20)}...` : "None");
+      console.log("Headers:", { ...headers, Authorization: headers.Authorization ? "Bearer ***" : "None" });
+
+      const response = await fetch("/api/products", {
+        method: "POST",
+        headers,
+        body: JSON.stringify(productData),
+      });
+
+      const responseData = await response.json();
+
+      if (response.ok) {
       toast.success("Product created successfully");
       onSuccess();
+      } else {
+        if (response.status === 401) {
+          toast.error("Unauthorized. Please log in to the dashboard at /dashboard/login");
+        } else {
+          toast.error(responseData.error || "Failed to create product");
+        }
+        console.error("API Error:", responseData);
+        console.error("Response status:", response.status);
+      }
     } catch (error) {
       console.error("Error creating product:", error);
       toast.error("Failed to create product");
@@ -334,6 +434,38 @@ export default function EnhancedProductForm({
                   required
                   min={0}
                   error={errors.stock?.message}
+                />
+              </div>
+            </div>
+
+            {/* Rating and Reviews */}
+            <div className="space-y-4">
+              <h3 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+                <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                Rating & Reviews
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                <FormInput
+                  name="rating"
+                  register={register}
+                  label="Rating (0-5)"
+                  type="number"
+                  placeholder="4.5"
+                  step="0.1"
+                  min={0}
+                  max={5}
+                  error={errors.rating?.message}
+                />
+                <FormInput
+                  name="reviews"
+                  register={register}
+                  label="Number of Reviews"
+                  type="number"
+                  placeholder="0"
+                  min={0}
+                  error={errors.reviews?.message}
                 />
               </div>
             </div>
@@ -527,7 +659,7 @@ export default function EnhancedProductForm({
                 disabled={loading}
                 className="flex-1 px-4 py-2 bg-white text-red-600 border-2 border-red-600 rounded-lg hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200 font-medium"
               >
-                {loading ? "Creating..." : "Create Product"}
+                {loading ? (product ? "Updating..." : "Creating...") : (product ? "Update Product" : "Create Product")}
               </button>
               <button
                 type="button"
@@ -593,20 +725,42 @@ function QuickCategoryForm({
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
 
+      const response = await fetch("/api/categories", {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          name: categoryName,
+          productType: productType,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
       const newCategory: Category = {
-        id: Date.now().toString(),
-        name: categoryName,
-        productType: productType as ProductType,
-        slug: categoryName.toLowerCase().replace(/\s+/g, "-"),
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
+          id: data.category._id,
+          name: data.category.name,
+          productType: data.category.productType,
+          slug: data.category.slug,
+          isActive: data.category.isActive,
+          createdAt: data.category.createdAt,
+          updatedAt: data.category.updatedAt,
       };
 
+        toast.success("Category created successfully");
       onSuccess(newCategory);
+      } else {
+        toast.error(data.error || "Failed to create category");
+      }
     } catch (error) {
       console.error("Error creating category:", error);
       toast.error("Failed to create category");

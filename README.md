@@ -1,40 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Apex Rush Karts - E-Commerce Platform
 
-## Getting Started
+Full-stack Next.js e-commerce application for go-karts, scooters, and spare parts.
 
-First, run the development server:
+## 🚀 Quick Start
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### Prerequisites
+- Node.js 18+ 
+- MongoDB (local or Atlas)
+- Cloudinary account (for image uploads)
+- SMTP email credentials (Gmail recommended)
+
+### Installation
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Set up environment variables**
+   ```bash
+   cp .env.example .env.local
+   ```
+   Edit `.env.local` with your credentials (see BACKEND_SETUP.md for details)
+
+3. **Start development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Access the application**
+   - Frontend: http://localhost:3000
+   - Admin Dashboard: http://localhost:3000/dashboard/login
+
+## 📚 Documentation
+
+- **BACKEND_SETUP.md** - Complete backend setup guide with all API routes and configuration
+- All API routes are documented with request/response formats
+
+## 🎯 Key Features
+
+- ✅ Complete e-commerce frontend
+- ✅ Admin dashboard with analytics
+- ✅ Product management (Go-Karts, Scooters, Spare Parts)
+- ✅ Order management with email notifications
+- ✅ Category management
+- ✅ Service management
+- ✅ Image upload (Cloudinary)
+- ✅ JWT authentication
+- ✅ Email notifications (orders, contact form)
+
+## 💳 Payment Processing
+
+**Important**: This application does NOT integrate payment gateways. Orders are sent via email to the admin, who contacts customers directly to process payment manually. This approach builds trust through personal communication.
+
+## 🛠️ Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **Language**: TypeScript
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT
+- **Image Storage**: Cloudinary
+- **Email**: Nodemailer
+- **State Management**: Zustand
+- **UI**: Tailwind CSS, Radix UI
+- **Charts**: Recharts
+
+## 📁 Project Structure
+
+```
+src/
+├── app/              # Next.js pages and API routes
+│   ├── api/         # Backend API routes
+│   ├── dashboard/   # Admin dashboard
+│   └── ...          # Public pages
+├── components/      # React components
+├── lib/             # Utilities (auth, email, cloudinary, mongodb)
+├── models/          # Mongoose schemas
+├── store/           # Zustand stores
+└── types/           # TypeScript types
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🔐 Admin Access
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create an admin user in MongoDB (see BACKEND_SETUP.md for instructions).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 License
 
-## Learn More
+Private project
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Frontend Only
-
-This is currently a frontend-only application. Backend functionality will be added later.
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.

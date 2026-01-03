@@ -8,14 +8,15 @@ import { useCartStore } from "@/store/cartStore";
 import { useWishlistStore } from "@/store/wishlistStore";
 import toast from "react-hot-toast";
 import { FaShoppingCart } from "react-icons/fa";
-import { FaStar } from "react-icons/fa";
+import { GrStar } from "react-icons/gr";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 interface Product {
   _id: string;
   name: string;
   price: number;
-  image: string;
+  image?: string;
+  images?: string[];
   category: string;
   condition: string;
   brand: string;
@@ -38,121 +39,6 @@ export default function FeaturedProducts() {
   const { addToCart, removeFromCart, items } = useCartStore();
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
-
-  // Mock featured products data (fallback)
-  const mockFeaturedProducts: Product[] = [
-    {
-      _id: "1",
-      name: "Apex Pro Racing Kart",
-      price: 4500000,
-      image:
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-      category: "Racing Karts",
-      condition: "Professional",
-      brand: "Apex Rush",
-      size: "Adult",
-      isFeatured: true,
-      rating: 4.8,
-      reviews: 24,
-    },
-    {
-      _id: "2",
-      name: "Thunder 250cc Racing Kart",
-      price: 3800000,
-      image:
-        "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
-      category: "Racing Karts",
-      condition: "Professional",
-      brand: "Apex Rush",
-      size: "Adult",
-      isFeatured: true,
-      rating: 4.6,
-      reviews: 18,
-    },
-    {
-      _id: "3",
-      name: "Velocity Electric Kart",
-      price: 5200000,
-      image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
-      category: "Electric Karts",
-      condition: "Eco-Friendly",
-      brand: "Apex Rush",
-      size: "Adult",
-      isFeatured: true,
-      rating: 4.9,
-      reviews: 32,
-    },
-    {
-      _id: "4",
-      name: "Junior Racer Kart",
-      price: 2500000,
-      image:
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-      category: "Recreational Karts",
-      condition: "Youth",
-      brand: "Apex Rush",
-      size: "Junior",
-      isFeatured: true,
-      rating: 4.7,
-      reviews: 15,
-    },
-    {
-      _id: "5",
-      name: "Pro Racing Helmet",
-      price: 180000,
-      image:
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-      category: "Racing Gear",
-      condition: "Safety",
-      brand: "Apex Rush",
-      size: "M-XL",
-      isFeatured: true,
-      rating: 4.5,
-      reviews: 28,
-    },
-    {
-      _id: "6",
-      name: "Speed Master 200cc Kart",
-      price: 3200000,
-      image:
-        "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=800&q=80",
-      category: "Racing Karts",
-      condition: "Intermediate",
-      brand: "Apex Rush",
-      size: "Adult",
-      isFeatured: true,
-      rating: 4.4,
-      reviews: 12,
-    },
-    {
-      _id: "7",
-      name: "Racing Suit Pro Series",
-      price: 280000,
-      image:
-        "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80",
-      category: "Racing Gear",
-      condition: "Professional",
-      brand: "Apex Rush",
-      size: "S-XXL",
-      isFeatured: true,
-      rating: 4.6,
-      reviews: 19,
-    },
-    {
-      _id: "8",
-      name: "Family Fun Kart",
-      price: 2200000,
-      image:
-        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80",
-      category: "Recreational Karts",
-      condition: "Family",
-      brand: "Apex Rush",
-      size: "Adult",
-      isFeatured: true,
-      rating: 4.8,
-      reviews: 21,
-    },
-  ];
 
   useEffect(() => {
     fetchFeaturedProducts();
@@ -212,13 +98,11 @@ export default function FeaturedProducts() {
         setFeaturedProducts(data.products || []);
       } else {
         console.error("Failed to fetch featured products:", data);
-        // Fallback to mock data if API fails
-        setFeaturedProducts(mockFeaturedProducts);
+        setFeaturedProducts([]);
       }
     } catch (error) {
       console.error("Error fetching featured products:", error);
-      // Fallback to mock data if API fails
-      setFeaturedProducts(mockFeaturedProducts);
+      setFeaturedProducts([]);
     } finally {
       setLoading(false);
     }
@@ -234,7 +118,7 @@ export default function FeaturedProducts() {
         id: product._id,
         name: product.name,
         price: product.price,
-        image: product.image,
+        image: product.images?.[0] || product.image || "",
         category: product.category,
         brand: product.brand,
         kartType: product.condition || "",
@@ -265,7 +149,7 @@ export default function FeaturedProducts() {
         id: product._id,
         name: product.name,
         price: product.price,
-        image: product.image,
+        image: product.images?.[0] || product.image || "",
         category: product.category,
         brand: product.brand,
         condition: product.condition,
@@ -359,7 +243,7 @@ export default function FeaturedProducts() {
                 <Link href={`/products/${product._id}`} className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px] block cursor-pointer">
                   <Image
                     src={
-                      product.image ||
+                      product.images?.[0] || product.image ||
                       "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&h=400&fit=crop"
                     }
                     alt={product.name}
@@ -451,7 +335,7 @@ export default function FeaturedProducts() {
                 </Link>
                 <div className="p-4 md:p-6 flex flex-col flex-grow">
                   <div className="text-sm text-red-600 uppercase tracking-wide mb-2 font-outfit font-medium">
-                    {product.category}
+                    {typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}
                   </div>
                   <h3 className="text-base md:text-xl font-semibold text-zinc-900 mb-2 line-clamp-2  group-hover:text-red-700 transition-colors duration-300">
                     {product.name}
@@ -461,7 +345,7 @@ export default function FeaturedProducts() {
                     <div className="flex items-center gap-2 mb-2">
                       <div className="flex items-center gap-0.5">
                         {[1, 2, 3, 4, 5].map((star) => (
-                          <FaStar
+                          <GrStar
                             key={star}
                             className={`w-4 h-4 ${
                               star <= Math.round(product.rating || 0)

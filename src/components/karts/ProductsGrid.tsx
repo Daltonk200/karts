@@ -3,7 +3,7 @@
 import Container from "@/components/Container";
 import Loader from "@/components/Loader";
 import ProductCard from "./ProductCard";
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 
 interface ProductsGridProps {
   loading: boolean;

@@ -68,6 +68,8 @@ export default function ProductsPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [showAddProductModal, setShowAddProductModal] = useState(false);
+  const [showEditProductModal, setShowEditProductModal] = useState(false);
+  const [editingProduct, setEditingProduct] = useState<any>(null);
   const [deleteModal, setDeleteModal] = useState<{
     isOpen: boolean;
     productId: string | null;
@@ -98,189 +100,113 @@ export default function ProductsPage() {
     filterAndPaginateProducts();
   }, [allProducts, currentPage, searchQuery, selectedCategory, sortBy]);
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      
-      // Mock products data for frontend-only mode
-      const mockProducts: Product[] = [
-        {
-          _id: "1",
-          name: "Apex Pro Racing Kart",
-          price: 4500000,
-          originalPrice: 5000000,
-          brand: "Apex Rush",
-          category: "Racing Karts",
-          skinType: "Professional",
-          stock: 5,
-          isFeatured: true,
-          isOnSale: true,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          sku: "APX-PRO-001",
-          rating: 4.8,
-          reviews: 24,
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: "2",
-          name: "Thunder 250cc Racing Kart",
-          price: 3800000,
-          originalPrice: 4200000,
-          brand: "Apex Rush",
-          category: "Racing Karts",
-          skinType: "Professional",
-          stock: 8,
-          isFeatured: true,
-          isOnSale: false,
-          image: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
-          sku: "APX-THUNDER-002",
-          rating: 4.6,
-          reviews: 18,
-          createdAt: new Date(Date.now() - 86400000).toISOString(),
-        },
-        {
-          _id: "3",
-          name: "Pro Racing Helmet",
-          price: 180000,
-          brand: "Apex Rush",
-          category: "Racing Gear",
-          skinType: "Safety",
-          stock: 15,
-          isFeatured: false,
-          isOnSale: false,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          sku: "APX-HELMET-003",
-          rating: 4.5,
-          reviews: 28,
-          createdAt: new Date(Date.now() - 172800000).toISOString(),
-        },
-        {
-          _id: "4",
-          name: "Velocity Electric Kart",
-          price: 5200000,
-          brand: "Apex Rush",
-          category: "Electric Karts",
-          skinType: "Eco-Friendly",
-          stock: 3,
-          isFeatured: true,
-          isOnSale: true,
-          image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500",
-          sku: "APX-ELECTRIC-004",
-          rating: 4.9,
-          reviews: 32,
-          createdAt: new Date(Date.now() - 259200000).toISOString(),
-        },
-        {
-          _id: "5",
-          name: "Junior Racer Kart",
-          price: 2500000,
-          brand: "Apex Rush",
-          category: "Recreational Karts",
-          skinType: "Youth",
-          stock: 12,
-          isFeatured: true,
-          isOnSale: false,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          sku: "APX-JR-005",
-          rating: 4.7,
-          reviews: 15,
-          createdAt: new Date(Date.now() - 345600000).toISOString(),
-        },
-        {
-          _id: "6",
-          name: "Racing Suit Pro Series",
-          price: 280000,
-          originalPrice: 320000,
-          brand: "Apex Rush",
-          category: "Racing Gear",
-          skinType: "Professional",
-          stock: 15,
-          isFeatured: true,
-          isOnSale: true,
-          image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500",
-          sku: "APX-SUIT-006",
-          rating: 4.8,
-          reviews: 65,
-          createdAt: new Date(Date.now() - 432000000).toISOString(),
-        },
-        {
-          _id: "7",
-          name: "Performance Kart Tires (Set)",
-          price: 120000,
-          brand: "GripMaster",
-          category: "Parts & Accessories",
-          skinType: "Professional",
-          stock: 50,
-          isFeatured: false,
-          isOnSale: false,
-          image: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
-          sku: "PT-TIRE-001",
-          rating: 4.7,
-          reviews: 89,
-          createdAt: new Date(Date.now() - 518400000).toISOString(),
-        },
-        {
-          _id: "8",
-          name: "Family Fun Kart",
-          price: 2200000,
-          brand: "Apex Rush",
-          category: "Recreational Karts",
-          skinType: "Family",
-          stock: 4,
-          isFeatured: true,
-          isOnSale: false,
-          image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-          sku: "APX-FAM-001",
-          rating: 4.5,
-          reviews: 12,
-          createdAt: new Date(Date.now() - 604800000).toISOString(),
-        },
-      ];
-
-      setAllProducts(mockProducts);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      toast.error("Failed to fetch products");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const filterAndPaginateProducts = () => {
-    // Filter by category
-    let filteredProducts = [...allProducts];
-    if (selectedCategory !== "All") {
-      filteredProducts = filteredProducts.filter(p => p.category === selectedCategory);
-    }
+    let filtered = [...allProducts];
 
-    // Filter by search
+    // Filter by search query
     if (searchQuery) {
-      filteredProducts = filteredProducts.filter(p =>
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.brand.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.sku.toLowerCase().includes(searchQuery.toLowerCase())
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (product) => {
+          const categoryName = typeof product.category === 'string' 
+            ? product.category 
+            : product.category?.name || '';
+          return (
+            product.name.toLowerCase().includes(query) ||
+            product.brand.toLowerCase().includes(query) ||
+            product.sku.toLowerCase().includes(query) ||
+            categoryName.toLowerCase().includes(query)
+          );
+        }
       );
     }
 
-    // Sort
-    filteredProducts.sort((a, b) => {
-      const aValue = a[sortBy as keyof Product];
-      const bValue = b[sortBy as keyof Product];
-      if (sortBy === "price" || sortBy === "stock" || sortBy === "rating" || sortBy === "reviews") {
-        return (bValue as number) - (aValue as number);
+    // Filter by category
+    if (selectedCategory !== "All") {
+      filtered = filtered.filter(
+        (product) => {
+          const categoryName = typeof product.category === 'string' 
+            ? product.category 
+            : product.category?.name || '';
+          return categoryName === selectedCategory;
+        }
+      );
+    }
+
+    // Sort products
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case "name":
+          return a.name.localeCompare(b.name);
+        case "price":
+          return a.price - b.price;
+        case "stock":
+          return a.stock - b.stock;
+        case "rating":
+          return b.rating - a.rating;
+        case "createdAt":
+        default:
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
       }
-      return String(aValue) > String(bValue) ? 1 : -1;
     });
 
     // Calculate pagination
-    const total = filteredProducts.length;
-    setTotalPages(Math.ceil(total / itemsPerPage));
+    const total = filtered.length;
+    const pages = Math.ceil(total / itemsPerPage);
+    setTotalPages(pages);
 
-    // Paginate
+    // Get products for current page
     const startIndex = (currentPage - 1) * itemsPerPage;
-    const paginatedProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+    const endIndex = startIndex + itemsPerPage;
+    const paginated = filtered.slice(startIndex, endIndex);
 
-    setProducts(paginatedProducts);
+    setProducts(paginated);
+  };
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch("/api/products?limit=1000", { headers });
+      const data = await response.json();
+      
+      if (response.ok) {
+        // Transform products to match Product interface
+        const products = (data.products || []).map((p: any) => ({
+          _id: p._id,
+          name: p.name,
+          price: p.price,
+          originalPrice: p.originalPrice,
+          brand: p.brand,
+          category: typeof p.category === 'object' ? p.category.name : p.category,
+          skinType: p.productType || "",
+          stock: p.stock,
+          isFeatured: p.isFeatured,
+          isOnSale: p.isOnSale,
+          image: p.images?.[0] || p.image || "",
+          sku: p.sku,
+          rating: p.rating,
+          reviews: p.reviews,
+          createdAt: p.createdAt,
+        }));
+        setAllProducts(products);
+      } else {
+        setAllProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching products:", error);
+      setAllProducts([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteClick = (productId: string, productName: string) => {
@@ -296,16 +222,28 @@ export default function ProductsPage() {
 
     try {
       setDeletingId(deleteModal.productId);
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Delete product locally (frontend-only mode)
-      setAllProducts(prevProducts =>
-        prevProducts.filter(p => p._id !== deleteModal.productId)
-      );
-      toast.success("Product deleted successfully");
-      setDeleteModal({ isOpen: false, productId: null, productName: "" });
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/products/${deleteModal.productId}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      if (response.ok) {
+        toast.success("Product deleted successfully");
+        setDeleteModal({ isOpen: false, productId: null, productName: "" });
+        fetchProducts(); // Refresh the list
+      } else {
+        const data = await response.json();
+        toast.error(data.error || "Failed to delete product");
+      }
     } catch (error) {
       console.error("Error deleting product:", error);
       toast.error("Failed to delete product");
@@ -318,35 +256,13 @@ export default function ProductsPage() {
     setDeleteModal({ isOpen: false, productId: null, productName: "" });
   };
 
-  const toggleFeatured = async (productId: string, currentStatus: boolean) => {
-    try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
-      
-      // Update product locally (frontend-only mode)
-      setAllProducts(prevProducts =>
-        prevProducts.map(p =>
-          p._id === productId ? { ...p, isFeatured: !currentStatus } : p
-        )
-      );
-      toast.success(
-        `Product ${!currentStatus ? "featured" : "unfeatured"} successfully`
-      );
-    } catch (error) {
-      console.error("Error updating product:", error);
-      toast.error("Failed to update product");
-    }
-  };
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const handlePageChange = (_event: React.ChangeEvent<unknown>, page: number) => {
+    setCurrentPage(page);
   };
 
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Products</h1>
@@ -527,7 +443,7 @@ export default function ProductsPage() {
                       </TableCell>
                       <TableCell>
                         <Chip
-                          label={product.category}
+                          label={typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}
                           size="small"
                           sx={{
                             bgcolor: "#ffffff",
@@ -657,8 +573,26 @@ export default function ProductsPage() {
                           <Tooltip title="Edit product">
                             <IconButton
                               size="small"
-                              component={Link}
-                              href={`/dashboard/products/${product._id}/edit`}
+                              onClick={async () => {
+                                // Fetch full product data
+                                try {
+                                  const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+                                  const response = await fetch(`/api/products/${product._id}`, {
+                                    headers: {
+                                      Authorization: `Bearer ${token}`,
+                                    },
+                                  });
+                                  if (response.ok) {
+                                    const data = await response.json();
+                                    setEditingProduct(data.product);
+                                    setShowEditProductModal(true);
+                                  } else {
+                                    toast.error("Failed to load product");
+                                  }
+                                } catch (error) {
+                                  toast.error("Error loading product");
+                                }
+                              }}
                               sx={{
                                 color: "#6b7280",
                                 "&:hover": {
@@ -792,6 +726,30 @@ export default function ProductsPage() {
             fetchProducts();
           }}
           onCancel={() => setShowAddProductModal(false)}
+        />
+      </SlideableDrawer>
+
+      {/* Edit Product Modal */}
+      <SlideableDrawer
+        open={showEditProductModal}
+        onClose={() => {
+          setShowEditProductModal(false);
+          setEditingProduct(null);
+        }}
+        title="Edit Product"
+        width="700px"
+      >
+        <EnhancedProductForm
+          product={editingProduct}
+          onSuccess={() => {
+            setShowEditProductModal(false);
+            setEditingProduct(null);
+            fetchProducts();
+          }}
+          onCancel={() => {
+            setShowEditProductModal(false);
+            setEditingProduct(null);
+          }}
         />
       </SlideableDrawer>
     </DashboardLayout>

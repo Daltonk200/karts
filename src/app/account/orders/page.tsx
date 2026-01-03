@@ -26,93 +26,67 @@ export default function MyOrdersPage() {
   const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    // Mock orders data for frontend-only mode
-    const mockOrders: Order[] = [
-      {
-        _id: "1",
-        orderNumber: "ORD-001",
-        total: 4500,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        items: [
-          {
-            productId: "1",
-            name: "Apex Pro Racing Kart",
-            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-            quantity: 1,
-            price: 4500,
-          },
-        ],
-      },
-      {
-        _id: "2",
-        orderNumber: "ORD-002",
-        total: 3800,
-        status: "shipped",
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        items: [
-          {
-            productId: "2",
-            name: "Thunder 250cc Racing Kart",
-            image: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
-            quantity: 1,
-            price: 3800,
-          },
-        ],
-      },
-      {
-        _id: "3",
-        orderNumber: "ORD-003",
-        total: 180,
-        status: "completed",
-        createdAt: new Date(Date.now() - 172800000).toISOString(),
-        items: [
-          {
-            productId: "16",
-            name: "Pro Racing Helmet",
-            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-            quantity: 1,
-            price: 180,
-          },
-        ],
-      },
-      {
-        _id: "4",
-        orderNumber: "ORD-004",
-        total: 5200,
-        status: "processing",
-        createdAt: new Date(Date.now() - 259200000).toISOString(),
-        items: [
-          {
-            productId: "3",
-            name: "Velocity Electric Kart",
-            image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500",
-            quantity: 1,
-            price: 5200,
-          },
-        ],
-      },
-      {
-        _id: "5",
-        orderNumber: "ORD-005",
-        total: 2500,
-        status: "completed",
-        createdAt: new Date(Date.now() - 345600000).toISOString(),
-        items: [
-          {
-            productId: "4",
-            name: "Junior Racer Kart",
-            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-            quantity: 1,
-            price: 2500,
-          },
-        ],
-      },
-    ];
+    fetchOrders();
+  }, [filter]);
 
-    setOrders(mockOrders);
-    setLoading(false);
-  }, []);
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("auth_token");
+      const userDataStr = localStorage.getItem("user_data");
+      const userData = userDataStr ? JSON.parse(userDataStr) : null;
+
+      if (!token || !userData) {
+        setLoading(false);
+        return;
+      }
+
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Build query params
+      const params = new URLSearchParams();
+      params.append("search", userData.email);
+      if (filter !== "all") {
+        params.append("status", filter);
+      }
+      params.append("limit", "100");
+
+      const response = await fetch(`/api/orders?${params.toString()}`, {
+        headers,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const orders = (data.orders || []).map((order: any) => ({
+          _id: order._id,
+          orderNumber: order.orderNumber,
+          total: order.total,
+          status: order.status,
+          createdAt: order.createdAt,
+          items: order.items.map((item: any) => ({
+            productId: item.productId?._id || item.productId || "",
+            name: item.name,
+            image: item.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }));
+
+        setOrders(orders);
+      } else {
+        setOrders([]);
+      }
+    } catch (error) {
+      console.error("Error fetching orders:", error);
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -153,42 +127,34 @@ export default function MyOrdersPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">My Orders</h1>
           <p className="mt-2 text-gray-600">
-            View and track all your orders in one place.
+            View and track all your orders
           </p>
         </div>
 
-        {/* Filter Tabs */}
-        <div className="bg-white rounded-lg shadow">
-          <div className="border-b border-gray-200">
-            <nav className="flex -mb-px">
-              {[
-                { id: "all", label: "All Orders" },
-                { id: "pending", label: "Pending" },
-                { id: "processing", label: "Processing" },
-                { id: "shipped", label: "Shipped" },
-                { id: "completed", label: "Completed" },
-              ].map((tab) => (
-                <button
-                  key={tab.id}
-                  onClick={() => setFilter(tab.id)}
-                  className={`px-6 py-4 text-sm font-medium border-b-2 transition-colors ${
-                    filter === tab.id
-                      ? "border-red-600 text-red-600"
-                      : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
-                >
-                  {tab.label}
-                </button>
-              ))}
-            </nav>
-          </div>
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap gap-2">
+          {["all", "pending", "confirmed", "shipped", "delivered", "cancelled"].map(
+            (status) => (
+              <button
+                key={status}
+                onClick={() => setFilter(status)}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  filter === status
+                    ? "bg-red-600 text-white"
+                    : "bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300"
+                }`}
+              >
+                {status.charAt(0).toUpperCase() + status.slice(1)}
+              </button>
+            )
+          )}
         </div>
 
         {/* Orders List */}
         {filteredOrders.length === 0 ? (
           <div className="bg-white rounded-lg shadow p-12 text-center">
             <svg
-              className="mx-auto h-12 w-12 text-gray-400"
+              className="w-16 h-16 text-gray-400 mx-auto mb-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -200,118 +166,106 @@ export default function MyOrdersPage() {
                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
               />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No orders found</h3>
-            <p className="mt-1 text-sm text-gray-500">
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              No orders found
+            </h3>
+            <p className="text-gray-600 mb-6">
               {filter === "all"
                 ? "You haven't placed any orders yet."
                 : `You don't have any ${filter} orders.`}
             </p>
-            <div className="mt-6">
-              <Link
-                href="/products"
-                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700"
-              >
-                Start Shopping
-              </Link>
-            </div>
+            <Link
+              href="/products"
+              className="inline-block px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Browse Products
+            </Link>
           </div>
         ) : (
           <div className="space-y-4">
             {filteredOrders.map((order) => (
               <div
                 key={order._id}
-                className="bg-white rounded-lg shadow hover:shadow-md transition-shadow"
+                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden"
               >
-                <Link href={`/account/orders/${order._id}`}>
-                  <div className="p-6">
-                    <div className="flex items-center justify-between mb-4">
-                      <div>
+                <div className="p-6">
+                  {/* Order Header */}
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                    <div>
+                      <div className="flex items-center gap-4">
                         <h3 className="text-lg font-semibold text-gray-900">
-                          {order.orderNumber}
+                          Order #{order.orderNumber}
                         </h3>
-                        <p className="text-sm text-gray-500 mt-1">
-                          Placed on {new Date(order.createdAt).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-lg font-bold text-gray-900">
-                          ${order.total.toLocaleString()}
-                        </p>
                         <span
-                          className={`mt-2 inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
                             order.status
                           )}`}
                         >
-                          {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                          {order.status.charAt(0).toUpperCase() +
+                            order.status.slice(1)}
                         </span>
                       </div>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Placed on{" "}
+                        {new Date(order.createdAt).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
                     </div>
+                    <div className="mt-4 md:mt-0 text-right">
+                      <p className="text-2xl font-bold text-gray-900">
+                        ${order.total.toLocaleString()}
+                      </p>
+                    </div>
+                  </div>
 
-                    <div className="flex items-center space-x-4 pt-4 border-t border-gray-200">
-                      {order.items.slice(0, 3).map((item, index) => (
-                        <div key={index} className="flex items-center space-x-3">
-                          <div className="relative w-16 h-16 bg-gray-100 rounded-lg overflow-hidden">
+                  {/* Order Items */}
+                  <div className="border-t border-gray-200 pt-4">
+                    <div className="space-y-3">
+                      {order.items.map((item, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-4"
+                        >
+                          <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                             <Image
                               src={item.image}
                               alt={item.name}
-                              fill
-                              className="object-cover"
+                              width={64}
+                              height={64}
+                              className="object-cover w-full h-full"
                             />
                           </div>
-                          <div>
-                            <p className="text-sm font-medium text-gray-900">
+                          <div className="flex-1 min-w-0">
+                            <h4 className="text-sm font-medium text-gray-900 truncate">
                               {item.name}
+                            </h4>
+                            <p className="text-sm text-gray-600">
+                              Quantity: {item.quantity}
                             </p>
-                            <p className="text-xs text-gray-500">
-                              Qty: {item.quantity} × ${item.price}
+                          </div>
+                          <div className="text-right">
+                            <p className="text-sm font-medium text-gray-900">
+                              ${(item.price * item.quantity).toLocaleString()}
                             </p>
                           </div>
                         </div>
                       ))}
-                      {order.items.length > 3 && (
-                        <p className="text-sm text-gray-500">
-                          +{order.items.length - 3} more item{order.items.length - 3 > 1 ? "s" : ""}
-                        </p>
-                      )}
-                    </div>
-
-                    <div className="mt-4 pt-4 border-t border-gray-200 flex items-center justify-between">
-                      <div className="flex space-x-4">
-                        <Link
-                          href={`/account/orders/${order._id}`}
-                          className="text-sm font-medium text-red-600 hover:text-red-700"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          View Details
-                        </Link>
-                        {order.status === "completed" && (
-                          <Link
-                            href={`/products/${order.items[0]?.productId || "1"}`}
-                            className="text-sm font-medium text-gray-600 hover:text-gray-900"
-                            onClick={(e) => e.stopPropagation()}
-                          >
-                            Write Review
-                          </Link>
-                        )}
-                      </div>
-                      {order.status === "shipped" && (
-                        <button
-                          className="text-sm font-medium text-blue-600 hover:text-blue-700"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // Track package functionality
-                          }}
-                        >
-                          Track Package
-                        </button>
-                      )}
                     </div>
                   </div>
-                </Link>
+
+                  {/* View Details Button */}
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <Link
+                      href={`/account/orders/${order._id}`}
+                      className="inline-block text-red-600 hover:text-red-700 font-medium text-sm"
+                    >
+                      View Details →
+                    </Link>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -320,4 +274,3 @@ export default function MyOrdersPage() {
     </UserDashboardLayout>
   );
 }
-

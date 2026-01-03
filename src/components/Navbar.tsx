@@ -15,10 +15,44 @@ export default function Navbar() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [cartCount, setCartCount] = useState(0);
   const { items: wishlistItems } = useWishlistStore();
-  const { getUniqueItems: getCartItems } = useCartStore();
+  const { getUniqueItems: getCartItems, syncCart } = useCartStore();
   const pathname = usePathname();
   const router = useRouter();
+
+  // Check authentication status and sync cart
+  useEffect(() => {
+    const checkAuth = () => {
+      if (typeof window !== "undefined") {
+        const token = localStorage.getItem("auth_token");
+        setIsAuthenticated(!!token);
+        
+        // Set cart count (client-side only to avoid hydration mismatch)
+        setCartCount(getCartItems());
+        
+        // Sync cart with database when user is authenticated
+        if (token) {
+          syncCart().then(() => {
+            // Update cart count after sync
+            setCartCount(getCartItems());
+          });
+        }
+      }
+    };
+    checkAuth();
+    // Listen for storage changes (e.g., when user logs in/out in another tab)
+    window.addEventListener("storage", checkAuth);
+    return () => window.removeEventListener("storage", checkAuth);
+  }, [syncCart, getCartItems]);
+
+  // Update cart count when cart items change
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCartCount(getCartItems());
+    }
+  }, [getCartItems]);
 
   const isActive = (path: string) => {
     if (path === "/") {
@@ -316,10 +350,10 @@ export default function Navbar() {
                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
               />
             </svg>
-            {/* Hydration-fix: only show cart badge after hydration */}
-            {typeof window !== 'undefined' && getCartItems() > 0 && (
+            {/* Cart badge - client-side only to avoid hydration mismatch */}
+            {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-lg">
-                {getCartItems()}
+                {cartCount}
               </span>
             )}
           </Link>
@@ -359,38 +393,51 @@ export default function Navbar() {
             )}
           </Link>
 
-          {/* User Account Icon */}
-          <Link
-            href="/account"
-            className={`flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${isScrolled || !isHomePage
-              ? "bg-zinc-50 border border-zinc-200  hover:border-red-200"
-              : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
-              } ${isActive("/account")
-                ? "border-red-300 bg-red-50"
-                : ""
-              }`}
-            title="My Account"
-          >
-            <svg
-              className={`w-5 h-5 transition-colors duration-200 ${
-                isActive("/account")
-                  ? "text-red-600"
-                  : isScrolled || !isHomePage
-                  ? "text-zinc-600 group-hover:text-red-600"
-                  : "text-white/80 group-hover:text-white"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
+          {/* User Account Icon or Login Button */}
+          {isAuthenticated ? (
+            <Link
+              href="/account"
+              className={`flex items-center justify-center w-11 h-11 transition-all duration-200 rounded-[5px] group ${isScrolled || !isHomePage
+                ? "bg-zinc-50 border border-zinc-200  hover:border-red-200"
+                : "bg-white/20 border border-white/30 hover:bg-white/30 hover:border-white/50"
+                } ${isActive("/account")
+                  ? "border-red-300 bg-red-50"
+                  : ""
+                }`}
+              title="My Account"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
-            </svg>
-          </Link>
+              <svg
+                className={`w-5 h-5 transition-colors duration-200 ${
+                  isActive("/account")
+                    ? "text-red-600"
+                    : isScrolled || !isHomePage
+                    ? "text-zinc-600 group-hover:text-red-600"
+                    : "text-white/80 group-hover:text-white"
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+            </Link>
+          ) : (
+            <Link
+              href="/auth/login"
+              className={`px-4 py-2 rounded-[5px] font-medium transition-all duration-200 ${isScrolled || !isHomePage
+                ? "bg-white border-2 border-red-600 text-red-600 hover:bg-red-50"
+                : "bg-white/20 border-2 border-white/30 text-white hover:bg-white/30 hover:border-white/50"
+                }`}
+            >
+              <span className="hidden sm:inline">Get Started</span>
+              <span className="sm:hidden">Login</span>
+            </Link>
+          )}
 
           {/* Mobile menu button */}
           <button
@@ -585,6 +632,28 @@ export default function Navbar() {
             >
               About
             </Link>
+
+            {/* Mobile Account/Login */}
+            {isAuthenticated ? (
+              <Link
+                href="/account"
+                onClick={() => setIsOpen(false)}
+                className={`block px-4 py-3 font-medium transition-all duration-200 font-outfit ${isActive("/account")
+                  ? "bg-red-100 text-red-700 border-l-4 border-red-600"
+                  : "text-zinc-700 hover:text-red-600 hover:bg-red-50"
+                  }`}
+              >
+                My Account
+              </Link>
+            ) : (
+              <Link
+                href="/auth/login"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 font-medium text-white bg-red-600 hover:bg-red-700 transition-all duration-200 font-outfit rounded-[5px] text-center"
+              >
+                Get Started / Login
+              </Link>
+            )}
           </nav>
         </div>
       </div>

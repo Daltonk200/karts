@@ -49,12 +49,26 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      // Simulate API delay for frontend-only mode
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Mock successful registration
-      toast.success("Account created successfully!");
-      router.push("/account");
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Account created successfully!");
+        router.push("/auth/login");
+      } else {
+        toast.error(data.error || "An error occurred during registration");
+      }
     } catch (error) {
       console.error("Registration error:", error);
       toast.error("An error occurred during registration");

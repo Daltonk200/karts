@@ -1,6 +1,5 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Categories from "@/components/home/Categories";
 import BestSellers from "@/components/home/BestSellers";
@@ -14,7 +13,6 @@ import FeaturedProducts from "@/components/home/FeaturedProducts";
 export default function Home() {
   return (
     <div>
-      <Navbar />
 
       {/* Hero */}
       <Hero />

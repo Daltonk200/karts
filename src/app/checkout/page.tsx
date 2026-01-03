@@ -91,9 +91,6 @@ export default function CheckoutPage() {
     setIsSubmitting(true);
 
     try {
-      // Generate invoice number
-      const invoiceNumber = `INV-${Date.now()}`;
-
       // Transform cart items to match Order model structure
       const orderItems = items.map((item) => ({
         productId: item.id, // Use the item id as productId
@@ -111,8 +108,7 @@ export default function CheckoutPage() {
         subtotal: getTotalPrice(),
         tax: calculateTax(),
         shipping: calculateShipping(),
-        invoiceNumber,
-        status: "pending",
+        notes: formData.notes || "",
       };
 
       // Send order to API
@@ -126,45 +122,21 @@ export default function CheckoutPage() {
 
       if (response.ok) {
         const orderResult = await response.json();
-
-        // Send invoice email
-        try {
-          const invoiceResponse = await fetch(
-            `/api/orders/${orderResult.order._id}/invoice`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (invoiceResponse.ok) {
-            toast.success(
-              `Order successful! Invoice #${invoiceNumber} has been generated and sent to your email.`
-            );
-          } else {
-            console.error("Failed to send invoice email");
-            toast.success(
-              `Order successful! Invoice #${invoiceNumber} has been generated.`
-            );
-          }
-        } catch (emailError) {
-          console.error("Invoice email error:", emailError);
-          toast.success(
-            `Order successful! Invoice #${invoiceNumber} has been generated.`
-          );
-        }
+        
+        toast.success(
+          `Order successful! Order #${orderResult.order.orderNumber} has been received. We'll contact you shortly to proceed with payment.`
+        );
 
         // Clear cart
         clearCart();
 
-        // Redirect to invoice page
+        // Redirect to purchase confirmation page
         setTimeout(() => {
-          router.push(`/invoice/${invoiceNumber}`);
+          router.push(`/purchase/${orderResult.order._id}`);
         }, 2000);
       } else {
-        throw new Error("Failed to create order");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to create order");
       }
     } catch (error) {
       console.error("Order error:", error);

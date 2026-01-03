@@ -9,7 +9,7 @@ import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
 import toast from "react-hot-toast";
 import Loader from "@/components/Loader";
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 import ProductRating from "@/components/karts/ProductRating";
 
 export default function CosmeticsDetailPage() {
@@ -271,7 +271,7 @@ export default function CosmeticsDetailPage() {
             {/* Category & Brand */}
             <div className="space-y-2">
               <div className="text-sm text-red-600 font-medium uppercase tracking-wide">
-                {product.category}
+                {typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}
               </div>
               <h1 className="text-3xl md:text-4xl font-bold text-zinc-900 leading-tight">
                 {product.name}
@@ -332,7 +332,7 @@ export default function CosmeticsDetailPage() {
                 <div>
                   <span className="text-zinc-500">Category:</span>
                   <span className="ml-2 font-medium text-zinc-900">
-                    {product.category}
+                    {typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}
                   </span>
                 </div>
                 <div>

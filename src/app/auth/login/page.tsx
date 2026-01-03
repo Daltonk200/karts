@@ -6,9 +6,11 @@ import Link from "next/link";
 import Image from "next/image";
 import { toast } from "react-hot-toast";
 import { Eye, EyeOff } from "lucide-react";
+import { useCartStore } from "@/store/cartStore";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { syncCart } = useCartStore();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,12 +31,38 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Simulate API delay for frontend-only mode
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Mock successful login
-      toast.success("Login successful!");
-      router.push("/account");
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username: formData.email, // API accepts username or email
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store token and user data
+        localStorage.setItem("auth_token", data.token);
+        localStorage.setItem("user_data", JSON.stringify(data.user));
+        
+        // Sync cart with database
+        await syncCart();
+        
+        toast.success("Login successful!");
+        
+        // Redirect based on role
+        if (data.user.role === "admin") {
+          router.push("/dashboard");
+        } else {
+          router.push("/account");
+        }
+      } else {
+        toast.error(data.error || "Invalid credentials");
+      }
     } catch (error) {
       console.error("Login error:", error);
       toast.error("An error occurred during login");

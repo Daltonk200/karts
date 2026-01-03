@@ -36,47 +36,48 @@ export default function MyReviewsPage() {
   });
 
   useEffect(() => {
-    // Mock data for frontend-only mode
-    const mockReviews: Review[] = [
-      {
-        _id: "1",
-        productId: "1",
-        productName: "Apex Pro Racing Kart",
-        productImage: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-        rating: 5,
-        review: "Amazing kart! Very fast and well-built. Highly recommend!",
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-      },
-      {
-        _id: "2",
-        productId: "2",
-        productName: "Thunder 250cc Racing Kart",
-        productImage: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
-        rating: 4,
-        review: "Good quality kart, but could use better suspension.",
-        createdAt: new Date(Date.now() - 172800000).toISOString(),
-      },
-    ];
-
-    const mockProducts: Product[] = [
-      {
-        _id: "3",
-        name: "Pro Racing Helmet",
-        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-        price: 180,
-      },
-      {
-        _id: "4",
-        name: "Velocity Electric Kart",
-        image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500",
-        price: 5200,
-      },
-    ];
-
-    setReviews(mockReviews);
-    setProducts(mockProducts);
-    setLoading(false);
+    fetchReviewsAndProducts();
   }, []);
+
+  const fetchReviewsAndProducts = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("auth_token");
+      const userDataStr = localStorage.getItem("user_data");
+      const userData = userDataStr ? JSON.parse(userDataStr) : null;
+
+      if (!token || !userData) {
+        setLoading(false);
+        return;
+      }
+
+      // TODO: When reviews API is available, fetch user's reviews
+      // For now, set empty arrays
+      setReviews([]);
+      
+      // Fetch products for reviewing
+      const productsResponse = await fetch("/api/products?limit=20");
+      const productsData = await productsResponse.json();
+      
+      if (productsResponse.ok) {
+        const products = (productsData.products || []).map((p: any) => ({
+          _id: p._id,
+          name: p.name,
+          image: p.images?.[0] || p.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+          price: p.price,
+        }));
+        setProducts(products);
+      } else {
+        setProducts([]);
+      }
+    } catch (error) {
+      console.error("Error fetching reviews and products:", error);
+      setReviews([]);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmitReview = async (e: React.FormEvent) => {
     e.preventDefault();

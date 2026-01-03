@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useWishlistStore } from "@/store/wishlistStore";
 import { useCartStore } from "@/store/cartStore";
 import toast from "react-hot-toast";
-import { Product } from "@/data/mockProducts";
-import { FaStar } from "react-icons/fa";
+import { Product } from "@/types/product";
+import { GrStar } from "react-icons/gr";
 
 interface ProductCardProps {
   product: Product;
@@ -18,12 +18,15 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
     useWishlistStore();
   const { addToCart, removeFromCart, isInCart } = useCartStore();
 
+  // Get product image (support both images array and image field)
+  const productImage = product.images?.[0] || product.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500";
+
   const handleAddToCart = (product: Product) => {
     addToCart({
       id: product._id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: productImage,
       category: product.category,
       brand: product.brand,
       kartType: product.kartType,
@@ -42,7 +45,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         id: product._id,
         name: product.name,
         price: product.price,
-        image: product.image,
+        image: productImage,
         category: product.category,
         brand: product.brand,
         kartType: product.kartType,
@@ -59,7 +62,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         {/* Image Container */}
         <Link href={`/products/${product._id}`} className="aspect-[4/3] bg-zinc-100 relative overflow-hidden group rounded-t-[5px] block cursor-pointer">
           <Image
-            src={product.image}
+            src={productImage}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
@@ -119,7 +122,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         </Link>
         <div className="p-3 sm:p-4 md:p-6 flex flex-col flex-grow h-full">
           <div className="text-xs sm:text-sm text-red-600 uppercase tracking-wide mb-1 sm:mb-2 font-outfit font-medium">
-            {product.category}
+            {typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}
           </div>
           <h3 className="text-sm sm:text-base md:text-xl font-semibold text-zinc-900 mb-1 sm:mb-2 line-clamp-2 group-hover:text-red-700 transition-colors duration-300">
             {product.name.length > 25
@@ -131,7 +134,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             <div className="flex items-center gap-2 mb-2">
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <FaStar
+                  <GrStar
                     key={star}
                     className={`w-4 h-4 ${
                       star <= Math.round(product.rating || 0)
@@ -307,7 +310,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         {/* Image Container */}
         <Link href={`/products/${product._id}`} className="w-32 sm:w-40 md:w-48 h-auto bg-zinc-100 relative overflow-hidden group rounded-l-[5px] block cursor-pointer">
           <Image
-            src={product.image}
+            src={productImage}
             alt={product.name}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
@@ -322,7 +325,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
         {/* Content */}
         <div className="flex-1 p-3 sm:p-4 md:p-6 flex flex-col">
           <div className="text-xs sm:text-sm text-red-600 uppercase tracking-wide mb-1 sm:mb-2 font-outfit font-medium">
-            {product.category}
+            {typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}
           </div>
           <h3 className="text-base sm:text-lg md:text-xl font-semibold text-zinc-900 mb-1 sm:mb-2 group-hover:text-red-700 transition-colors duration-300">
             {product.name.length > 60
@@ -337,7 +340,7 @@ export default function ProductCard({ product, viewMode }: ProductCardProps) {
             <div className="flex items-center gap-2 mb-2">
               <div className="flex items-center gap-0.5">
                 {[1, 2, 3, 4, 5].map((star) => (
-                  <FaStar
+                  <GrStar
                     key={star}
                     className={`w-4 h-4 ${
                       star <= Math.round(product.rating || 0)

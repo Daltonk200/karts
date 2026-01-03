@@ -1,47 +1,137 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import connectDB from '@/lib/mongodb';
+import Service from '@/models/Service';
+import { authenticateToken } from '@/lib/auth';
 
-export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  // Only support isFeatured and isActive for now
-  const isFeatured = searchParams.get("isFeatured") === "true";
-  const isActive = searchParams.get("isActive") !== "false"; // default true
-  const limit = Number(searchParams.get("limit")) || 3;
+// GET /api/services - List services with filtering
+export async function GET(request: NextRequest) {
+  try {
+    await connectDB();
 
-  // Dummy featured services
-  const services = [
-    {
-      _id: "1",
-      name: "Kart Maintenance",
-      description: "Expert kart maintenance to keep you on the track.",
-      price: 15000,
-      isFeatured: true,
-      isActive: true,
-      image: "/banner_image.jpg",
-    },
-    {
-      _id: "2",
-      name: "Performance Tuning",
-      description: "Get the most out of your kart with our performance tuning.",
-      price: 30000,
-      isFeatured: true,
-      isActive: true,
-      image: "/banner_image.jpg",
-    },
-    {
-      _id: "3",
-      name: "Custom Paint Job",
-      description: "Stand out with a custom paint job for your kart.",
-      price: 10000,
-      isFeatured: true,
-      isActive: true,
-      image: "/banner_image.jpg",
+    const { searchParams } = new URL(request.url);
+    const isFeatured = searchParams.get('isFeatured');
+    const isActive = searchParams.get('isActive') !== 'false'; // default true
+    const category = searchParams.get('category');
+    const limit = parseInt(searchParams.get('limit') || '0');
+
+    const query: any = {};
+
+    if (isFeatured === 'true') {
+      query.isFeatured = true;
     }
-    // ...more if needed...
-  ];
 
-  // Filter by featured/active and limit results
-  const filtered = services.filter(s => (!isFeatured || s.isFeatured) && (isActive ? s.isActive : true)).slice(0, limit);
+    if (isActive) {
+      query.isActive = true;
+    }
 
-  return NextResponse.json({ services: filtered });
+    if (category) {
+      query.category = category;
+    }
+
+    let servicesQuery = Service.find(query).sort({ createdAt: -1 });
+
+    if (limit > 0) {
+      servicesQuery = servicesQuery.limit(limit);
+    }
+
+    const services = await servicesQuery.lean();
+
+    return NextResponse.json({ services });
+  } catch (error) {
+    console.error('Error fetching services:', error);
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
 }
 
+// POST /api/services - Create service (protected)
+export async function POST(request: NextRequest) {
+  try {
+    await connectDB();
+
+    // Authenticate user
+    try {
+      await authenticateToken(request);
+    } catch (error) {
+      return NextResponse.json(
+        { error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const body = await request.json();
+    const {
+      name,
+      description,
+      category,
+      price,
+      duration,
+      image,
+      images,
+      features,
+      benefits,
+      tags,
+      requirements,
+      preparation,
+      aftercare,
+      isActive,
+      isFeatured,
+    } = body;
+
+    // Validate required fields
+    if (!name || !description || !category || !price || !duration) {
+      return NextResponse.json(
+        { error: 'Missing required fields' },
+        { status: 400 }
+      );
+    }
+
+    // Check featured service limit
+    if (isFeatured) {
+      const featuredCount = await Service.countDocuments({ isFeatured: true });
+      if (featuredCount >= 3) {
+        return NextResponse.json(
+          { error: 'Maximum 3 featured services allowed' },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Create service
+    const service = new Service({
+      name,
+      description,
+      category,
+      price,
+      duration,
+      image,
+      images: images || [],
+      features: features || [],
+      benefits: benefits || [],
+      tags: tags || [],
+      requirements: requirements || [],
+      preparation,
+      aftercare,
+      isActive: isActive !== undefined ? isActive : true,
+      isFeatured: isFeatured || false,
+    });
+
+    await service.save();
+
+    return NextResponse.json(
+      {
+        message: 'Service created successfully',
+        service,
+      },
+      { status: 201 }
+    );
+  } catch (error: any) {
+    console.error('Error creating service:', error);
+    return NextResponse.json(
+      { error: error.message || 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}

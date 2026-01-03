@@ -118,6 +118,8 @@ export interface ProductFormData {
   isFeatured: boolean;
   isOnSale: boolean;
   tags: string[];
+  rating?: number;
+  reviews?: number;
   specifications: Record<string, any>;
 }
 

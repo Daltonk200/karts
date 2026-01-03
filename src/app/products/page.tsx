@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Product, mockProducts } from "@/data/mockProducts";
 import KartsHero from "@/components/karts/KartsHero";
 import ProductsGrid from "@/components/karts/ProductsGrid";
 import Container from "@/components/Container";
@@ -44,12 +43,19 @@ function ProductsContent() {
   const [loading, setLoading] = useState(false);
   const hasInitialized = useRef(false);
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [availableBrands, setAvailableBrands] = useState<string[]>(["All"]);
+  const [availableEngineTypes, setAvailableEngineTypes] = useState<string[]>(["All"]);
+  const [availableMaxSpeeds, setAvailableMaxSpeeds] = useState<string[]>(["All"]);
+  const [availableWeightCapacities, setAvailableWeightCapacities] = useState<string[]>(["All"]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [selectedBrand, setSelectedBrand] = useState("All");
   const [selectedKartType, setSelectedKartType] = useState("All");
   const [selectedPriceRange, setSelectedPriceRange] = useState("All");
+  const [selectedEngineType, setSelectedEngineType] = useState("All");
+  const [selectedMaxSpeed, setSelectedMaxSpeed] = useState("All");
+  const [selectedWeightCapacity, setSelectedWeightCapacity] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
@@ -106,27 +112,90 @@ function ProductsContent() {
   const [totalProducts, setTotalProducts] = useState(0);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Calculate category counts
-  const getCategoryCounts = () => {
-    const counts: { [key: string]: number } = {};
-    mockProducts.forEach((product) => {
-      counts[product.category] = (counts[product.category] || 0) + 1;
-    });
-    return counts;
-  };
+  // Fetch categories, brands, and filter options from database
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch("/api/categories");
+        const data = await response.json();
+        setCategories(data.categories || []);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+    
+    const fetchBrands = async () => {
+      try {
+        const response = await fetch("/api/products/brands");
+        const data = await response.json();
+        setAvailableBrands(["All", ...(data.brands || [])]);
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
 
-  const categoryCounts = getCategoryCounts();
+    const fetchFilterOptions = async () => {
+      try {
+        // Fetch all products to extract filter options
+        const response = await fetch("/api/products?limit=1000");
+        const data = await response.json();
+        const products = data.products || [];
 
-  const categories = [
-    "All",
-    "Racing Karts",
-    "Recreational Karts",
-    "Electric Karts",
-    "Scooters",
-    "Parts & Accessories",
-    "Racing Gear",
-    "Safety Equipment",
-  ];
+        // Extract unique engine types
+        const engineTypes = new Set<string>();
+        const maxSpeeds = new Set<number>();
+        const weightCapacities = new Set<number>();
+
+        products.forEach((product: any) => {
+          if (product.specifications?.engineType) {
+            engineTypes.add(product.specifications.engineType);
+          }
+          if (product.specifications?.maxSpeed && typeof product.specifications.maxSpeed === 'number') {
+            maxSpeeds.add(product.specifications.maxSpeed);
+          }
+          if (product.specifications?.weightCapacity && typeof product.specifications.weightCapacity === 'number') {
+            weightCapacities.add(product.specifications.weightCapacity);
+          }
+        });
+
+        // Set engine types (sorted)
+        setAvailableEngineTypes(["All", ...Array.from(engineTypes).sort()]);
+
+        // Set max speeds (grouped into ranges, sorted)
+        const speedRanges = Array.from(maxSpeeds).sort((a, b) => a - b);
+        const speedOptions = ["All"];
+        if (speedRanges.length > 0) {
+          const min = Math.min(...speedRanges);
+          const max = Math.max(...speedRanges);
+          if (min < 30) speedOptions.push("Under 30 mph");
+          if (min < 50 && max >= 30) speedOptions.push("30 - 50 mph");
+          if (min < 70 && max >= 50) speedOptions.push("50 - 70 mph");
+          if (min < 85 && max >= 70) speedOptions.push("70 - 85 mph");
+          if (max >= 85) speedOptions.push("Over 85 mph");
+        }
+        setAvailableMaxSpeeds(speedOptions);
+
+        // Set weight capacities (grouped into ranges, sorted)
+        const weightRanges = Array.from(weightCapacities).sort((a, b) => a - b);
+        const weightOptions = ["All"];
+        if (weightRanges.length > 0) {
+          const min = Math.min(...weightRanges);
+          const max = Math.max(...weightRanges);
+          if (min < 150) weightOptions.push("Under 150 lbs");
+          if (min < 200 && max >= 150) weightOptions.push("150 - 200 lbs");
+          if (min < 250 && max >= 200) weightOptions.push("200 - 250 lbs");
+          if (max >= 250) weightOptions.push("Over 250 lbs");
+        }
+        setAvailableWeightCapacities(weightOptions);
+      } catch (error) {
+        console.error("Error fetching filter options:", error);
+      }
+    };
+    
+    fetchCategories();
+    fetchBrands();
+    fetchFilterOptions();
+  }, []);
 
   const kartTypes = [
     "All",
@@ -157,105 +226,133 @@ function ProductsContent() {
     selectedBrand,
     selectedKartType,
     selectedPriceRange,
+    selectedEngineType,
+    selectedMaxSpeed,
+    selectedWeightCapacity,
     sortBy,
   ]);
 
-  const fetchProducts = () => {
+  const fetchProducts = async () => {
     try {
       setLoading(true);
       
-      // Start with all mock products
-      let filteredProducts = [...mockProducts];
-
-      // Filter by search query
+      // Build query parameters
+      const params = new URLSearchParams();
+      params.append("page", currentPage.toString());
+      params.append("limit", ITEMS_PER_PAGE.toString());
+      
       if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        filteredProducts = filteredProducts.filter(
-          (product) =>
-            product.name.toLowerCase().includes(query) ||
-            product.brand.toLowerCase().includes(query) ||
-            product.description.toLowerCase().includes(query) ||
-            product.sku.toLowerCase().includes(query)
-        );
+        params.append("search", searchQuery);
       }
-
-      // Filter by category
+      
       if (selectedCategory !== "All") {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.category === selectedCategory
-        );
+        // Find category ID from name
+        const category = categories.find(cat => cat.name === selectedCategory);
+        if (category) {
+          params.append("category", category._id);
+        }
       }
-
-      // Filter by brand
+      
       if (selectedBrand !== "All") {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.brand === selectedBrand
-        );
+        params.append("brand", selectedBrand);
       }
-
-      // Filter by kart type
-      if (selectedKartType !== "All") {
-        filteredProducts = filteredProducts.filter(
-          (product) => product.kartType === selectedKartType
-        );
-      }
-
-      // Filter by price range
+      
+      // Map price range to min/max
       if (selectedPriceRange !== "All") {
         const ranges: { [key: string]: [number, number] } = {
           "Under $500": [0, 500],
           "$500 - $2,000": [500, 2000],
           "$2,000 - $4,000": [2000, 4000],
           "$4,000 - $6,000": [4000, 6000],
-          "Over $6,000": [6000, Infinity],
+          "Over $6,000": [6000, 999999],
         };
-        const [min, max] = ranges[selectedPriceRange] || [0, Infinity];
-        filteredProducts = filteredProducts.filter(
-          (product) => product.price >= min && product.price <= max
-        );
+        const [min, max] = ranges[selectedPriceRange] || [0, 999999];
+        params.append("minPrice", min.toString());
+        params.append("maxPrice", max.toString());
       }
-
-      // Extract unique brands
-      const brands = [
-        "All",
-        ...new Set(filteredProducts.map((p) => p.brand)),
-      ];
-      setAvailableBrands(brands);
-
-      // Sort products
-      filteredProducts.sort((a, b) => {
-        switch (sortBy) {
-          case "featured":
-            if (a.isFeatured && !b.isFeatured) return -1;
-            if (!a.isFeatured && b.isFeatured) return 1;
-            return 0;
-          case "price":
-            return a.price - b.price;
-          case "price-desc":
-            return b.price - a.price;
-          case "rating":
-            return (b.rating || 0) - (a.rating || 0);
-          case "name":
-            return a.name.localeCompare(b.name);
-          default:
-            return 0;
+      
+      // Map sortBy
+      const sortMap: { [key: string]: string } = {
+        "featured": "createdAt",
+        "price": "price",
+        "price-desc": "price",
+        "rating": "createdAt",
+        "name": "name",
+      };
+      const apiSortBy = sortMap[sortBy] || "createdAt";
+      params.append("sortBy", apiSortBy);
+      params.append("sortOrder", sortBy === "price-desc" ? "desc" : sortBy === "price" ? "asc" : "desc");
+      
+      const response = await fetch(`/api/products?${params.toString()}`);
+      const data = await response.json();
+      
+      if (response.ok) {
+        let filteredProducts = data.products || [];
+        
+        // Client-side filtering for specifications (not supported by API yet)
+        if (selectedEngineType !== "All") {
+          filteredProducts = filteredProducts.filter(
+            (product: any) => product.productType === "go-karts" && product.specifications?.engineType === selectedEngineType
+          );
         }
-      });
-
-      // Calculate pagination
-      const total = filteredProducts.length;
-      const pages = Math.ceil(total / ITEMS_PER_PAGE);
-      setTotalPages(pages);
-      setTotalProducts(total);
-
-      // Paginate
-      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-      const endIndex = startIndex + ITEMS_PER_PAGE;
-      const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-
-      setProducts(paginatedProducts);
+        
+        if (selectedMaxSpeed !== "All") {
+          const speedRanges: { [key: string]: [number, number] } = {
+            "Under 30 mph": [0, 30],
+            "30 - 50 mph": [30, 50],
+            "50 - 70 mph": [50, 70],
+            "70 - 85 mph": [70, 85],
+            "Over 85 mph": [85, 999],
+          };
+          const [min, max] = speedRanges[selectedMaxSpeed] || [0, 999];
+          filteredProducts = filteredProducts.filter((product: any) => {
+            const maxSpeed = product.specifications?.maxSpeed;
+            if (typeof maxSpeed === "number") {
+              return maxSpeed >= min && maxSpeed <= max;
+            }
+            return false;
+          });
+        }
+        
+        if (selectedWeightCapacity !== "All") {
+          const weightRanges: { [key: string]: [number, number] } = {
+            "Under 150 lbs": [0, 150],
+            "150 - 200 lbs": [150, 200],
+            "200 - 250 lbs": [200, 250],
+            "Over 250 lbs": [250, 9999],
+          };
+          const [min, max] = weightRanges[selectedWeightCapacity] || [0, 9999];
+          filteredProducts = filteredProducts.filter((product: any) => {
+            const weightCapacity = product.specifications?.weightCapacity;
+            if (typeof weightCapacity === "number") {
+              return weightCapacity >= min && weightCapacity <= max;
+            }
+            return false;
+          });
+        }
+        
+        // Transform category objects to names for display
+        filteredProducts = filteredProducts.map((product: any) => {
+          if (product.category && typeof product.category === 'object') {
+            product.categoryName = product.category.name;
+            product.category = product.category.name || product.category._id;
+          }
+          return product;
+        });
+        
+        setProducts(filteredProducts);
+        setTotalProducts(data.pagination?.total || filteredProducts.length);
+        setTotalPages(data.pagination?.pages || 1);
+      } else {
+        setProducts([]);
+        setTotalProducts(0);
+        setTotalPages(1);
+      }
     } catch (error) {
-      console.error("Error filtering products:", error);
+      console.error("Error fetching products:", error);
+      setProducts([]);
+      setTotalProducts(0);
+      setTotalPages(1);
     } finally {
       setLoading(false);
     }
@@ -277,6 +374,9 @@ function ProductsContent() {
     setSelectedBrand("All");
     setSelectedKartType("All");
     setSelectedPriceRange("All");
+    setSelectedEngineType("All");
+    setSelectedMaxSpeed("All");
+    setSelectedWeightCapacity("All");
     setSearchQueryHandler("");
     setCurrentPage(1);
   };
@@ -286,6 +386,9 @@ function ProductsContent() {
     selectedBrand !== "All" ||
     selectedKartType !== "All" ||
     selectedPriceRange !== "All" ||
+    selectedEngineType !== "All" ||
+    selectedMaxSpeed !== "All" ||
+    selectedWeightCapacity !== "All" ||
     searchQuery !== "";
 
   return (
@@ -356,36 +459,42 @@ function ProductsContent() {
                     Categories
                   </h3>
                   <div className="space-y-2">
-                    {categories.map((category) => {
-                      const count = category === "All" 
-                        ? mockProducts.length 
-                        : categoryCounts[category] || 0;
-                      const isSelected = selectedCategory === category;
-                      const IconComponent = categoryIcons[category] || FaBox;
+                    <label className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                      <input
+                        type="radio"
+                        name="category"
+                        checked={selectedCategory === "All"}
+                        onChange={() => {
+                          setSelectedCategory("All");
+                          handleFilterChange();
+                        }}
+                        className="w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 border-gray-300"
+                      />
+                      <FaBox className="w-5 h-5 text-gray-600" />
+                      <span className="text-sm text-gray-700 font-outfit">All Categories</span>
+                    </label>
+                    {categories.map((category: any) => {
+                      const isSelected = selectedCategory === category.name;
+                      const IconComponent = categoryIcons[category.name] || FaBox;
                       
                       return (
                         <label
-                          key={category}
-                          className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group"
+                          key={category._id}
+                          className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors group"
                         >
-                          <div className="flex items-center gap-3 flex-1">
-                            <input
-                              type="radio"
-                              name="category"
-                              checked={isSelected}
-                              onChange={() => {
-                                setSelectedCategory(category);
-                                handleFilterChange();
-                              }}
-                              className="w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 border-gray-300"
-                            />
-                            <IconComponent className="w-5 h-5 text-gray-600" />
-                            <span className="text-sm text-gray-700 font-outfit flex-1">
-                              {category}
-                            </span>
-                          </div>
-                          <span className="text-xs text-gray-500 font-outfit">
-                            {count}
+                          <input
+                            type="radio"
+                            name="category"
+                            checked={isSelected}
+                            onChange={() => {
+                              setSelectedCategory(category.name);
+                              handleFilterChange();
+                            }}
+                            className="w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 border-gray-300"
+                          />
+                          <IconComponent className="w-5 h-5 text-gray-600" />
+                          <span className="text-sm text-gray-700 font-outfit flex-1">
+                            {category.name}
                           </span>
                         </label>
                       );
@@ -490,6 +599,109 @@ function ProductsContent() {
                     })}
                   </div>
                 </div>
+
+                {/* Engine Type (for Go-Karts) */}
+                {availableEngineTypes.length > 1 && (
+                  <div className="mb-6">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3 font-outfit">
+                      Engine Type
+                    </h3>
+                    <div className="space-y-2">
+                      {availableEngineTypes.map((type) => {
+                        const isSelected = selectedEngineType === type || (selectedEngineType === "All" && type === "All");
+                        const displayName = type.charAt(0).toUpperCase() + type.slice(1).replace(/-/g, ' ');
+                        return (
+                          <label
+                            key={type}
+                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                          >
+                            <input
+                              type="radio"
+                              name="engineType"
+                              checked={isSelected}
+                              onChange={() => {
+                                setSelectedEngineType(type);
+                                handleFilterChange();
+                              }}
+                              className="w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 border-gray-300"
+                            />
+                            <span className="text-sm text-gray-700 font-outfit">
+                              {displayName}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Max Speed */}
+                {availableMaxSpeeds.length > 1 && (
+                  <div className="mb-6">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3 font-outfit">
+                      Max Speed
+                    </h3>
+                    <div className="space-y-2">
+                      {availableMaxSpeeds.map((speed) => {
+                        const isSelected = selectedMaxSpeed === speed;
+                        return (
+                          <label
+                            key={speed}
+                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                          >
+                            <input
+                              type="radio"
+                              name="maxSpeed"
+                              checked={isSelected}
+                              onChange={() => {
+                                setSelectedMaxSpeed(speed);
+                                handleFilterChange();
+                              }}
+                              className="w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 border-gray-300"
+                            />
+                            <span className="text-sm text-gray-700 font-outfit">
+                              {speed}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {/* Weight Capacity */}
+                {availableWeightCapacities.length > 1 && (
+                  <div className="mb-6">
+                    <h3 className="text-sm font-semibold text-gray-900 mb-3 font-outfit">
+                      Weight Capacity
+                    </h3>
+                    <div className="space-y-2">
+                      {availableWeightCapacities.map((weight) => {
+                        const isSelected = selectedWeightCapacity === weight;
+                        return (
+                          <label
+                            key={weight}
+                            className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                          >
+                            <input
+                              type="radio"
+                              name="weightCapacity"
+                              checked={isSelected}
+                              onChange={() => {
+                                setSelectedWeightCapacity(weight);
+                                handleFilterChange();
+                              }}
+                              className="w-4 h-4 text-red-600 focus:ring-red-500 focus:ring-2 border-gray-300"
+                            />
+                            <span className="text-sm text-gray-700 font-outfit">
+                              {weight}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
                 </div>
 
                 {/* Reset Filters Button - Always Visible at Bottom */}

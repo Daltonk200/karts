@@ -45,80 +45,6 @@ export default function CategoriesPage() {
     categoryName: "",
   });
 
-  // Mock categories data
-  const mockCategories: Category[] = [
-    {
-      id: "1",
-      name: "Electric Go-Karts",
-      productType: "go-karts",
-      slug: "electric-go-karts",
-      description: "Electric powered go-karts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "2",
-      name: "Gas-Powered Go-Karts",
-      productType: "go-karts",
-      slug: "gas-powered-go-karts",
-      description: "Gas powered go-karts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "3",
-      name: "Racing Go-Karts",
-      productType: "go-karts",
-      slug: "racing-go-karts",
-      description: "Professional racing go-karts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "4",
-      name: "Electric Scooters",
-      productType: "scooters",
-      slug: "electric-scooters",
-      description: "Electric powered scooters",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "5",
-      name: "Gas Scooters",
-      productType: "scooters",
-      slug: "gas-scooters",
-      description: "Gas powered scooters",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "6",
-      name: "Engine Parts",
-      productType: "spare-parts",
-      slug: "engine-parts",
-      description: "Engine and motor parts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-    {
-      id: "7",
-      name: "Body Parts",
-      productType: "spare-parts",
-      slug: "body-parts",
-      description: "Body and frame parts",
-      isActive: true,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    },
-  ];
-
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -130,12 +56,38 @@ export default function CategoriesPage() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
-      setCategories(mockCategories);
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
+      
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch("/api/categories", { headers });
+      const data = await response.json();
+
+      if (response.ok) {
+        // Transform categories to match Category interface
+        const transformedCategories = (data.categories || []).map((cat: any) => ({
+          id: cat._id,
+          name: cat.name,
+          productType: cat.productType || "all",
+          slug: cat.slug,
+          description: cat.description || "",
+          isActive: true,
+          createdAt: cat.createdAt,
+          updatedAt: cat.updatedAt,
+        }));
+        setCategories(transformedCategories);
+      } else {
+        setCategories([]);
+      }
     } catch (error) {
       console.error("Error fetching categories:", error);
       toast.error("Failed to fetch categories");
+      setCategories([]);
     } finally {
       setLoading(false);
     }
@@ -160,14 +112,30 @@ export default function CategoriesPage() {
     if (!deleteModal.categoryId) return;
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
       
-      setCategories(prevCategories =>
-        prevCategories.filter(cat => cat.id !== deleteModal.categoryId)
-      );
-      toast.success("Category deleted successfully");
-      setDeleteModal({ isOpen: false, categoryId: null, categoryName: "" });
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/categories/${deleteModal.categoryId}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      if (response.ok) {
+        setCategories(prevCategories =>
+          prevCategories.filter(cat => cat.id !== deleteModal.categoryId)
+        );
+        toast.success("Category deleted successfully");
+        setDeleteModal({ isOpen: false, categoryId: null, categoryName: "" });
+      } else {
+        const data = await response.json();
+        toast.error(data.error || "Failed to delete category");
+      }
     } catch (error) {
       console.error("Error deleting category:", error);
       toast.error("Failed to delete category");
@@ -456,13 +424,39 @@ function CategoryForm({ category, onSuccess, onCancel }: CategoryFormProps) {
 
     setLoading(true);
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
       
-      toast.success(
-        category ? "Category updated successfully" : "Category created successfully"
-      );
-      onSuccess();
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const url = category 
+        ? `/api/categories/${category.id}`
+        : "/api/categories";
+      const method = category ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: JSON.stringify({
+          name: formData.name,
+          productType: formData.productType,
+          description: formData.description,
+        }),
+      });
+
+      if (response.ok) {
+        toast.success(
+          category ? "Category updated successfully" : "Category created successfully"
+        );
+        onSuccess();
+      } else {
+        const data = await response.json();
+        toast.error(data.error || "Failed to save category");
+      }
     } catch (error) {
       console.error("Error saving category:", error);
       toast.error("Failed to save category");

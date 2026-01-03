@@ -37,6 +37,7 @@ export default function CartPage() {
     getTotalPrice,
     clearCart,
     addToCart,
+    syncCart,
   } = useCartStore();
   const { addToWishlist, isInWishlist } = useWishlistStore();
   const {
@@ -49,6 +50,14 @@ export default function CartPage() {
   const [isCheckingOut, setIsCheckingOut] = useState(false);
   const [recommendations, setRecommendations] = useState<Product[]>([]);
   const [recommendationsLoading, setRecommendationsLoading] = useState(true);
+
+  // Sync cart with database on mount (if logged in)
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem("auth_token") : null;
+    if (token) {
+      syncCart();
+    }
+  }, [syncCart]);
 
   // Fetch recommendations from backend
   useEffect(() => {
@@ -170,24 +179,23 @@ export default function CartPage() {
     return (
       <>
         {/* Hero Section */}
-        <section className="relative  border-b border-red-200 overflow-hidden">
+        <section className="relative py-24 bg-zinc-900 overflow-hidden border-b border-red-200">
           <div className="absolute inset-0">
             <Image
-              src="https://img.freepik.com/free-photo/supermarket-trolleys-gift-boxes_23-2148663146.jpg?t=st=1755685004~exp=1755688604~hmac=7fbf3c9f68d42b024c4b15f88dd3ecf14b9a18cb0541525f71d1b731e519b073&w=2000"
+              src="/about.jpg"
               alt="Shopping Cart"
               fill
-              className="object-cover "
+              className="object-cover opacity-20"
+              priority
             />
-            {/* <div className="absolute inset-0 bg-gradient-to-r from-red-900/20 to-red-900/20"></div> */}
           </div>
-          <Container className="relative py-16">
+          <Container className="relative z-10">
             <div className="text-center">
               <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-caveat">
                 Shopping Cart
               </h1>
-              <p className="text-lg text-white max-w-2xl mx-auto font-outfit">
-                Your cart is empty. Start shopping to add some amazing beauty
-                products to your collection.
+              <p className="text-lg text-zinc-200 max-w-2xl mx-auto font-outfit">
+                Your cart is empty. Start shopping to add some amazing items to your collection.
               </p>
             </div>
           </Container>
@@ -197,12 +205,12 @@ export default function CartPage() {
         <section className="py-16 bg-zinc-50">
           <Container>
             <div className="text-center py-12">
-              <div className="text-6xl mb-6">💄</div>
+              <div className="text-8xl mb-8 animate-bounce">🏎️</div>
               <h2 className="text-2xl font-semibold text-zinc-900 mb-4 font-caveat">
                 Your cart is empty
               </h2>
               <p className="text-zinc-600 mb-8 max-w-md mx-auto font-outfit">
-                Looks like you haven't added any beauty products to your cart
+                Looks like you haven't added any items to your cart
                 yet. Browse our collection and find your perfect karts.
               </p>
               <Link
@@ -221,23 +229,23 @@ export default function CartPage() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative  border-b border-red-200 overflow-hidden">
+      <section className="relative py-24 bg-zinc-900 overflow-hidden border-b border-red-200">
         <div className="absolute inset-0">
           <Image
-            src="https://img.freepik.com/free-photo/supermarket-trolleys-gift-boxes_23-2148663146.jpg?t=st=1755685004~exp=1755688604~hmac=7fbf3c9f68d42b024c4b15f88dd3ecf14b9a18cb0541525f71d1b731e519b073&w=2000"
+            src="/about.jpg"
             alt="Shopping Cart"
             fill
-            className="object-cover "
+            className="object-cover opacity-20"
+            priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/60 to-black/60"></div>
         </div>
-        <Container className="relative py-16">
+        <Container className="relative z-10">
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 font-caveat">
               Shopping Cart
             </h1>
-            <p className="text-lg text-white max-w-2xl mx-auto font-outfit">
-              Review your selected beauty products and proceed to checkout.
+            <p className="text-lg text-zinc-200 max-w-2xl mx-auto font-outfit">
+              Review your selected items and proceed to checkout.
             </p>
           </div>
         </Container>
@@ -276,7 +284,7 @@ export default function CartPage() {
                         {/* Product Image */}
                         <div className="flex-shrink-0 w-24 h-24 bg-zinc-100 relative overflow-hidden rounded-[5px]">
                           <Image
-                            src={item.image}
+                            src={item.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500"}
                             alt={item.name}
                             fill
                             className="object-cover"
@@ -530,41 +538,48 @@ export default function CartPage() {
                     </div>
                   ) : (
                     <div className="flex overflow-x-scroll snap-x snap-proximity gap-4 md:gap-6 pb-4 scrollbar-hide">
-                      {recommendations.map((product) => (
-                        <div
-                          key={product._id}
-                          className="bg-white snap-start border min-w-[230px] md:min-w-[280px] border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-md transform hover:-translate-y-1 group"
-                        >
-                          <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden rounded-t-[5px]">
-                            <Image
-                              src={product.image}
-                              alt={product.name}
-                              fill
-                              className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
-                            />
+                      {recommendations.map((product) => {
+                        const productImage = product.images?.[0] || product.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500";
+                        return (
+                          <div
+                            key={product._id || product.id}
+                            className="bg-white snap-start border min-w-[230px] md:min-w-[280px] border-zinc-200 hover:border-red-300 transition-all duration-300 flex flex-col rounded-[5px] shadow-sm hover:shadow-md transform hover:-translate-y-1 group"
+                          >
+                            <Link href={`/karts/${product._id || product.id}`}>
+                              <div className="aspect-[4/3] bg-zinc-100 relative overflow-hidden rounded-t-[5px] cursor-pointer">
+                                <Image
+                                  src={productImage}
+                                  alt={product.name}
+                                  fill
+                                  className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                                />
+                              </div>
+                            </Link>
+                            <div className="p-4 flex flex-col flex-grow">
+                              <Link href={`/karts/${product._id || product.id}`}>
+                                <h4 className="text-sm font-medium text-zinc-900 mb-2 font-outfit line-clamp-2 hover:text-red-600 cursor-pointer transition-colors">
+                                  {product.name}
+                                </h4>
+                              </Link>
+                              <p className="text-lg text-red-600 font-bold font-caveat mb-3">
+                                ${product.price.toLocaleString()}
+                              </p>
+                              <button
+                                onClick={() => handleAddToWishlist(product)}
+                                className={`w-full px-3 py-2 text-xs font-medium rounded-[5px] transition-all duration-200 font-outfit mt-auto ${
+                                  isInWishlist(product._id || product.id)
+                                    ? "border-red-300 text-red-600 bg-red-50"
+                                    : "border border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50"
+                                }`}
+                              >
+                                {isInWishlist(product._id || product.id)
+                                  ? "In Wishlist"
+                                  : "Add to Wishlist"}
+                              </button>
+                            </div>
                           </div>
-                          <div className="p-4 flex flex-col flex-grow">
-                            <h4 className="text-sm font-medium text-zinc-900 mb-2 font-outfit line-clamp-2">
-                              {product.name}
-                            </h4>
-                            <p className="text-lg text-red-600 font-bold font-caveat mb-3">
-                              ${product.price.toLocaleString()}
-                            </p>
-                            <button
-                              onClick={() => handleAddToWishlist(product)}
-                              className={`w-full px-3 py-2 text-xs font-medium rounded-[5px] transition-all duration-200 font-outfit mt-auto ${
-                                isInWishlist(product._id)
-                                  ? "border-red-300 text-red-600 bg-red-50"
-                                  : "border border-zinc-300 text-zinc-700 hover:border-red-300 hover:text-red-600 hover:bg-red-50"
-                              }`}
-                            >
-                              {isInWishlist(product._id)
-                                ? "In Wishlist"
-                                : "Add to Wishlist"}
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </div>

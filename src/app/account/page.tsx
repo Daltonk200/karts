@@ -29,61 +29,76 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Mock data for frontend-only mode
-    const mockOrders: Order[] = [
-      {
-        _id: "1",
-        orderNumber: "ORD-001",
-        total: 4500,
-        status: "pending",
-        createdAt: new Date().toISOString(),
-        items: [
-          {
-            name: "Apex Pro Racing Kart",
-            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-            quantity: 1,
-          },
-        ],
-      },
-      {
-        _id: "2",
-        orderNumber: "ORD-002",
-        total: 3800,
-        status: "shipped",
-        createdAt: new Date(Date.now() - 86400000).toISOString(),
-        items: [
-          {
-            name: "Thunder 250cc Racing Kart",
-            image: "https://images.unsplash.com/photo-1612892483236-52d32a0e0ac1?w=500",
-            quantity: 1,
-          },
-        ],
-      },
-      {
-        _id: "3",
-        orderNumber: "ORD-003",
-        total: 180,
-        status: "completed",
-        createdAt: new Date(Date.now() - 172800000).toISOString(),
-        items: [
-          {
-            name: "Pro Racing Helmet",
-            image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
-            quantity: 1,
-          },
-        ],
-      },
-    ];
-
-    setRecentOrders(mockOrders);
-    setStats({
-      totalOrders: mockOrders.length,
-      pendingOrders: mockOrders.filter((o) => o.status === "pending").length,
-      totalSpent: mockOrders.reduce((sum, o) => sum + o.total, 0),
-      reviewsCount: 5,
-    });
-    setLoading(false);
+    fetchAccountData();
   }, []);
+
+  const fetchAccountData = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("auth_token");
+      const userDataStr = localStorage.getItem("user_data");
+      const userData = userDataStr ? JSON.parse(userDataStr) : null;
+
+      if (!token || !userData) {
+        setLoading(false);
+        return;
+      }
+
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+
+      // Fetch user's orders
+      const response = await fetch(`/api/orders?search=${userData.email}&limit=10`, {
+        headers,
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const orders = (data.orders || []).map((order: any) => ({
+          _id: order._id,
+          orderNumber: order.orderNumber,
+          total: order.total,
+          status: order.status,
+          createdAt: order.createdAt,
+          items: order.items.map((item: any) => ({
+            name: item.name,
+            image: item.image || "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500",
+            quantity: item.quantity,
+          })),
+        }));
+
+        setRecentOrders(orders);
+        setStats({
+          totalOrders: data.pagination?.total || orders.length,
+          pendingOrders: orders.filter((o: Order) => o.status === "pending").length,
+          totalSpent: orders.reduce((sum: number, o: Order) => sum + o.total, 0),
+          reviewsCount: 0, // TODO: Fetch from reviews API when available
+        });
+      } else {
+        setRecentOrders([]);
+        setStats({
+          totalOrders: 0,
+          pendingOrders: 0,
+          totalSpent: 0,
+          reviewsCount: 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching account data:", error);
+      setRecentOrders([]);
+      setStats({
+        totalOrders: 0,
+        pendingOrders: 0,
+        totalSpent: 0,
+        reviewsCount: 0,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {

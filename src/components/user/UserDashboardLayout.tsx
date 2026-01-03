@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { toast } from "react-hot-toast";
@@ -10,20 +10,72 @@ interface UserDashboardLayoutProps {
   children: React.ReactNode;
 }
 
+interface User {
+  name: string;
+  email: string;
+  username: string;
+}
+
 export default function UserDashboardLayout({ children }: UserDashboardLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false); // Mobile sidebar
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false); // Desktop collapse/expand
-  // Mock user data for frontend-only mode
-  const [user] = useState<any>({
-    name: "John Doe",
-    email: "john@example.com",
-    avatar: "JD"
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
   const router = useRouter();
 
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
+  const fetchUserData = async () => {
+    try {
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/user/profile", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setUser({
+          name: data.user.name || data.user.username,
+          email: data.user.email,
+          username: data.user.username,
+        });
+      } else {
+        // If unauthorized, clear auth data
+        if (response.status === 401) {
+          localStorage.removeItem("auth_token");
+          localStorage.removeItem("user_data");
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
+  };
+
+  const handleLogout = () => {
+    // Clear any stored auth data
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("user_data");
+    }
+    router.push("/");
+    toast.success("Logged out successfully");
   };
 
   const navigation = [
@@ -177,28 +229,74 @@ export default function UserDashboardLayout({ children }: UserDashboardLayoutPro
 
         {/* User info */}
         <div className={`absolute bottom-0 left-0 right-0 border-t border-gray-200 ${sidebarCollapsed ? "lg:p-2 p-4" : "p-4"}`}>
-          {!sidebarCollapsed ? (
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
-                <span className="text-sm font-medium text-red-700">
-                  {user?.name?.charAt(0) || "U"}
-                </span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.name || "User"}
-                </p>
-                <p className="text-xs text-gray-500 truncate">{user?.email || "user@example.com"}</p>
-              </div>
+          {loading ? (
+            <div className="flex items-center justify-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-red-600"></div>
             </div>
+          ) : !sidebarCollapsed ? (
+            <>
+              <div className="flex items-center space-x-3 mb-3">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                  <span className="text-sm font-medium text-red-700">
+                    {user?.name?.charAt(0).toUpperCase() || user?.username?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">
+                    {user?.name || user?.username || "User"}
+                  </p>
+                  <p className="text-xs text-gray-500 truncate">{user?.email || "user@example.com"}</p>
+                </div>
+              </div>
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center justify-center space-x-2 px-4 py-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200 font-medium text-sm"
+              >
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+                <span>Logout</span>
+              </button>
+            </>
           ) : (
-            <div className="lg:flex lg:flex-col lg:items-center">
-              <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-                <span className="text-sm font-medium text-red-700">
-                  {user?.name?.charAt(0) || "U"}
-                </span>
+            <>
+              <div className="lg:flex lg:flex-col lg:items-center mb-3">
+                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+                  <span className="text-sm font-medium text-red-700">
+                    {user?.name?.charAt(0).toUpperCase() || user?.username?.charAt(0).toUpperCase() || "U"}
+                  </span>
+                </div>
               </div>
-            </div>
+              <button
+                onClick={handleLogout}
+                className="w-full lg:w-auto lg:mx-auto flex items-center justify-center p-2 bg-white border-2 border-red-600 text-red-600 rounded-lg hover:bg-red-50 transition-colors duration-200"
+                title="Logout"
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+                  />
+                </svg>
+              </button>
+            </>
           )}
         </div>
       </div>

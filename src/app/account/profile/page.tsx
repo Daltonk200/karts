@@ -45,19 +45,98 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
-    // Load user data (mock for frontend-only mode)
-    setLoading(false);
+    fetchUserProfile();
   }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch("/api/user/profile", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        const user = data.user;
+        setFormData({
+          name: user.name || user.username || "",
+          email: user.email || "",
+          phone: user.phone || "",
+          dateOfBirth: user.dateOfBirth || "",
+          gender: user.gender || "male",
+          address: user.address || {
+            street: "",
+            city: "",
+            state: "",
+            zipCode: "",
+            country: "",
+          },
+        });
+      } else {
+        toast.error("Failed to load profile data");
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+      toast.error("Failed to load profile data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
 
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        toast.error("Please log in to update your profile");
+        setSaving(false);
+        return;
+      }
+
+      const response = await fetch("/api/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          dateOfBirth: formData.dateOfBirth,
+          gender: formData.gender,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
       toast.success("Profile updated successfully!");
+        // Update localStorage user_data if email changed
+        if (data.user) {
+          const userDataStr = localStorage.getItem("user_data");
+          if (userDataStr) {
+            const userData = JSON.parse(userDataStr);
+            userData.email = data.user.email;
+            localStorage.setItem("user_data", JSON.stringify(userData));
+          }
+        }
+      } else {
+        toast.error(data.error || "Failed to update profile");
+      }
     } catch (error) {
+      console.error("Error updating profile:", error);
       toast.error("Failed to update profile");
     } finally {
       setSaving(false);
@@ -79,15 +158,39 @@ export default function ProfilePage() {
 
     setSaving(true);
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        toast.error("Please log in to update your password");
+        setSaving(false);
+        return;
+      }
+
+      const response = await fetch("/api/user/password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          currentPassword: passwordData.currentPassword,
+          newPassword: passwordData.newPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
       toast.success("Password updated successfully!");
       setPasswordData({
         currentPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
+      } else {
+        toast.error(data.error || "Failed to update password");
+      }
     } catch (error) {
+      console.error("Error updating password:", error);
       toast.error("Failed to update password");
     } finally {
       setSaving(false);
@@ -99,10 +202,33 @@ export default function ProfilePage() {
     setSaving(true);
 
     try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const token = localStorage.getItem("auth_token");
+      if (!token) {
+        toast.error("Please log in to update your address");
+        setSaving(false);
+        return;
+      }
+
+      const response = await fetch("/api/user/profile", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          address: formData.address,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
       toast.success("Address updated successfully!");
+      } else {
+        toast.error(data.error || "Failed to update address");
+      }
     } catch (error) {
+      console.error("Error updating address:", error);
       toast.error("Failed to update address");
     } finally {
       setSaving(false);

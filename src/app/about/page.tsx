@@ -10,10 +10,11 @@ export default function AboutPage() {
       <section className="relative py-24 bg-zinc-900 overflow-hidden">
         <div className="absolute inset-0">
           <Image
-            src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2000&q=80"
+            src="/about.jpg"
             alt="About Apex Rush Karts"
             fill
             className="object-cover opacity-20"
+            priority
           />
         </div>
         <Container className="relative z-10">
@@ -65,7 +66,7 @@ export default function AboutPage() {
             <div className="relative">
               <div className="aspect-[4/3] bg-zinc-100 border border-zinc-200 rounded-2xl overflow-hidden">
                 <Image
-                  src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80"
+                  src="/story.avif"
                   alt="Apex Rush Karts showroom"
                   fill
                   className="object-cover"

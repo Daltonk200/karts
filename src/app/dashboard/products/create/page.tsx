@@ -169,7 +169,7 @@ export default function CreateProductPage() {
 
     setLoading(true);
     try {
-      const token = localStorage.getItem("dashboard_token");
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
       const headers: HeadersInit = {
         "Content-Type": "application/json",
       };

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Product } from "@/data/mockProducts";
+import { Product } from "@/types/product";
 import KartsHero from "@/components/karts/KartsHero";
 import KartsFilters from "@/components/karts/KartsFilters";
 import ProductsGrid from "@/components/karts/ProductsGrid";

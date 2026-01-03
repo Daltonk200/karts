@@ -91,7 +91,7 @@ export default function ContactPage() {
       <section className="relative bg-black border-b border-zinc-200 overflow-hidden">
         <div className="absolute inset-0 z-0">
           <Image
-            src="https://images.unsplash.com/photo-1516209503378-2c2ea5579295?w=2000"
+            src="/cta.jpg"
             alt="Contact Apex Rush Karts"
             fill
             className="object-cover opacity-60"

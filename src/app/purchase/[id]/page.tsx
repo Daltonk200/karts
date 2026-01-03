@@ -282,7 +282,7 @@ export default function PurchasePage() {
                     <span className="font-semibold text-gray-700 w-20">
                       Category:
                     </span>
-                    <span className="text-gray-600">{product.category}</span>
+                    <span className="text-gray-600">{typeof product.category === 'string' ? product.category : product.category?.name || 'N/A'}</span>
                   </div>
                   <div className="flex items-center">
                     <span className="font-semibold text-gray-700 w-20">

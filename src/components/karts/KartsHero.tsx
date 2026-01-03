@@ -9,10 +9,11 @@ export default function KartsHero() {
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=2000&q=80"
+          src="/about.jpg"
           alt="Go-Kart Collection"
           fill
           className="object-cover opacity-50"
+          priority
         />
       </div>
 

@@ -60,92 +60,55 @@ export default function OrdersPage() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
       
-      // Mock orders data for frontend-only mode
-      const mockOrders: Order[] = [
-        {
-          _id: "1",
-          orderNumber: "ORD-001",
-          customerName: "John Doe",
-          customerEmail: "john@example.com",
-          total: 4500,
-          status: "pending",
-          createdAt: new Date().toISOString(),
-        },
-        {
-          _id: "2",
-          orderNumber: "ORD-002",
-          customerName: "Jane Smith",
-          customerEmail: "jane@example.com",
-          total: 3800,
-          status: "processing",
-          createdAt: new Date(Date.now() - 86400000).toISOString(),
-        },
-        {
-          _id: "3",
-          orderNumber: "ORD-003",
-          customerName: "Bob Johnson",
-          customerEmail: "bob@example.com",
-          total: 180,
-          status: "completed",
-          createdAt: new Date(Date.now() - 172800000).toISOString(),
-        },
-        {
-          _id: "4",
-          orderNumber: "ORD-004",
-          customerName: "Alice Williams",
-          customerEmail: "alice@example.com",
-          total: 5200,
-          status: "shipped",
-          createdAt: new Date(Date.now() - 259200000).toISOString(),
-        },
-        {
-          _id: "5",
-          orderNumber: "ORD-005",
-          customerName: "Charlie Brown",
-          customerEmail: "charlie@example.com",
-          total: 2500,
-          status: "pending",
-          createdAt: new Date(Date.now() - 345600000).toISOString(),
-        },
-      ];
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
 
-      // Filter by status
-      let filteredOrders = mockOrders;
+      // Build query params
+      const params = new URLSearchParams();
+      params.append("page", page.toString());
+      params.append("limit", "10");
       if (status !== "all") {
-        filteredOrders = mockOrders.filter(order => order.status === status);
+        params.append("status", status);
       }
-
-      // Filter by search
       if (search) {
-        filteredOrders = filteredOrders.filter(order =>
-          order.orderNumber.toLowerCase().includes(search.toLowerCase()) ||
-          order.customerName.toLowerCase().includes(search.toLowerCase()) ||
-          order.customerEmail.toLowerCase().includes(search.toLowerCase())
-        );
+        params.append("search", search);
       }
 
-      // Sort
-      filteredOrders.sort((a, b) => {
-        const aValue = a[sortBy as keyof Order];
-        const bValue = b[sortBy as keyof Order];
-        if (sortOrder === "asc") {
-          return aValue > bValue ? 1 : -1;
-        } else {
-          return aValue < bValue ? 1 : -1;
-        }
-      });
+      const response = await fetch(`/api/orders?${params.toString()}`, { headers });
+      const data = await response.json();
 
-      // Paginate
-      const startIndex = (page - 1) * 10;
-      const paginatedOrders = filteredOrders.slice(startIndex, startIndex + 10);
+      if (response.ok) {
+        // Transform orders to match Order interface
+        const transformedOrders = (data.orders || []).map((order: any) => ({
+          _id: order._id,
+          orderNumber: order.orderNumber,
+          customerName: `${order.customer.firstName} ${order.customer.lastName}`,
+          customerEmail: order.customer.email,
+          total: order.total,
+          status: order.status,
+          createdAt: order.createdAt,
+        }));
 
-      setOrders(paginatedOrders);
-      setTotalPages(Math.ceil(filteredOrders.length / 10));
-      setTotalOrders(filteredOrders.length);
+        setOrders(transformedOrders);
+        setTotalPages(data.pagination?.pages || 1);
+        setTotalOrders(data.pagination?.total || 0);
+      } else {
+        setOrders([]);
+        setTotalPages(1);
+        setTotalOrders(0);
+      }
     } catch (error) {
       console.error("Error fetching orders:", error);
       toast.error("An error occurred while fetching orders");
+      setOrders([]);
+      setTotalPages(1);
+      setTotalOrders(0);
     } finally {
       setLoading(false);
     }
@@ -153,16 +116,32 @@ export default function OrdersPage() {
 
   const handleStatusUpdate = async (orderId: string, newStatus: string) => {
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
       
-      // Update order status locally (frontend-only mode)
-      setOrders(prevOrders =>
-        prevOrders.map(order =>
-          order._id === orderId ? { ...order, status: newStatus as any } : order
-        )
-      );
-      toast.success("Order status updated successfully");
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: "PUT",
+        headers,
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      if (response.ok) {
+        setOrders(prevOrders =>
+          prevOrders.map(order =>
+            order._id === orderId ? { ...order, status: newStatus as any } : order
+          )
+        );
+        toast.success("Order status updated successfully");
+      } else {
+        const data = await response.json();
+        toast.error(data.error || "An error occurred while updating the order status");
+      }
     } catch (error) {
       console.error("Error updating order status:", error);
       toast.error("An error occurred while updating the order status");
@@ -181,16 +160,28 @@ export default function OrdersPage() {
     if (!deleteModal.orderId) return;
 
     try {
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 500));
+      const token = localStorage.getItem("dashboard_token") || localStorage.getItem("auth_token");
+      const headers: HeadersInit = {
+        "Content-Type": "application/json",
+      };
       
-      // Delete order locally (frontend-only mode)
-      setOrders(prevOrders =>
-        prevOrders.filter(order => order._id !== deleteModal.orderId)
-      );
-      toast.success("Order deleted successfully");
-      setDeleteModal({ isOpen: false, orderId: null, orderNumber: "" });
-      fetchOrders(); // Refresh the list
+      if (token) {
+        headers.Authorization = `Bearer ${token}`;
+      }
+
+      const response = await fetch(`/api/orders/${deleteModal.orderId}`, {
+        method: "DELETE",
+        headers,
+      });
+
+      if (response.ok) {
+        toast.success("Order deleted successfully");
+        setDeleteModal({ isOpen: false, orderId: null, orderNumber: "" });
+        fetchOrders(); // Refresh the list
+      } else {
+        const data = await response.json();
+        toast.error(data.error || "An error occurred while deleting the order");
+      }
     } catch (error) {
       console.error("Error deleting order:", error);
       toast.error("An error occurred while deleting the order");
